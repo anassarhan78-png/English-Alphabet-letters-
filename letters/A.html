@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* (نفس الستايل السابق – لم يتغير) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a0f1e;
@@ -183,12 +182,16 @@
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
-            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" alt="apple">
+            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" 
+                 onerror="this.src='https://picsum.photos/id/20/120/120?grayscale'"
+                 alt="apple">
             <h4>Apple</h4>
             <i class="fas fa-volume-up"></i>
         </div>
         <div class="word-card" onclick="speakText('ant')">
-            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg" alt="ant">
+            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg" 
+                 onerror="this.src='https://picsum.photos/id/24/120/120?grayscale'"
+                 alt="ant">
             <h4>Ant</h4>
             <i class="fas fa-volume-up"></i>
         </div>
@@ -204,18 +207,21 @@
 <script src="../games-library.js"></script>
 <script>
     function speakText(text) {
-        if (window.speechSynthesis) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn("Speech error", e); }
     }
 
-    // Capital A canvas (unchanged)
+    // Capital A canvas
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
 
@@ -251,21 +257,20 @@
         return drawOutline;
     }
 
-    // Small a canvas with proper sizing
+    // Small a canvas with lines
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
 
-        // Define line positions (based on canvas height 250)
-        const topLine = 40;      // خط علوي
-        const midLine = 100;     // خط وسط (قمة الحرف الصغير)
-        const baseline = 160;    // خط القاعدة
-        const bottomLine = 210;   // خط سفلي
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر الأربعة
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -274,12 +279,10 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الصغير a بخط Latin بحجم مناسب (80px يلائم المسافة بين midLine و baseline)
             ctx.font = '80px "Times New Roman", "Georgia", "Palatino", serif';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
-            // نرسم الحرف بحيث يستقر على خط القاعدة مع ترك مسافة بسيطة
             ctx.fillText('a', canvas.width/2, baseline - 5);
         }
         drawLinesAndLetter();
@@ -309,30 +312,38 @@
     const redrawCapital = setupCapitalCanvas();
     const redrawSmall = setupSmallCanvas();
 
-    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
-    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    if (document.getElementById('clearCapital')) document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    if (document.getElementById('clearSmall')) document.getElementById('clearSmall').addEventListener('click', redrawSmall);
 
-    document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
-    document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
+    if (document.getElementById('speakCapital')) document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
+    if (document.getElementById('speakSmall')) document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
 
+    // عرض الألعاب (مع تجنب الأخطاء)
     const gamesGrid = document.getElementById('gamesGrid');
-    if (typeof lettersData !== 'undefined' && lettersData['A'] && lettersData['A'].games) {
-        lettersData['A'].games.forEach(gameId => {
-            const game = gamesLibrary[gameId];
-            if (game) {
-                const card = document.createElement('div');
-                card.className = 'game-card';
-                card.onclick = () => window.location.href = `../games/${gameId}.html`;
-                card.innerHTML = `
-                    <i class="fas ${game.icon}"></i>
-                    <h4>${game.name}</h4>
-                    <p style="font-size:0.7rem;">${game.description}</p>
-                `;
-                gamesGrid.appendChild(card);
+    if (gamesGrid) {
+        try {
+            if (typeof lettersData !== 'undefined' && lettersData['A'] && lettersData['A'].games && typeof gamesLibrary !== 'undefined') {
+                lettersData['A'].games.forEach(gameId => {
+                    const game = gamesLibrary[gameId];
+                    if (game) {
+                        const card = document.createElement('div');
+                        card.className = 'game-card';
+                        card.onclick = () => window.location.href = `../games/${gameId}.html`;
+                        card.innerHTML = `
+                            <i class="fas ${game.icon}"></i>
+                            <h4>${game.name}</h4>
+                            <p style="font-size:0.7rem;">${game.description}</p>
+                        `;
+                        gamesGrid.appendChild(card);
+                    }
+                });
+            } else {
+                gamesGrid.innerHTML = '<p>Games will appear here once data.js and games-library.js are loaded.</p>';
             }
-        });
-    } else {
-        gamesGrid.innerHTML = '<p>Games will appear here once data.js is loaded.</p>';
+        } catch(e) {
+            gamesGrid.innerHTML = '<p>⚠️ Could not load games. Please ensure data.js and games-library.js exist.</p>';
+            console.error(e);
+        }
     }
 </script>
 </body>

@@ -6,7 +6,6 @@
     <title>Letter A | Phonics Nexus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Andika font (handwriting) -->
     <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -167,16 +166,20 @@
         </div>
     </div>
 
-    <!-- كلمات تبدأ بالحرف A (صور مضمونة الظهور) -->
+    <!-- كلمات تبدأ بالحرف A (صور حقيقية من مصادر موثوقة) -->
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
-            <img src="https://picsum.photos/id/20/120/120" alt="apple">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/320px-Red_Apple.jpg"
+                 onerror="this.src='https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg'"
+                 alt="apple">
             <h4>Apple</h4>
             <i class="fas fa-volume-up"></i>
         </div>
         <div class="word-card" onclick="speakText('ant')">
-            <img src="https://picsum.photos/id/24/120/120" alt="ant">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Formica_rufa_ant.jpg/320px-Formica_rufa_ant.jpg"
+                 onerror="this.src='https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg'"
+                 alt="ant">
             <h4>Ant</h4>
             <i class="fas fa-volume-up"></i>
         </div>
@@ -212,7 +215,6 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -221,7 +223,6 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الكبير A بخط Andika
             ctx.font = 'bold 100px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
@@ -289,7 +290,6 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -298,12 +298,10 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الصغير ɑ (IPA) بخط Andika
             ctx.font = '100px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
-            // استخدام الحرف IPA "ɑ" (U+0251)
             ctx.fillText('ɑ', canvas.width/2, baseline - 5);
         }
         drawLinesAndLetter();

@@ -7,20 +7,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        .back { display: inline-block; margin-bottom: 2rem; color: #38bdf8; text-decoration: none; }
-        h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-        .sub { color: #9ca3af; margin-bottom: 2rem; }
-        .sentence-card { background: rgba(20,30,50,0.6); border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1rem; border-left: 4px solid #38bdf8; cursor: pointer; transition: 0.2s; }
-        .sentence-card:hover { background: rgba(56,189,248,0.1); }
-        .sentence-text { font-size: 1.4rem; font-weight: 500; }
-        .words-list { font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem; }
-        .add-section { margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 1rem; text-align: center; }
-        .add-section input { background: #1e2a3a; border: 1px solid #38bdf8; padding: 0.5rem 1rem; border-radius: 2rem; color: white; width: 60%; margin-right: 0.5rem; }
-        button { background: #38bdf8; border: none; padding: 0.5rem 1.5rem; border-radius: 2rem; font-weight: bold; cursor: pointer; }
-        footer { margin-top: 2rem; text-align: center; color: #475569; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a0f1e;font-family:'Inter',sans-serif;color:#eef2ff;padding:2rem}
+        .container{max-width:1000px;margin:0 auto}
+        .back{display:inline-block;margin-bottom:2rem;color:#38bdf8;text-decoration:none}
+        h1{font-size:2rem;margin-bottom:0.5rem}
+        .sub{color:#9ca3af;margin-bottom:2rem}
+        .sentence-card{background:rgba(20,30,50,0.6);border-radius:1.5rem;padding:1.5rem;margin-bottom:1rem;border-left:4px solid #38bdf8;cursor:pointer;transition:0.2s}
+        .sentence-card:hover{background:rgba(56,189,248,0.1)}
+        .sentence-text{font-size:1.4rem;font-weight:500}
+        .words-list{font-size:0.8rem;color:#94a3b8;margin-top:0.5rem}
+        .add-section{margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,0.05);border-radius:1rem;text-align:center}
+        .add-section input{background:#1e2a3a;border:1px solid #38bdf8;padding:0.5rem 1rem;border-radius:2rem;color:white;width:60%;margin-right:0.5rem}
+        button{background:#38bdf8;border:none;padding:0.5rem 1.5rem;border-radius:2rem;font-weight:bold;cursor:pointer}
+        footer{margin-top:2rem;text-align:center;color:#475569}
     </style>
 </head>
 <body>
@@ -35,10 +35,10 @@
         <p><i class="fas fa-plus-circle"></i> Expand the library – add a new sentence</p>
         <input type="text" id="newSentence" placeholder="e.g., A cat sat on the mat.">
         <button id="addBtn">Add Sentence</button>
-        <p style="font-size: 0.7rem; margin-top: 0.5rem;">(Saved in your browser for now; later you can save to a file)</p>
+        <p style="font-size:0.7rem;margin-top:0.5rem;">(Saved in your browser for now; later you can save to a file)</p>
     </div>
 
-    <footer>⭐ New sentences appear here daily. You can also edit the file `simple-sentences.html` to add permanent ones.</footer>
+    <footer>⭐ New sentences appear here daily. You can also edit the file to add permanent ones.</footer>
 </div>
 
 <script>
@@ -53,10 +53,10 @@
     const saved = localStorage.getItem("phonics_sentences");
     if (saved) sentences = JSON.parse(saved);
 
-    function renderSentences() {
+    function render() {
         const container = document.getElementById('sentencesList');
         container.innerHTML = '';
-        sentences.forEach((s, idx) => {
+        sentences.forEach(s => {
             const card = document.createElement('div');
             card.className = 'sentence-card';
             card.onclick = () => speakText(s.text);
@@ -69,28 +69,29 @@
     }
 
     function speakText(text) {
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'en-US';
-        utter.rate = 0.85;
-        window.speechSynthesis.speak(utter);
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            window.speechSynthesis.speak(utterance);
+        }
     }
 
     function addSentence() {
         const input = document.getElementById('newSentence');
         const text = input.value.trim();
-        if (text === "") return;
-        const words = text.split(/\s+/).filter(w => w.length > 0);
+        if (!text) return;
+        const words = text.split(/\s+/).filter(w => w);
         sentences.push({ text, words });
         localStorage.setItem("phonics_sentences", JSON.stringify(sentences));
-        renderSentences();
+        render();
         input.value = '';
         speakText("New sentence added!");
     }
 
     document.getElementById('addBtn').addEventListener('click', addSentence);
-    renderSentences();
+    render();
 </script>
 </body>
 </html>

@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Letter A | Phonics Nexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* التنسيقات العامة */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a0f1e;
@@ -23,333 +24,193 @@
             padding: 2rem;
             box-shadow: 0 20px 35px rgba(0,0,0,0.3);
         }
-        .back {
-            display: inline-block;
-            color: #38bdf8;
-            text-decoration: none;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
-        .back i { margin-left: 5px; }
-        h1 {
-            font-size: 2.5rem;
-            margin: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
+        .back { color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; display: inline-block; }
+        
         .letter-badge {
             background: linear-gradient(135deg, #38bdf8, #818cf8);
-            display: inline-block;
-            padding: 0.2rem 1rem;
+            padding: 0.2rem 1.5rem;
             border-radius: 3rem;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 800;
+            font-family: 'Comic Neue', cursive;
         }
-        .trace-row {
+
+        /* تنسيق منطقة الكتابة */
+        .trace-section {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
             gap: 2rem;
             margin: 2rem 0;
-            justify-content: center;
         }
         .trace-card {
-            flex: 1;
-            min-width: 280px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            text-align: center;
-        }
-        .trace-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            width: 100%;
+            max-width: 600px;
+            background: white; /* خلفية بيضاء لتبدو كأنها ورقة كراسة */
+            border-radius: 1rem;
+            padding: 20px;
+            position: relative;
         }
         canvas {
-            background: white;
-            border-radius: 1rem;
             width: 100%;
-            max-width: 300px;
             height: auto;
-            aspect-ratio: 300 / 250;
             cursor: crosshair;
             touch-action: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: block;
+        }
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
         .btn {
             background: #38bdf8;
             border: none;
-            padding: 0.4rem 1rem;
+            padding: 0.7rem 1.5rem;
             border-radius: 2rem;
             font-weight: bold;
             cursor: pointer;
-            margin: 0.5rem;
-            transition: 0.2s;
+            color: white;
         }
-        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
-        .words-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-            justify-content: center;
-        }
-        .word-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 160px;
-        }
-        .word-card:hover {
-            transform: translateY(-5px);
-            background: rgba(56,189,248,0.2);
-        }
-        .word-card img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .word-card h4 {
-            font-size: 1.2rem;
-            margin: 0.5rem 0;
-        }
-        .games-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .game-card {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            text-align: center;
-            cursor: pointer;
-            width: 170px;
-            transition: 0.2s;
-        }
-        .game-card:hover { transform: scale(1.02); }
-        .game-card i { font-size: 1.8rem; margin-bottom: 0.5rem; }
-        footer {
-            margin-top: 2rem;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-        @media (max-width: 700px) {
-            .container { padding: 1rem; }
-            .word-card img { width: 100px; height: 100px; }
-        }
+        
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 20px; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; width: 160px; }
+        .word-card img { width: 120px; height: 120px; border-radius: 1rem; }
     </style>
 </head>
 <body>
+
 <div class="container">
     <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
-    <h1>
-        <span class="letter-badge">A a</span>
-        <span>Let's learn the letter A</span>
-    </h1>
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1><span class="letter-badge">Aa</span></h1>
+        <p style="margin-top: 10px; font-size: 1.2rem;">Learn to write Letter A on 4 lines</p>
+    </div>
 
-    <!-- قسم التتبع: حرف كبير (عادي) وصغير (بأربعة أسطر) -->
-    <div class="trace-row">
+    <div class="trace-section">
         <div class="trace-card">
-            <h3><i class="fas fa-arrow-up"></i> Capital A</h3>
-            <canvas id="capitalCanvas" width="300" height="250"></canvas>
-            <div>
-                <button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button>
-            </div>
-        </div>
-        <div class="trace-card">
-            <h3><i class="fas fa-arrow-down"></i> Small a (with lines)</h3>
-            <canvas id="smallCanvas" width="300" height="250"></canvas>
-            <div>
-                <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button>
+            <canvas id="writingCanvas" width="600" height="300"></canvas>
+            <div class="controls">
+                <button class="btn" onclick="clearCanvas()"><i class="fas fa-eraser"></i> Clear</button>
+                <button class="btn" style="background:#818cf8" onclick="speakText('A says /æ/ Apple')"><i class="fas fa-volume-up"></i> Listen</button>
             </div>
         </div>
     </div>
 
-    <!-- كلمات تبدأ بالحرف A -->
-    <h2><i class="fas fa-image"></i> Words starting with A</h2>
+    <h2><i class="fas fa-image"></i> Words with A</h2>
     <div class="words-grid">
-        <div class="word-card" onclick="speakText('apple')">
+        <div class="word-card" onclick="speakText('Apple')">
             <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" alt="apple">
             <h4>Apple</h4>
-            <i class="fas fa-volume-up"></i>
         </div>
-        <div class="word-card" onclick="speakText('ant')">
+        <div class="word-card" onclick="speakText('Ant')">
             <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg" alt="ant">
             <h4>Ant</h4>
-            <i class="fas fa-volume-up"></i>
         </div>
     </div>
-
-    <!-- ألعاب مخصصة للحرف (مأخوذة من data.js) -->
-    <h2><i class="fas fa-gamepad"></i> Games for A</h2>
-    <div class="games-grid" id="gamesGrid"></div>
-
-    <footer>✏️ Trace the letters, listen to their sounds, and enjoy the games!</footer>
 </div>
 
-<script src="../data.js"></script>
-<script src="../games-library.js"></script>
 <script>
-    // --- إعدادات عامة ---
-    function speakText(text) {
-        if (window.speechSynthesis) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
-    }
+    const canvas = document.getElementById('writingCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
 
-    // --- 1. Canvas للحرف الكبير (بدون أسطر) ---
-    function setupCapitalCanvas() {
-        const canvas = document.getElementById('capitalCanvas');
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
+    // إعدادات الأسطر (نظام 4 أسطر المدرسي)
+    const lineSpacing = 60;
+    const startY = 60;
+    const lines = [startY, startY + lineSpacing, startY + 2 * lineSpacing, startY + 3 * lineSpacing];
 
-        function drawOutline() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = 'bold 180px "Inter", "Comic Neue", cursive';
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('A', canvas.width/2, canvas.height/2);
-        }
-        drawOutline();
-
-        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function stopDraw() { drawing = false; ctx.beginPath(); }
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
-            else { clientX=e.clientX; clientY=e.clientY; }
-            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
-            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
-            return {x,y};
-        }
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-        return drawOutline;
-    }
-
-    // --- 2. Canvas للحرف الصغير مع أربعة أسطر (Latin style) ---
-    function setupSmallCanvas() {
-        const canvas = document.getElementById('smallCanvas');
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
-
-        // مسافات الأسطر (لحرف صغير بارتفاع مناسب)
-        const topLine = 40;      // الخط العلوي
-        const midLine = 110;     // الخط الأوسط (قمة الحروف الصغيرة)
-        const baseline = 170;    // خط القاعدة
-        const bottomLine = 210;   // الخط السفلي
-
-        function drawLinesAndLetter() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر الأربعة
+    function init() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // 1. رسم الأسطر الأربعة
+        lines.forEach((y, index) => {
             ctx.beginPath();
-            ctx.lineWidth = 1.5;
-            ctx.strokeStyle = '#aaa';
-            // خط علوي
-            ctx.moveTo(0, topLine);
-            ctx.lineTo(canvas.width, topLine);
+            ctx.moveTo(20, y);
+            ctx.lineTo(canvas.width - 20, y);
+            // الخط العلوي والسفلي باللون الأحمر، والوسط باللون الأزرق (مثل الكراسات المدرسية)
+            ctx.strokeStyle = (index === 0 || index === 3) ? "#ffcccc" : "#ccd6ff";
+            ctx.lineWidth = 2;
             ctx.stroke();
-            // خط وسط
-            ctx.moveTo(0, midLine);
-            ctx.lineTo(canvas.width, midLine);
-            ctx.stroke();
-            // خط القاعدة
-            ctx.moveTo(0, baseline);
-            ctx.lineTo(canvas.width, baseline);
-            ctx.stroke();
-            // خط سفلي
-            ctx.moveTo(0, bottomLine);
-            ctx.lineTo(canvas.width, bottomLine);
-            ctx.stroke();
-
-            // رسم الحرف الصغير "a" بخط Latin Serif (Times New Roman)
-            ctx.font = '140px "Times New Roman", "Georgia", "Palatino", serif';
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'alphabetic'; // يستخدم baseline كخط القاعدة
-            // ننزل الحرف قليلاً ليستقر على خط القاعدة
-            ctx.fillText('a', canvas.width/2, baseline - 8);
-        }
-        drawLinesAndLetter();
-
-        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function stopDraw() { drawing = false; ctx.beginPath(); }
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
-            else { clientX=e.clientX; clientY=e.clientY; }
-            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
-            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
-            return {x,y};
-        }
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-        return drawLinesAndLetter;
-    }
-
-    const redrawCapital = setupCapitalCanvas();
-    const redrawSmall = setupSmallCanvas();
-
-    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
-    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
-
-    document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
-    document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
-
-    // عرض الألعاب الخاصة بالحرف A
-    const gamesGrid = document.getElementById('gamesGrid');
-    if (typeof lettersData !== 'undefined' && lettersData['A'] && lettersData['A'].games) {
-        lettersData['A'].games.forEach(gameId => {
-            const game = gamesLibrary[gameId];
-            if (game) {
-                const card = document.createElement('div');
-                card.className = 'game-card';
-                card.onclick = () => window.location.href = `../games/${gameId}.html`;
-                card.innerHTML = `
-                    <i class="fas ${game.icon}"></i>
-                    <h4>${game.name}</h4>
-                    <p style="font-size:0.7rem;">${game.description}</p>
-                `;
-                gamesGrid.appendChild(card);
-            }
         });
-    } else {
-        gamesGrid.innerHTML = '<p>Games will appear here once data.js is loaded.</p>';
+
+        // 2. رسم الحروف الشفافة (Dotted Letter) ليقوم الطالب بتتبعها
+        ctx.font = 'bold 160px "Comic Neue", cursive';
+        ctx.fillStyle = '#f0f0f0'; // لون رمادي فاتح جداً للتتبع
+        ctx.textAlign = 'center';
+        
+        // وضع الحروف بدقة على الأسطر
+        // الحرف الكبير من السطر 1 إلى 3
+        // الحرف الصغير من السطر 2 إلى 3
+        ctx.fillText('A', 180, lines[2]); 
+        ctx.fillText('a', 420, lines[2]); 
+
+        // إضافة توضيح لاسم الخطوط
+        ctx.font = '12px Inter';
+        ctx.fillStyle = '#aaa';
+        ctx.fillText('Sky Line', 40, lines[0] - 5);
+        ctx.fillText('Grass Line (Base)', 60, lines[2] + 15);
     }
+
+    // وظائف الرسم
+    function startDrawing(e) {
+        drawing = true;
+        draw(e);
+    }
+
+    function stopDrawing() {
+        drawing = false;
+        ctx.beginPath();
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        e.preventDefault();
+
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        let clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#2563eb'; // لون القلم أزرق مدرسي
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    function clearCanvas() {
+        init();
+    }
+
+    function speakText(text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // أحداث الماوس واللمس
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchend', stopDrawing);
+
+    // التشغيل عند التحميل
+    window.onload = init;
 </script>
+
 </body>
 </html>

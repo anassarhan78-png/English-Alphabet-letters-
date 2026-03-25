@@ -160,7 +160,7 @@
         <span>Let's learn the letter A</span>
     </h1>
 
-    <!-- قسم التتبع: حرف كبير وصغير جنباً جنب -->
+    <!-- قسم التتبع: حرف كبير (عادي) وصغير (بأربعة أسطر) -->
     <div class="trace-row">
         <div class="trace-card">
             <h3><i class="fas fa-arrow-up"></i> Capital A</h3>
@@ -171,7 +171,7 @@
             </div>
         </div>
         <div class="trace-card">
-            <h3><i class="fas fa-arrow-down"></i> Small a</h3>
+            <h3><i class="fas fa-arrow-down"></i> Small a (with lines)</h3>
             <canvas id="smallCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
@@ -205,86 +205,7 @@
 <script src="../data.js"></script>
 <script src="../games-library.js"></script>
 <script>
-    // --- رسم الحروف الكبيرة والصغيرة ---
-    function setupCanvas(canvasId, letter, color) {
-        const canvas = document.getElementById(canvasId);
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
-
-        function drawOutline() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = 'bold 180px "Inter", "Comic Neue", cursive';
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(letter, canvas.width/2, canvas.height/2);
-        }
-        drawOutline();
-
-        function startDraw(e) {
-            drawing = true;
-            const pos = getPos(e);
-            if (pos) {
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
-        }
-        function draw(e) {
-            if (!drawing) return;
-            e.preventDefault();
-            const pos = getPos(e);
-            if (pos) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 16;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
-        }
-        function stopDraw() {
-            drawing = false;
-            ctx.beginPath();
-        }
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) {
-                if (e.touches.length === 0) return null;
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            let x = (clientX - rect.left) * scaleX;
-            let y = (clientY - rect.top) * scaleY;
-            x = Math.min(Math.max(0, x), canvas.width);
-            y = Math.min(Math.max(0, y), canvas.height);
-            return { x, y };
-        }
-
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-
-        return drawOutline;
-    }
-
-    const redrawCapital = setupCanvas('capitalCanvas', 'A', '#ff8c42');
-    const redrawSmall = setupCanvas('smallCanvas', 'a', '#ff8c42');
-
-    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
-    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
-
-    // النطق
+    // --- إعدادات عامة ---
     function speakText(text) {
         if (window.speechSynthesis) {
             window.speechSynthesis.cancel();
@@ -295,10 +216,120 @@
         }
     }
 
+    // --- 1. Canvas للحرف الكبير (بدون أسطر) ---
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        function drawOutline() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = 'bold 180px "Inter", "Comic Neue", cursive';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('A', canvas.width/2, canvas.height/2);
+        }
+        drawOutline();
+
+        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
+            else { clientX=e.clientX; clientY=e.clientY; }
+            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
+            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
+            return {x,y};
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawOutline;
+    }
+
+    // --- 2. Canvas للحرف الصغير مع أربعة أسطر ---
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        // أبعاد ومسافات الأسطر (لحرف صغير بارتفاع 100 بكسل تقريباً)
+        const topLine = 40;      // الخط العلوي (قمة الحروف الطويلة)
+        const midLine = 110;     // الخط الأوسط (قمة الحروف الصغيرة)
+        const baseline = 170;    // خط القاعدة
+        const bottomLine = 210;   // الخط السفلي (ذيل الحروف)
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // رسم الأسطر الأربعة
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            // خط علوي
+            ctx.moveTo(0, topLine);
+            ctx.lineTo(canvas.width, topLine);
+            ctx.stroke();
+            // خط وسط
+            ctx.moveTo(0, midLine);
+            ctx.lineTo(canvas.width, midLine);
+            ctx.stroke();
+            // خط القاعدة
+            ctx.moveTo(0, baseline);
+            ctx.lineTo(canvas.width, baseline);
+            ctx.stroke();
+            // خط سفلي
+            ctx.moveTo(0, bottomLine);
+            ctx.lineTo(canvas.width, bottomLine);
+            ctx.stroke();
+
+            // رسم الحرف الصغير "a" بخط روماني بسيط
+            ctx.font = '140px "Times New Roman", "Georgia", serif'; // Roman style
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic'; // baseline هو خط القاعدة
+            ctx.fillText('a', canvas.width/2, baseline - 10); // ننزل قليلاً ليتناسب
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
+            else { clientX=e.clientX; clientY=e.clientY; }
+            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
+            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
+            return {x,y};
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+
     document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
     document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
 
-    // عرض الألعاب الخاصة بالحرف A من data.js
+    // عرض الألعاب الخاصة بالحرف A
     const gamesGrid = document.getElementById('gamesGrid');
     if (typeof lettersData !== 'undefined' && lettersData['A'] && lettersData['A'].games) {
         lettersData['A'].games.forEach(gameId => {
@@ -316,7 +347,6 @@
             }
         });
     } else {
-        // Fallback إذا لم توجد data.js
         gamesGrid.innerHTML = '<p>Games will appear here once data.js is loaded.</p>';
     }
 </script>

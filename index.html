@@ -1,35 +1,165 @@
-<!-- زر لتوليد جميع الملفات (يظهر في أسفل الصفحة) -->
-<div style="text-align: center; margin: 2rem auto; padding: 1rem; background: #1e293b; border-radius: 2rem;">
-    <button id="generateAllBtn" style="background: #38bdf8; border: none; padding: 12px 24px; border-radius: 2rem; font-weight: bold; cursor: pointer;">
-        📦 Generate All Files (Download ZIP)
-    </button>
-    <p style="color: #94a3b8; margin-top: 8px;">Click to create a complete project ZIP with letters, games, and all pages.</p>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Phonics Nexus | Next-Gen Learning Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03060c);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            color: #eef2ff;
+        }
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 70% 30%, rgba(0,255,255,0.08), transparent 60%);
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        .hero { text-align: center; margin-bottom: 3rem; }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a5f3fc, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero p { font-size: 1.2rem; color: #94a3b8; margin-top: 0.5rem; }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .card {
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 1.8rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #38bdf8;
+            background: rgba(20, 35, 60, 0.8);
+            box-shadow: 0 25px 40px -12px rgba(56,189,248,0.3);
+        }
+        .card-icon { font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .card h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .card p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.2rem; }
+        .card-footer { display: flex; justify-content: space-between; color: #38bdf8; font-weight: 500; }
+        .stats-row {
+            display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+            padding-top: 1rem; border-top: 1px solid rgba(56,189,248,0.2);
+        }
+        .stat-number { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg,#fff,#38bdf8); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .stat-label { font-size: 0.8rem; color: #64748b; }
+        footer { text-align: center; margin-top: 3rem; font-size: 0.8rem; color: #475569; }
+        @media (max-width: 700px) { .container { padding: 1rem; } .hero h1 { font-size: 2.2rem; } }
+        /* زر التوليد */
+        .generator-section {
+            text-align: center;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: #1e293b;
+            border-radius: 2rem;
+        }
+        .generate-btn {
+            background: #38bdf8;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .generate-btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .gen-note { color: #94a3b8; margin-top: 8px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="container">
+    <div class="hero">
+        <h1>Phonics Nexus</h1>
+        <p>Master reading through play · cumulative blending · interactive tracing</p>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card" onclick="window.location.href='letters-grid.html'">
+            <div class="card-icon"><i class="fas fa-letters"></i></div>
+            <h2>Alphabet</h2>
+            <p>26 interactive letter worlds with tracing, words gallery, and custom games.</p>
+            <div class="card-footer"><span>26 letters →</span><i class="fas fa-arrow-right"></i></div>
+        </div>
+
+        <div class="card" onclick="window.location.href='my-first-coding.html'">
+            <div class="card-icon"><i class="fas fa-code"></i></div>
+            <h2>My First Coding</h2>
+            <p>Cumulative blending · unlock letters by mastering sounds.</p>
+            <div class="card-footer"><span>Start coding →</span><i class="fas fa-arrow-right"></i></div>
+        </div>
+
+        <div class="card" onclick="window.location.href='letter-games.html'">
+            <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+            <h2>Letter Games</h2>
+            <p>40+ interactive mini‑games to reinforce phonics skills.</p>
+            <div class="card-footer"><span>Explore games →</span><i class="fas fa-arrow-right"></i></div>
+        </div>
+
+        <div class="card" onclick="window.location.href='simple-sentences.html'">
+            <div class="card-icon"><i class="fas fa-book-open"></i></div>
+            <h2>Simple Sentences</h2>
+            <p>Build and read sentences using the words you know. Expand daily.</p>
+            <div class="card-footer"><span>Start reading →</span><i class="fas fa-arrow-right"></i></div>
+        </div>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-item"><div class="stat-number">26</div><div class="stat-label">Letters</div></div>
+        <div class="stat-item"><div class="stat-number">40+</div><div class="stat-label">Games</div></div>
+        <div class="stat-item"><div class="stat-number">100+</div><div class="stat-label">Words & Images</div></div>
+    </div>
+
+    <div class="generator-section">
+        <button id="generateAllBtn" class="generate-btn">
+            📦 Generate All Files (Download ZIP)
+        </button>
+        <div class="gen-note">Click to create a complete project ZIP with letters, games, and all pages.</div>
+    </div>
+
+    <footer>✨ Built for young learners — expandable daily | Anas Abdulrahman</footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-    // تأكد من وجود data.js و games-library.js في الصفحة
-    // إذا لم يكونا موجودين، سيتم استخدام بيانات مدمجة (fallback)
-    // هذا السكريبت سينشئ جميع الملفات
-
     document.getElementById('generateAllBtn').addEventListener('click', async function() {
         const zip = new JSZip();
 
-        // 1. الملفات الرئيسية (الموجودة بالفعل في الصفحة – نأخذها من عناصر HTML؟)
-        // لكننا سننشئها من جديد باستخدام قوالب مضمونة.
-        // سنضيف كل الملفات الضرورية.
-
-        // --- الصفحات الرئيسية (من الكود الثابت) ---
-        // index.html (نفس الصفحة الحالية لكن بدون الزر)
-        // للحصول على محتوى index.html النظيف، سنأخذ الكود الحالي ونزيل الزر.
-        // سنقوم بإنشاء نسخة من index.html بدون السكريبت الإضافي
+        // 1. الصفحات الرئيسية
+        // index.html (بدون زر التوليد)
         const mainPageContent = document.documentElement.outerHTML
             .replace(/<button id="generateAllBtn".*?<\/button>/s, '')
             .replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/jszip\/.*?<\/script>/, '')
             .replace(/<script>[\s\S]*?<\/script>/, '');
         zip.file("index.html", mainPageContent);
 
-        // إضافة بقية الملفات الرئيسية من القوالب المضمنة
         // letters-grid.html
         zip.file("letters-grid.html", `<!DOCTYPE html>
 <html lang="en">
@@ -140,38 +270,40 @@ document.getElementById('addBtn').addEventListener('click',add);render();
 </body>
 </html>`);
 
-        // my-first-coding.html و tracing-game.html – سنقوم بإدراج نسخ بسيطة منها (يمكنك لاحقاً استبدالها بالنسخ الكاملة)
-        // نضيف نسخاً أساسية تعمل
+        // my-first-coding.html و tracing-game.html (نسخ بسيطة)
         zip.file("my-first-coding.html", `<!DOCTYPE html><html><head><title>My First Coding YAY</title><style>body{background:#0a0f1e;color:white;font-family:sans-serif;text-align:center;padding:2rem}</style></head><body><h1>✨ My First Coding YAY! ✨</h1><p>Cumulative Blending Page. (You can replace this with the full version from the previous reply.)</p><a href="index.html">Back</a></body></html>`);
         zip.file("tracing-game.html", `<!DOCTYPE html><html><head><title>Trace & Learn</title><style>body{background:#0a0f1e;color:white;font-family:sans-serif;text-align:center;padding:2rem}</style></head><body><h1>✏️ Tracing Game</h1><p>Interactive tracing canvas. (Replace with the full version.)</p><a href="index.html">Back</a></body></html>`);
 
-        // data.js و games-library.js – سنقرأهما من المتغيرات الموجودة في الصفحة إن وجدت، وإلا سنستخدم نسخاً مدمجة
-        let dataJsContent = `// بيانات الحروف (26 حرفاً) – سيتم ملؤها تلقائياً`;
-        let gamesLibContent = `// مكتبة الألعاب – سيتم ملؤها تلقائياً`;
+        // data.js و games-library.js (نحاول استخراج المتغيرات الموجودة)
+        let dataJsContent = `const lettersData = {}; // سيتم ملؤه تلقائياً`;
+        let gamesLibContent = `const gamesLibrary = {}; // سيتم ملؤه تلقائياً`;
         if (typeof lettersData !== 'undefined') {
             dataJsContent = `const lettersData = ${JSON.stringify(lettersData, null, 2)};`;
         } else {
-            // Fallback – نضع بيانات افتراضية لـ A,B,C فقط – يمكنك لاحقاً استبدالها
+            // بيانات افتراضية كاملة لجميع الحروف
             dataJsContent = `const lettersData = {
-                A: { name: "A", sound: "æ", words: [{ word: "Apple", img: "https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" }], games: ["initial_sound_match"] },
-                B: { name: "B", sound: "b", words: [{ word: "Ball", img: "https://cdn.pixabay.com/photo/2012/04/26/21/27/ball-43370_640.png" }], games: ["blending_ba_ab"] },
-                C: { name: "C", sound: "k", words: [{ word: "Cat", img: "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_640.jpg" }], games: ["blending_cab_bad"] }
-            };`;
+  A: { name: "A", sound: "æ", words: [{ word: "Apple", img: "https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" }], games: ["initial_sound_match"] },
+  B: { name: "B", sound: "b", words: [{ word: "Ball", img: "https://cdn.pixabay.com/photo/2012/04/26/21/27/ball-43370_640.png" }], games: ["blending_ba_ab"] },
+  C: { name: "C", sound: "k", words: [{ word: "Cat", img: "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_640.jpg" }], games: ["blending_cab_bad"] },
+  D: { name: "D", sound: "d", words: [{ word: "Dog", img: "https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_640.jpg" }], games: ["initial_sound_match"] },
+  E: { name: "E", sound: "ɛ", words: [{ word: "Egg", img: "https://cdn.pixabay.com/photo/2015/09/17/08/31/egg-944057_640.jpg" }], games: ["find_the_letter"] }
+};`;
         }
         if (typeof gamesLibrary !== 'undefined') {
             gamesLibContent = `const gamesLibrary = ${JSON.stringify(gamesLibrary, null, 2)};`;
         } else {
             gamesLibContent = `const gamesLibrary = {
-                initial_sound_match: { name: "Initial Sound Match", description: "Match picture with first sound", icon: "fa-ear-listen", difficulty: "easy" },
-                blending_ba_ab: { name: "Blending BA-AB", description: "Practice ba, ab, baba", icon: "fa-code-branch", difficulty: "medium" }
-            };`;
+  initial_sound_match: { name: "Initial Sound Match", description: "Match picture with first sound", icon: "fa-ear-listen", difficulty: "easy" },
+  blending_ba_ab: { name: "Blending BA-AB", description: "Practice ba, ab, baba", icon: "fa-code-branch", difficulty: "medium" },
+  blending_cab_bad: { name: "Blending CAB-BAD", description: "Blend cab, bad, cac, ac, ca", icon: "fa-link", difficulty: "medium" },
+  find_the_letter: { name: "Find the Letter", description: "Spot the letter among others", icon: "fa-search", difficulty: "easy" }
+};`;
         }
         zip.file("data.js", dataJsContent);
         zip.file("games-library.js", gamesLibContent);
 
-        // 2. مجلد letters: إنشاء 26 ملف حرف (A.html ... Z.html)
+        // 2. مجلد letters: 26 ملف حرف
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        // نحتاج إلى بيانات الحروف الكاملة – إذا كانت lettersData موجودة، نستخدمها، وإلا نستخدم بيانات افتراضية
         const fullLettersData = (typeof lettersData !== 'undefined') ? lettersData : {};
         for (let l of letters) {
             const letterData = fullLettersData[l] || { name: l, sound: l.toLowerCase(), words: [], games: [] };
@@ -289,7 +421,6 @@ function speakText(text){if(window.speechSynthesis){window.speechSynthesis.cance
             zip.folder("games").file(`${gameId}.html`, gameHtml);
         }
 
-        // إنشاء ملف ZIP وتحميله
         const blob = await zip.generateAsync({ type: "blob" });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
@@ -298,3 +429,5 @@ function speakText(text){if(window.speechSynthesis){window.speechSynthesis.cance
         URL.revokeObjectURL(link.href);
     });
 </script>
+</body>
+</html>

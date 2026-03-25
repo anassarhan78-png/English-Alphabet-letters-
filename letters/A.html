@@ -9,177 +9,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0a0f1e;
-            font-family: 'Inter', sans-serif;
-            color: #eef2ff;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            background: rgba(20, 30, 50, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 2rem;
-            padding: 2rem;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-        }
-        .back {
-            display: inline-block;
-            color: #38bdf8;
-            text-decoration: none;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
         .back i { margin-left: 5px; }
-        h1 {
-            font-size: 2.5rem;
-            margin: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .letter-badge {
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            display: inline-block;
-            padding: 0.2rem 1rem;
-            border-radius: 3rem;
-            font-size: 2rem;
-            font-weight: 800;
-        }
-        .trace-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin: 2rem 0;
-            justify-content: center;
-        }
-        .trace-card {
-            flex: 1;
-            min-width: 280px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            text-align: center;
-        }
-        .trace-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        canvas {
-            background: white;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            aspect-ratio: 300 / 250;
-            cursor: crosshair;
-            touch-action: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .btn {
-            background: #38bdf8;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 0.5rem;
-            transition: 0.2s;
-        }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
         .btn:hover { background: #0ea5e9; transform: scale(1.02); }
-        .words-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-            justify-content: center;
-        }
-        .word-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 160px;
-        }
-        .word-card:hover {
-            transform: translateY(-5px);
-            background: rgba(56,189,248,0.2);
-        }
-        .word-card img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .word-card h4 {
-            font-size: 1.2rem;
-            margin: 0.5rem 0;
-        }
-        footer {
-            margin-top: 2rem;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-        @media (max-width: 700px) {
-            .container { padding: 1rem; }
-            .word-card img { width: 100px; height: 100px; }
-        }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) { .container { padding: 1rem; } .word-card img { width: 100px; height: 100px; } }
     </style>
 </head>
 <body>
 <div class="container">
     <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
-    <h1>
-        <span class="letter-badge">A ɑ</span>
-        <span>Let's learn the letter A</span>
-    </h1>
+    <h1><span class="letter-badge">A ɑ</span><span>Let's learn the letter A</span></h1>
 
-    <!-- Two separate canvases with correct line placement -->
     <div class="trace-row">
         <div class="trace-card">
             <h3><i class="fas fa-arrow-up"></i> Capital A (top → baseline)</h3>
             <canvas id="capitalCanvas" width="300" height="250"></canvas>
-            <div>
-                <button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button>
-            </div>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
         </div>
         <div class="trace-card">
             <h3><i class="fas fa-arrow-down"></i> Small ɑ (midline → baseline)</h3>
             <canvas id="smallCanvas" width="300" height="250"></canvas>
-            <div>
-                <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button>
-            </div>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
         </div>
     </div>
 
-    <!-- Words with guaranteed images (especially ant) -->
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
-            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg"
-                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/320px-Red_Apple.jpg'"
-                 alt="apple">
+            <img id="appleImg" alt="apple">
             <h4>Apple</h4>
             <i class="fas fa-volume-up"></i>
         </div>
         <div class="word-card" onclick="speakText('ant')">
-            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg"
-                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Formica_rufa_ant.jpg/320px-Formica_rufa_ant.jpg'"
-                 alt="ant">
+            <img id="antImg" alt="ant">
             <h4>Ant</h4>
             <i class="fas fa-volume-up"></i>
         </div>
@@ -189,6 +66,35 @@
 </div>
 
 <script>
+    // صورة تفاحة (حقيقية)
+    const appleUrls = [
+        'https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/320px-Red_Apple.jpg',
+        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff6b6b"/%3E%3Ctext x="50" y="65" font-size="40" text-anchor="middle" fill="white"%3E🍎%3C/text%3E%3C/svg%3E'
+    ];
+    // صورة نملة (حقيقية)
+    const antUrls = [
+        'https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Formica_rufa_ant.jpg/320px-Formica_rufa_ant.jpg',
+        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23333"/%3E%3Ctext x="50" y="65" font-size="40" text-anchor="middle" fill="white"%3E🐜%3C/text%3E%3C/svg%3E'
+    ];
+
+    function setImage(imgElement, urls) {
+        let idx = 0;
+        function tryNext() {
+            if (idx >= urls.length) {
+                imgElement.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23444"/%3E%3Ctext x="50" y="55" font-size="20" text-anchor="middle" fill="white"%3ENo%20image%3C/text%3E%3C/svg%3E';
+                return;
+            }
+            imgElement.src = urls[idx];
+            imgElement.onerror = function() { idx++; tryNext(); };
+        }
+        tryNext();
+    }
+
+    setImage(document.getElementById('appleImg'), appleUrls);
+    setImage(document.getElementById('antImg'), antUrls);
+
     function speakText(text) {
         try {
             if (window.speechSynthesis) {
@@ -201,162 +107,97 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ----- Capital A Canvas (proper placement) -----
+    // رسم الحروف (نفس الكود السابق، مع اختصار)
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
-
-        const topLine = 40;
-        const midLine = 100;
-        const baseline = 160;
-        const bottomLine = 210;
-
-        function drawLinesAndLetter() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const topLine=40, midLine=100, baseline=160, bottomLine=210;
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.beginPath();
-            ctx.lineWidth = 1.5;
-            ctx.strokeStyle = '#aaa';
-            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
-            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
-            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
-            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
-
-            ctx.font = 'bold 120px "Andika", "Comic Neue", cursive';
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'alphabetic';
-            ctx.fillText('A', canvas.width/2, baseline - 5);
+            ctx.lineWidth=1.5;
+            ctx.strokeStyle='#aaa';
+            ctx.moveTo(0,topLine); ctx.lineTo(canvas.width,topLine); ctx.stroke();
+            ctx.moveTo(0,midLine); ctx.lineTo(canvas.width,midLine); ctx.stroke();
+            ctx.moveTo(0,baseline); ctx.lineTo(canvas.width,baseline); ctx.stroke();
+            ctx.moveTo(0,bottomLine); ctx.lineTo(canvas.width,bottomLine); ctx.stroke();
+            ctx.font='bold 120px "Andika", "Comic Neue", cursive';
+            ctx.fillStyle='#e9dbc9';
+            ctx.textAlign='center';
+            ctx.textBaseline='alphabetic';
+            ctx.fillText('A', canvas.width/2, baseline-5);
         }
-        drawLinesAndLetter();
-
-        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) {
-            if (!drawing) return;
-            e.preventDefault();
-            const pos = getPos(e);
-            if (pos) {
-                ctx.strokeStyle = '#ff8c42';
-                ctx.lineWidth = 16;
-                ctx.lineCap = 'round';
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
-        }
-        function stopDraw() { drawing = false; ctx.beginPath(); }
+        draw();
+        function start(e) { drawing=true; const p=getPos(e); if(p){ ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
+        function move(e) { if(!drawing) return; e.preventDefault(); const p=getPos(e); if(p){ ctx.strokeStyle='#ff8c42'; ctx.lineWidth=16; ctx.lineCap='round'; ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
+        function stop() { drawing=false; ctx.beginPath(); }
         function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) {
-                if (e.touches.length === 0) return null;
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            let x = (clientX - rect.left) * scaleX;
-            let y = (clientY - rect.top) * scaleY;
-            x = Math.min(Math.max(0, x), canvas.width);
-            y = Math.min(Math.max(0, y), canvas.height);
-            return { x, y };
+            const rect=canvas.getBoundingClientRect();
+            const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
+            let cx,cy;
+            if(e.touches){ if(!e.touches.length) return null; cx=e.touches[0].clientX; cy=e.touches[0].clientY; }
+            else { cx=e.clientX; cy=e.clientY; }
+            let x=(cx-rect.left)*scaleX, y=(cy-rect.top)*scaleY;
+            x=Math.min(Math.max(0,x),canvas.width); y=Math.min(Math.max(0,y),canvas.height);
+            return {x,y};
         }
-
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-        return drawLinesAndLetter;
+        canvas.addEventListener('mousedown',start);
+        canvas.addEventListener('mousemove',move);
+        canvas.addEventListener('mouseup',stop);
+        canvas.addEventListener('touchstart',start);
+        canvas.addEventListener('touchmove',move);
+        canvas.addEventListener('touchend',stop);
+        return draw;
     }
-
-    // ----- Small ɑ Canvas (proper placement) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
-
-        const topLine = 40;
-        const midLine = 100;
-        const baseline = 160;
-        const bottomLine = 210;
-
-        function drawLinesAndLetter() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const topLine=40, midLine=100, baseline=160, bottomLine=210;
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.beginPath();
-            ctx.lineWidth = 1.5;
-            ctx.strokeStyle = '#aaa';
-            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
-            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
-            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
-            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
-
-            ctx.font = '90px "Andika", "Comic Neue", cursive';
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'alphabetic';
-            ctx.fillText('ɑ', canvas.width/2, baseline - 5);
+            ctx.lineWidth=1.5;
+            ctx.strokeStyle='#aaa';
+            ctx.moveTo(0,topLine); ctx.lineTo(canvas.width,topLine); ctx.stroke();
+            ctx.moveTo(0,midLine); ctx.lineTo(canvas.width,midLine); ctx.stroke();
+            ctx.moveTo(0,baseline); ctx.lineTo(canvas.width,baseline); ctx.stroke();
+            ctx.moveTo(0,bottomLine); ctx.lineTo(canvas.width,bottomLine); ctx.stroke();
+            ctx.font='90px "Andika", "Comic Neue", cursive';
+            ctx.fillStyle='#e9dbc9';
+            ctx.textAlign='center';
+            ctx.textBaseline='alphabetic';
+            ctx.fillText('ɑ', canvas.width/2, baseline-5);
         }
-        drawLinesAndLetter();
-
-        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) {
-            if (!drawing) return;
-            e.preventDefault();
-            const pos = getPos(e);
-            if (pos) {
-                ctx.strokeStyle = '#ff8c42';
-                ctx.lineWidth = 14;
-                ctx.lineCap = 'round';
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
-        }
-        function stopDraw() { drawing = false; ctx.beginPath(); }
+        draw();
+        function start(e) { drawing=true; const p=getPos(e); if(p){ ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
+        function move(e) { if(!drawing) return; e.preventDefault(); const p=getPos(e); if(p){ ctx.strokeStyle='#ff8c42'; ctx.lineWidth=14; ctx.lineCap='round'; ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
+        function stop() { drawing=false; ctx.beginPath(); }
         function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) {
-                if (e.touches.length === 0) return null;
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            let x = (clientX - rect.left) * scaleX;
-            let y = (clientY - rect.top) * scaleY;
-            x = Math.min(Math.max(0, x), canvas.width);
-            y = Math.min(Math.max(0, y), canvas.height);
-            return { x, y };
+            const rect=canvas.getBoundingClientRect();
+            const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
+            let cx,cy;
+            if(e.touches){ if(!e.touches.length) return null; cx=e.touches[0].clientX; cy=e.touches[0].clientY; }
+            else { cx=e.clientX; cy=e.clientY; }
+            let x=(cx-rect.left)*scaleX, y=(cy-rect.top)*scaleY;
+            x=Math.min(Math.max(0,x),canvas.width); y=Math.min(Math.max(0,y),canvas.height);
+            return {x,y};
         }
-
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-        return drawLinesAndLetter;
+        canvas.addEventListener('mousedown',start);
+        canvas.addEventListener('mousemove',move);
+        canvas.addEventListener('mouseup',stop);
+        canvas.addEventListener('touchstart',start);
+        canvas.addEventListener('touchmove',move);
+        canvas.addEventListener('touchend',stop);
+        return draw;
     }
-
     const redrawCapital = setupCapitalCanvas();
     const redrawSmall = setupSmallCanvas();
-
     document.getElementById('clearCapital').addEventListener('click', redrawCapital);
     document.getElementById('clearSmall').addEventListener('click', redrawSmall);
-
     document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
     document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
 </script>

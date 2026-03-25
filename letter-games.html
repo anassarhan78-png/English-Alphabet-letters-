@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Games | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .back { display: inline-block; margin-bottom: 2rem; color: #38bdf8; text-decoration: none; }
+        h1 { font-size: 2rem; margin-bottom: 1rem; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .game-card { background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 1.5rem; padding: 1.5rem; cursor: pointer; transition: 0.2s; border: 1px solid rgba(56,189,248,0.2); }
+        .game-card:hover { transform: translateY(-4px); border-color: #38bdf8; background: rgba(56,189,248,0.1); }
+        .game-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+        .game-card h3 { font-size: 1.2rem; margin-bottom: 0.4rem; }
+        .game-card p { font-size: 0.8rem; color: #9ca3af; }
+        footer { margin-top: 2rem; text-align: center; color: #475569; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><i class="fas fa-gamepad"></i> Letter Games Library</h1>
+    <p>Over 40 interactive phonics games — new games added regularly</p>
+    <div class="games-grid" id="gamesGrid"></div>
+    <footer>✨ Click any game to play. Expand the library by adding new files in the 'games' folder.</footer>
+</div>
+<script src="games-library.js"></script>
+<script>
+    const grid = document.getElementById('gamesGrid');
+    for (const [gameId, game] of Object.entries(gamesLibrary)) {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+            <div class="game-icon"><i class="fas ${game.icon}"></i></div>
+            <h3>${game.name}</h3>
+            <p>${game.description}</p>
+            <div style="margin-top: 12px; color:#38bdf8;"><small>${game.difficulty === 'easy' ? '⭐ Easy' : game.difficulty === 'medium' ? '⭐⭐ Medium' : '⭐⭐⭐ Hard'}</small></div>
+        `;
+        card.onclick = () => window.location.href = `games/${gameId}.html`;
+        grid.appendChild(card);
+    }
+</script>
+</body>
+</html>

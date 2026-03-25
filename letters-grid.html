@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alphabet Explorer | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .back { display: inline-block; margin-bottom: 2rem; color: #38bdf8; text-decoration: none; }
+        h1 { font-size: 2rem; margin-bottom: 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1.2rem; margin-top: 1.5rem; }
+        .letter-card { background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 1.5rem; padding: 1.2rem; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid rgba(56,189,248,0.2); }
+        .letter-card:hover { transform: scale(1.05); border-color: #38bdf8; background: rgba(56,189,248,0.1); }
+        .letter { font-size: 2.2rem; font-weight: 800; }
+        footer { margin-top: 2rem; text-align: center; color: #475569; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><i class="fas fa-letters"></i> Alphabet Explorer</h1>
+    <p>Choose any letter to start your journey</p>
+    <div class="grid" id="lettersGrid"></div>
+    <footer>Each letter includes tracing, word gallery & custom games</footer>
+</div>
+<script>
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const grid = document.getElementById('lettersGrid');
+    letters.forEach(letter => {
+        const card = document.createElement('div');
+        card.className = 'letter-card';
+        card.innerHTML = `<div class="letter">${letter}</div><small>Learn ${letter}</small>`;
+        card.onclick = () => window.location.href = `letters/${letter}.html`;
+        grid.appendChild(card);
+    });
+</script>
+</body>
+</html>

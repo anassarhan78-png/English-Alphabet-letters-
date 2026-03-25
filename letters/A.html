@@ -2,112 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Letter A | Phonics Nexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Letter Aa - School Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* التنسيقات العامة */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0a0f1e;
-            font-family: 'Inter', sans-serif;
-            color: #eef2ff;
-            padding: 2rem;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(20, 30, 50, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 2rem;
-            padding: 2rem;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-        }
-        .back { color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; display: inline-block; }
-        
-        .letter-badge {
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            padding: 0.2rem 1.5rem;
-            border-radius: 3rem;
-            font-size: 2.5rem;
-            font-weight: 800;
-            font-family: 'Comic Neue', cursive;
+        :root {
+            --bg-color: #0f172a;
+            --paper-white: #ffffff;
+            --line-red: #ff8585;
+            --line-blue: #a3b8ff;
+            --ink-blue: #1e40af;
         }
 
-        /* تنسيق منطقة الكتابة */
-        .trace-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        .trace-card {
-            width: 100%;
-            max-width: 600px;
-            background: white; /* خلفية بيضاء لتبدو كأنها ورقة كراسة */
-            border-radius: 1rem;
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Comic Neue', cursive;
+            color: #f8fafc;
             padding: 20px;
-            position: relative;
-        }
-        canvas {
-            width: 100%;
-            height: auto;
-            cursor: crosshair;
-            touch-action: none;
-            display: block;
-        }
-        .controls {
-            margin-top: 1rem;
             display: flex;
             justify-content: center;
-            gap: 10px;
         }
+
+        .workbook-page {
+            background: var(--paper-white);
+            width: 100%;
+            max-width: 800px;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            color: #334155;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px dashed #cbd5e1;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .letter-display {
+            font-size: 5rem;
+            color: #1e293b;
+            margin: 10px 0;
+        }
+
+        .canvas-container {
+            position: relative;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            touch-action: none;
+            cursor: url('https://cdn-icons-png.flaticon.com/32/595/595582.png'), auto;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
         .btn {
-            background: #38bdf8;
+            padding: 12px 25px;
             border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 2rem;
+            border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
-            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
         }
-        
-        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 20px; }
-        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; width: 160px; }
-        .word-card img { width: 120px; height: 120px; border-radius: 1rem; }
+
+        .btn-clear { background: #ef4444; color: white; }
+        .btn-speak { background: #3b82f6; color: white; }
+        .btn:hover { opacity: 0.8; transform: scale(1.05); }
+
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .example-card {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .example-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .example-card h4 { font-size: 1.4rem; color: #1e40af; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
-    
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <h1><span class="letter-badge">Aa</span></h1>
-        <p style="margin-top: 10px; font-size: 1.2rem;">Learn to write Letter A on 4 lines</p>
+<div class="workbook-page">
+    <div class="header">
+        <h1>Handwriting Practice</h1>
+        <div class="letter-display">Aa</div>
+        <p>Follow the lines and trace the letter <strong>A</strong></p>
     </div>
 
-    <div class="trace-section">
-        <div class="trace-card">
-            <canvas id="writingCanvas" width="600" height="300"></canvas>
-            <div class="controls">
-                <button class="btn" onclick="clearCanvas()"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" style="background:#818cf8" onclick="speakText('A says /æ/ Apple')"><i class="fas fa-volume-up"></i> Listen</button>
-            </div>
-        </div>
+    <div class="canvas-container">
+        <canvas id="writingCanvas" width="800" height="400"></canvas>
     </div>
 
-    <h2><i class="fas fa-image"></i> Words with A</h2>
-    <div class="words-grid">
-        <div class="word-card" onclick="speakText('Apple')">
-            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" alt="apple">
+    <div class="toolbar">
+        <button class="btn btn-clear" onclick="clearCanvas()">
+            <i class="fas fa-eraser"></i> Clear Page
+        </button>
+        <button class="btn btn-speak" onclick="speak('Capital A, Small a. A is for Apple')">
+            <i class="fas fa-volume-up"></i> Listen
+        </button>
+    </div>
+
+    <div class="examples">
+        <div class="example-card" onclick="speak('Apple')">
+            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" alt="Apple">
             <h4>Apple</h4>
         </div>
-        <div class="word-card" onclick="speakText('Ant')">
-            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg" alt="ant">
+        <div class="example-card" onclick="speak('Ant')">
+            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg" alt="Ant">
             <h4>Ant</h4>
+        </div>
+        <div class="example-card" onclick="speak('Astronaut')">
+            <img src="https://cdn.pixabay.com/photo/2017/08/24/11/15/astronaut-2676322_640.jpg" alt="Astronaut">
+            <h4>Astronaut</h4>
         </div>
     </div>
 </div>
@@ -115,101 +152,92 @@
 <script>
     const canvas = document.getElementById('writingCanvas');
     const ctx = canvas.getContext('2d');
-    let drawing = false;
+    let isDrawing = false;
 
-    // إعدادات الأسطر (نظام 4 أسطر المدرسي)
-    const lineSpacing = 60;
-    const startY = 60;
-    const lines = [startY, startY + lineSpacing, startY + 2 * lineSpacing, startY + 3 * lineSpacing];
+    // إعدادات الأسطر المدرسية
+    const lineSpacing = 80;
+    const startY = 80;
+    const schoolLines = [startY, startY + lineSpacing, startY + 2 * lineSpacing, startY + 3 * lineSpacing];
 
-    function init() {
+    function setupCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // 1. رسم الأسطر الأربعة
-        lines.forEach((y, index) => {
+        // رسم الأسطر الأربعة
+        schoolLines.forEach((y, i) => {
             ctx.beginPath();
-            ctx.moveTo(20, y);
-            ctx.lineTo(canvas.width - 20, y);
-            // الخط العلوي والسفلي باللون الأحمر، والوسط باللون الأزرق (مثل الكراسات المدرسية)
-            ctx.strokeStyle = (index === 0 || index === 3) ? "#ffcccc" : "#ccd6ff";
-            ctx.lineWidth = 2;
+            ctx.lineWidth = (i === 0 || i === 3) ? 2 : 1;
+            ctx.strokeStyle = (i === 0 || i === 3) ? '#ff8585' : '#a3b8ff';
+            ctx.setLineDash([]);
+            ctx.moveTo(40, y);
+            ctx.lineTo(canvas.width - 40, y);
             ctx.stroke();
         });
 
-        // 2. رسم الحروف الشفافة (Dotted Letter) ليقوم الطالب بتتبعها
-        ctx.font = 'bold 160px "Comic Neue", cursive';
-        ctx.fillStyle = '#f0f0f0'; // لون رمادي فاتح جداً للتتبع
+        // رسم الحروف المنقطة للتتبع (Tracing)
+        ctx.font = '220px "Comic Neue"';
+        ctx.fillStyle = '#f1f5f9'; // لون باهت جداً
         ctx.textAlign = 'center';
         
-        // وضع الحروف بدقة على الأسطر
-        // الحرف الكبير من السطر 1 إلى 3
-        // الحرف الصغير من السطر 2 إلى 3
-        ctx.fillText('A', 180, lines[2]); 
-        ctx.fillText('a', 420, lines[2]); 
+        // Capital A (بين السطر 1 و 3)
+        ctx.fillText('A', 250, schoolLines[2]);
+        
+        // Small a (بين السطر 2 و 3)
+        ctx.fillText('a', 550, schoolLines[2]);
 
-        // إضافة توضيح لاسم الخطوط
-        ctx.font = '12px Inter';
-        ctx.fillStyle = '#aaa';
-        ctx.fillText('Sky Line', 40, lines[0] - 5);
-        ctx.fillText('Grass Line (Base)', 60, lines[2] + 15);
+        // تسمية الأسطر للأهل/المعلم
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText('Sky Line', 80, schoolLines[0] - 10);
+        ctx.fillText('Ground Line', 80, schoolLines[2] + 20);
     }
 
-    // وظائف الرسم
-    function startDrawing(e) {
-        drawing = true;
+    // وظائف الرسم بالحبر الأزرق
+    function startDraw(e) {
+        isDrawing = true;
         draw(e);
     }
 
-    function stopDrawing() {
-        drawing = false;
-        ctx.beginPath();
-    }
-
     function draw(e) {
-        if (!drawing) return;
-        e.preventDefault();
-
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
+        if (!isDrawing) return;
         
-        let clientX = e.clientX || (e.touches && e.touches[0].clientX);
-        let clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
 
-        const x = (clientX - rect.left) * scaleX;
-        const y = (clientY - rect.top) * scaleY;
-
-        ctx.lineWidth = 8;
+        ctx.lineWidth = 6;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = '#2563eb'; // لون القلم أزرق مدرسي
+        ctx.strokeStyle = '#1e40af'; // لون قلم الحبر
 
-        ctx.lineTo(x, y);
+        ctx.lineTo(x * (canvas.width / rect.width), y * (canvas.height / rect.height));
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(x, y);
+        ctx.moveTo(x * (canvas.width / rect.width), y * (canvas.height / rect.height));
+    }
+
+    function stopDraw() {
+        isDrawing = false;
+        ctx.beginPath();
     }
 
     function clearCanvas() {
-        init();
+        setupCanvas();
     }
 
-    function speakText(text) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
-        window.speechSynthesis.speak(utterance);
+    function speak(text) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'en-US';
+        window.speechSynthesis.speak(msg);
     }
 
-    // أحداث الماوس واللمس
-    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+    canvas.addEventListener('touchend', stopDraw);
 
-    // التشغيل عند التحميل
-    window.onload = init;
+    window.onload = setupCanvas;
 </script>
 
 </body>

@@ -6,219 +6,41 @@
     <title>منصة تعلم الحروف | Phonics Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
-        /* التصميم الجديد */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9eef3 100%);
-            font-family: 'Cairo', sans-serif;
-            min-height: 100vh;
-        }
-
-        .platform-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        /* Header */
-        .main-header {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .logo i {
-            font-size: 2.5rem;
-            background: #f39c12;
-            padding: 15px;
-            border-radius: 50%;
-        }
-
-        .logo h1 {
-            font-size: 2rem;
-            font-weight: 800;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        /* شريط الإحصائيات */
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e0e0e0;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            text-align: center;
-            padding: 8px 20px;
-            background: white;
-            border-radius: 50px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .stat i {
-            color: #f39c12;
-            margin-left: 8px;
-        }
-
-        /* قسم الألعاب المميزة */
-        .featured-games {
-            padding: 20px 30px;
-            background: #fef5e7;
-            border-bottom: 2px solid #f1e0c6;
-        }
-
-        .featured-games h2 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .games-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .game-card {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            border-radius: 30px;
-            padding: 15px 25px;
-            text-align: center;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            min-width: 180px;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
-        }
-
-        .game-card i {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-
-        .game-card h3 {
-            font-size: 1.2rem;
-        }
-
-        .game-card p {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-
-        /* شبكة الحروف */
-        .letters-section {
-            padding: 30px;
-        }
-
-        .letters-section h2 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .letters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px;
-        }
-
-        .letter-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            color: white;
-        }
-
-        .letter-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .letter-card h2 {
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
-
-        .letter-card p {
-            font-size: 0.7rem;
-            opacity: 0.9;
-        }
-
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 700px) {
-            .letters-grid {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 10px;
-            }
-            .letter-card h2 {
-                font-size: 1.5rem;
-            }
-            .game-card {
-                min-width: 140px;
-                padding: 12px 18px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #e9eef3 100%); font-family: 'Cairo', sans-serif; }
+        .platform-container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .main-header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 30px; text-align: center; }
+        .logo { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
+        .logo i { font-size: 2.5rem; background: #f39c12; padding: 15px; border-radius: 50%; }
+        .logo h1 { font-size: 2rem; font-weight: 800; }
+        .subtitle { font-size: 1rem; opacity: 0.9; }
+        .stats-bar { display: flex; justify-content: center; gap: 20px; padding: 20px; background: #f8f9fa; border-bottom: 2px solid #e0e0e0; flex-wrap: wrap; }
+        .stat { text-align: center; padding: 8px 20px; background: white; border-radius: 50px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); font-weight: 600; color: #2c3e50; }
+        .stat i { color: #f39c12; margin-left: 8px; }
+        .featured-games { padding: 20px 30px; background: #fef5e7; border-bottom: 2px solid #f1e0c6; }
+        .featured-games h2 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; color: #2c3e50; margin-bottom: 15px; }
+        .games-row { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .game-card { background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 30px; padding: 15px 25px; text-align: center; color: white; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 15px rgba(0,0,0,0.1); min-width: 180px; }
+        .game-card:hover { transform: translateY(-5px); box-shadow: 0 15px 25px rgba(0,0,0,0.2); }
+        .game-card i { font-size: 2rem; margin-bottom: 8px; }
+        .game-card h3 { font-size: 1.2rem; }
+        .game-card p { font-size: 0.8rem; opacity: 0.9; }
+        .letters-section { padding: 30px; }
+        .letters-section h2 { font-size: 1.5rem; color: #2c3e50; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .letters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; }
+        .letter-card { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: white; }
+        .letter-card:hover { transform: scale(1.03); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .letter-card h2 { font-size: 2rem; margin-bottom: 5px; }
+        .letter-card p { font-size: 0.7rem; opacity: 0.9; }
+        footer { background: #2c3e50; color: white; text-align: center; padding: 20px; font-size: 0.8rem; }
+        @media (max-width: 700px) { .letters-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); } .letter-card h2 { font-size: 1.5rem; } .game-card { min-width: 140px; } }
     </style>
 </head>
 <body>
 <div class="platform-container">
     <header class="main-header">
-        <div class="logo">
-            <i class="fas fa-child"></i>
-            <h1>منصة تعلم الحروف</h1>
-        </div>
+        <div class="logo"><i class="fas fa-child"></i><h1>منصة تعلم الحروف</h1></div>
         <p class="subtitle">Phonics Platform | تعلم بالصوتيات واللعب</p>
     </header>
 
@@ -229,7 +51,6 @@
         <div class="stat"><i class="fas fa-volume-up"></i> نطق صوتي</div>
     </div>
 
-    <!-- ألعاب مميزة -->
     <div class="featured-games">
         <h2><i class="fas fa-star"></i> ألعاب مميزة</h2>
         <div class="games-row">
@@ -243,11 +64,9 @@
                 <h3>My First Coding YAY!</h3>
                 <p>تعلم الدمج التراكمي</p>
             </div>
-            <!-- يمكن إضافة المزيد من الألعاب المميزة هنا -->
         </div>
     </div>
 
-    <!-- جميع الحروف -->
     <div class="letters-section">
         <h2><i class="fas fa-letters"></i> اختر الحرف الذي تريد تعلمه</h2>
         <div class="letters-grid" id="lettersGrid"></div>
@@ -259,21 +78,17 @@
     </footer>
 </div>
 
-<script src="data.js"></script>
 <script>
-    // بناء شبكة الحروف
     const letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M',
                      'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     const grid = document.getElementById('lettersGrid');
     letters.forEach(letter => {
-        const data = lettersData[letter];
-        if (data) {
-            const card = document.createElement('div');
-            card.className = 'letter-card';
-            card.innerHTML = `<h2>${letter}</h2><p>${data.words.length} كلمات</p>`;
-            card.onclick = () => window.location.href = `letter.html?letter=${letter}`;
-            grid.appendChild(card);
-        }
+        const card = document.createElement('div');
+        card.className = 'letter-card';
+        card.innerHTML = `<h2>${letter}</h2><p>تعلم ${letter}</p>`;
+        // الرابط يوجه إلى الملف المنفصل داخل مجلد letters
+        card.onclick = () => window.location.href = `letters/${letter}.html`;
+        grid.appendChild(card);
     });
 </script>
 </body>

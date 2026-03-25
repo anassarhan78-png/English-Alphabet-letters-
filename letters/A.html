@@ -1,350 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Letter A | Phonics Nexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0a0f1e;
-            font-family: 'Inter', sans-serif;
-            color: #eef2ff;
-            padding: 2rem;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(20, 30, 50, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 2rem;
-            padding: 2rem;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-        }
-        .back {
-            display: inline-block;
-            color: #38bdf8;
-            text-decoration: none;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
-        .back i { margin-left: 5px; }
-        h1 {
-            font-size: 2.5rem;
-            margin: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .letter-badge {
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            display: inline-block;
-            padding: 0.2rem 1rem;
-            border-radius: 3rem;
-            font-size: 2rem;
-            font-weight: 800;
-        }
-        .trace-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin: 2rem 0;
-            justify-content: center;
-        }
-        .trace-card {
-            flex: 1;
-            min-width: 280px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            text-align: center;
-        }
-        .trace-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        canvas {
-            background: white;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            aspect-ratio: 300 / 250;
-            cursor: crosshair;
-            touch-action: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .btn {
-            background: #38bdf8;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 0.5rem;
-            transition: 0.2s;
-        }
-        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
-        .words-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-            justify-content: center;
-        }
-        .word-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 160px;
-        }
-        .word-card:hover {
-            transform: translateY(-5px);
-            background: rgba(56,189,248,0.2);
-        }
-        .word-card img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .word-card h4 {
-            font-size: 1.2rem;
-            margin: 0.5rem 0;
-        }
-        .games-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .game-card {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            text-align: center;
-            cursor: pointer;
-            width: 170px;
-            transition: 0.2s;
-        }
-        .game-card:hover { transform: scale(1.02); }
-        .game-card i { font-size: 1.8rem; margin-bottom: 0.5rem; }
-        footer {
-            margin-top: 2rem;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-        @media (max-width: 700px) {
-            .container { padding: 1rem; }
-            .word-card img { width: 100px; height: 100px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letter A | Phonics Nexus</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    background:#0a0f1e;
+    font-family:'Inter',sans-serif;
+    color:#eef2ff;
+    padding:2rem;
+}
+.container {
+    max-width:1000px;
+    margin:auto;
+    background:rgba(20,30,50,0.6);
+    border-radius:2rem;
+    padding:2rem;
+}
+h1 { text-align:center; }
+
+.trace-card {
+    text-align:center;
+    margin:2rem 0;
+}
+
+canvas {
+    background:white;
+    border-radius:1rem;
+    width:100%;
+    max-width:320px;
+}
+
+.btn {
+    background:#38bdf8;
+    border:none;
+    padding:0.5rem 1rem;
+    border-radius:1rem;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.words-grid {
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.word-card {
+    width:150px;
+    background:rgba(255,255,255,0.1);
+    padding:1rem;
+    border-radius:1rem;
+    text-align:center;
+    cursor:pointer;
+}
+
+.word-card img {
+    width:100%;
+    height:100px;
+    object-fit:cover;
+    border-radius:10px;
+}
+</style>
 </head>
+
 <body>
+
 <div class="container">
-    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
-    <h1>
-        <span class="letter-badge">A a</span>
-        <span>Let's learn the letter A</span>
-    </h1>
 
-    <div class="trace-row">
-        <div class="trace-card">
-            <h3><i class="fas fa-arrow-up"></i> Capital A</h3>
-            <canvas id="capitalCanvas" width="300" height="250"></canvas>
-            <div>
-                <button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button>
-            </div>
-        </div>
-        <div class="trace-card">
-            <h3><i class="fas fa-arrow-down"></i> Small a (with lines)</h3>
-            <canvas id="smallCanvas" width="300" height="250"></canvas>
-            <div>
-                <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button>
-            </div>
-        </div>
-    </div>
+<h1>A a</h1>
 
-    <h2><i class="fas fa-image"></i> Words starting with A</h2>
-    <div class="words-grid">
-        <div class="word-card" onclick="speakText('apple')">
-            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" 
-                 onerror="this.src='https://picsum.photos/id/20/120/120?grayscale'"
-                 alt="apple">
-            <h4>Apple</h4>
-            <i class="fas fa-volume-up"></i>
-        </div>
-        <div class="word-card" onclick="speakText('ant')">
-            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg" 
-                 onerror="this.src='https://picsum.photos/id/24/120/120?grayscale'"
-                 alt="ant">
-            <h4>Ant</h4>
-            <i class="fas fa-volume-up"></i>
-        </div>
-    </div>
-
-    <h2><i class="fas fa-gamepad"></i> Games for A</h2>
-    <div class="games-grid" id="gamesGrid"></div>
-
-    <footer>✏️ Trace the letters, listen to their sounds, and enjoy the games!</footer>
+<div class="trace-card">
+<canvas id="canvas" width="320" height="220"></canvas>
+<br>
+<button class="btn" onclick="resetCanvas()">Clear</button>
+<button class="btn" onclick="speakSound()">Sound</button>
 </div>
 
-<script src="../data.js"></script>
-<script src="../games-library.js"></script>
+<h2 style="text-align:center;">Words</h2>
+
+<div class="words-grid">
+
+<div class="word-card" onclick="speakText('apple')">
+<img src="https://cdn.pixabay.com/photo/2016/02/18/18/57/apple-1207991_640.jpg">
+<p>Apple</p>
+</div>
+
+<div class="word-card" onclick="speakText('ant')">
+<img src="https://cdn.pixabay.com/photo/2017/07/14/21/06/ant-2500906_640.jpg">
+<p>Ant</p>
+</div>
+
+<div class="word-card" onclick="speakText('alligator')">
+<img src="https://cdn.pixabay.com/photo/2017/01/06/19/15/alligator-1958532_640.jpg">
+<p>Alligator</p>
+</div>
+
+</div>
+
+</div>
+
 <script>
-    function speakText(text) {
-        try {
-            if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.9;
-                window.speechSynthesis.speak(utterance);
-            }
-        } catch(e) { console.warn("Speech error", e); }
-    }
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
-    // Capital A canvas
-    function setupCapitalCanvas() {
-        const canvas = document.getElementById('capitalCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
+function drawGuide(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-        function drawOutline() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = 'bold 180px "Inter", "Comic Neue", cursive';
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('A', canvas.width/2, canvas.height/2);
-        }
-        drawOutline();
+    // 4 lines
+    const lines = [40,80,140,180];
+    ctx.strokeStyle="#aaa";
+    ctx.lineWidth=2;
 
-        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function stopDraw() { drawing = false; ctx.beginPath(); }
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
-            else { clientX=e.clientX; clientY=e.clientY; }
-            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
-            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
-            return {x,y};
-        }
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-        return drawOutline;
-    }
+    lines.forEach(y=>{
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(canvas.width,y);
+        ctx.stroke();
+    });
 
-    // Small a canvas with lines
-    function setupSmallCanvas() {
-        const canvas = document.getElementById('smallCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
+    // Capital A
+    ctx.font="bold 60px Arial";
+    ctx.fillStyle="#ddd";
+    ctx.textAlign="center";
+    ctx.fillText("A",120,90);
 
-        const topLine = 40;
-        const midLine = 100;
-        const baseline = 160;
-        const bottomLine = 210;
+    // small a
+    ctx.font="50px Arial";
+    ctx.fillText("a",200,170);
+}
 
-        function drawLinesAndLetter() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.lineWidth = 1.5;
-            ctx.strokeStyle = '#aaa';
-            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
-            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
-            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
-            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+drawGuide();
 
-            ctx.font = '80px "Times New Roman", "Georgia", "Palatino", serif';
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'alphabetic';
-            ctx.fillText('a', canvas.width/2, baseline - 5);
-        }
-        drawLinesAndLetter();
+let drawing=false;
 
-        function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function stopDraw() { drawing = false; ctx.beginPath(); }
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
-            else { clientX=e.clientX; clientY=e.clientY; }
-            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
-            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
-            return {x,y};
-        }
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-        return drawLinesAndLetter;
-    }
+canvas.addEventListener('mousedown',e=>{
+    drawing=true;
+    ctx.beginPath();
+});
 
-    const redrawCapital = setupCapitalCanvas();
-    const redrawSmall = setupSmallCanvas();
+canvas.addEventListener('mousemove',e=>{
+    if(!drawing) return;
+    const rect=canvas.getBoundingClientRect();
+    const x=e.clientX-rect.left;
+    const y=e.clientY-rect.top;
 
-    if (document.getElementById('clearCapital')) document.getElementById('clearCapital').addEventListener('click', redrawCapital);
-    if (document.getElementById('clearSmall')) document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    ctx.lineWidth=10;
+    ctx.lineCap="round";
+    ctx.strokeStyle="#ff8c42";
 
-    if (document.getElementById('speakCapital')) document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
-    if (document.getElementById('speakSmall')) document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
+    ctx.lineTo(x,y);
+    ctx.stroke();
+});
 
-    // عرض الألعاب (مع تجنب الأخطاء)
-    const gamesGrid = document.getElementById('gamesGrid');
-    if (gamesGrid) {
-        try {
-            if (typeof lettersData !== 'undefined' && lettersData['A'] && lettersData['A'].games && typeof gamesLibrary !== 'undefined') {
-                lettersData['A'].games.forEach(gameId => {
-                    const game = gamesLibrary[gameId];
-                    if (game) {
-                        const card = document.createElement('div');
-                        card.className = 'game-card';
-                        card.onclick = () => window.location.href = `../games/${gameId}.html`;
-                        card.innerHTML = `
-                            <i class="fas ${game.icon}"></i>
-                            <h4>${game.name}</h4>
-                            <p style="font-size:0.7rem;">${game.description}</p>
-                        `;
-                        gamesGrid.appendChild(card);
-                    }
-                });
-            } else {
-                gamesGrid.innerHTML = '<p>Games will appear here once data.js and games-library.js are loaded.</p>';
-            }
-        } catch(e) {
-            gamesGrid.innerHTML = '<p>⚠️ Could not load games. Please ensure data.js and games-library.js exist.</p>';
-            console.error(e);
-        }
-    }
+canvas.addEventListener('mouseup',()=>{
+    drawing=false;
+});
+
+function resetCanvas(){
+    drawGuide();
+}
+
+function speakText(text){
+    let u=new SpeechSynthesisUtterance(text);
+    u.rate=0.8;
+    u.pitch=1.2;
+    speechSynthesis.speak(u);
+}
+
+function speakSound(){
+    speakText("æ æ æ apple");
+}
 </script>
+
 </body>
 </html>

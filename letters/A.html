@@ -146,10 +146,10 @@
         <span>Let's learn the letter A</span>
     </h1>
 
-    <!-- لوحتان منفصلتان مع أربعة أسطر -->
+    <!-- Two separate canvases with four lines (correct placement) -->
     <div class="trace-row">
         <div class="trace-card">
-            <h3><i class="fas fa-arrow-up"></i> Capital A (4 lines)</h3>
+            <h3><i class="fas fa-arrow-up"></i> Capital A (top → baseline)</h3>
             <canvas id="capitalCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button>
@@ -157,7 +157,7 @@
             </div>
         </div>
         <div class="trace-card">
-            <h3><i class="fas fa-arrow-down"></i> Small ɑ (phonics style, 4 lines)</h3>
+            <h3><i class="fas fa-arrow-down"></i> Small ɑ (midline → baseline)</h3>
             <canvas id="smallCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
@@ -166,20 +166,16 @@
         </div>
     </div>
 
-    <!-- كلمات تبدأ بالحرف A (صور حقيقية من مصادر موثوقة) -->
+    <!-- Words with guaranteed images (multi‑fallback) -->
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/320px-Red_Apple.jpg"
-                 onerror="this.src='https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg'"
-                 alt="apple">
+            <img id="appleImg" alt="apple">
             <h4>Apple</h4>
             <i class="fas fa-volume-up"></i>
         </div>
         <div class="word-card" onclick="speakText('ant')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Formica_rufa_ant.jpg/320px-Formica_rufa_ant.jpg"
-                 onerror="this.src='https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg'"
-                 alt="ant">
+            <img id="antImg" alt="ant">
             <h4>Ant</h4>
             <i class="fas fa-volume-up"></i>
         </div>
@@ -189,6 +185,39 @@
 </div>
 
 <script>
+    // ---------- Image fallback helper ----------
+    function setImageWithFallback(imgElement, primaryUrl, fallbackUrls) {
+        imgElement.src = primaryUrl;
+        imgElement.onerror = function() {
+            let nextUrl = fallbackUrls.shift();
+            if (nextUrl) {
+                imgElement.src = nextUrl;
+            } else {
+                imgElement.src = 'https://placehold.co/120x120?text=Image+Error';
+            }
+        };
+    }
+
+    // Apple: multiple reliable sources
+    setImageWithFallback(
+        document.getElementById('appleImg'),
+        'https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg',
+        [
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/320px-Red_Apple.jpg',
+            'https://images.pexels.com/photos/102104/pexels-photo-102104.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop'
+        ]
+    );
+
+    // Ant: multiple reliable sources
+    setImageWithFallback(
+        document.getElementById('antImg'),
+        'https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg',
+        [
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Formica_rufa_ant.jpg/320px-Formica_rufa_ant.jpg',
+            'https://images.pexels.com/photos/158869/ant-hymenoptera-ant-forest-158869.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop'
+        ]
+    );
+
     function speakText(text) {
         try {
             if (window.speechSynthesis) {
@@ -201,20 +230,22 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ----- Canvas للحرف الكبير A (بخط Andika) -----
+    // ----- Canvas for Capital A (proper placement: from top line to baseline) -----
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
 
-        const topLine = 40;
-        const midLine = 100;
-        const baseline = 160;
-        const bottomLine = 210;
+        // Define four lines
+        const topLine = 40;      // top line (capitals & ascenders)
+        const midLine = 100;     // midline (small letters)
+        const baseline = 160;    // baseline (letters sit here)
+        const bottomLine = 210;   // bottom line (descenders)
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Draw the four lines
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -223,11 +254,13 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            ctx.font = 'bold 100px "Andika", "Comic Neue", cursive';
+            // Draw capital A – should fill from top line to baseline
+            ctx.font = 'bold 120px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText('A', canvas.width/2, baseline - 8);
+            // We want the bottom of the 'A' to sit on baseline
+            ctx.fillText('A', canvas.width/2, baseline - 5);
         }
         drawLinesAndLetter();
 
@@ -276,7 +309,7 @@
         return drawLinesAndLetter;
     }
 
-    // ----- Canvas للحرف الصغير ɑ (IPA, Andika) -----
+    // ----- Canvas for Small ɑ (proper placement: between midline and baseline) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
@@ -298,7 +331,8 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            ctx.font = '100px "Andika", "Comic Neue", cursive';
+            // Small 'ɑ' should sit between midline and baseline
+            ctx.font = '90px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';

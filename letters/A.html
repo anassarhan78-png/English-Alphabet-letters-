@@ -4,19 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Letter A | Phonics Nexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background: #0a0f1e;
             font-family: 'Inter', sans-serif;
             color: #eef2ff;
             padding: 2rem;
+            display: flex;
+            justify-content: center;
         }
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
             background: rgba(20, 30, 50, 0.6);
             backdrop-filter: blur(8px);
             border-radius: 2rem;
@@ -123,23 +129,6 @@
             font-size: 1.2rem;
             margin: 0.5rem 0;
         }
-        .games-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .game-card {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            text-align: center;
-            cursor: pointer;
-            width: 170px;
-            transition: 0.2s;
-        }
-        .game-card:hover { transform: scale(1.02); }
-        .game-card i { font-size: 1.8rem; margin-bottom: 0.5rem; }
         footer {
             margin-top: 2rem;
             text-align: center;
@@ -160,19 +149,18 @@
         <span>Let's learn the letter A</span>
     </h1>
 
+    <!-- لوحتان منفصلتان مع أربعة أسطر -->
     <div class="trace-row">
-        <!-- Capital A with four lines -->
         <div class="trace-card">
-            <h3><i class="fas fa-arrow-up"></i> Capital A (with lines)</h3>
+            <h3><i class="fas fa-arrow-up"></i> Capital A (4 lines)</h3>
             <canvas id="capitalCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button>
                 <button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button>
             </div>
         </div>
-        <!-- Small a with four lines (round style) -->
         <div class="trace-card">
-            <h3><i class="fas fa-arrow-down"></i> Small a (round, with lines)</h3>
+            <h3><i class="fas fa-arrow-down"></i> Small a (round, 4 lines)</h3>
             <canvas id="smallCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
@@ -181,18 +169,18 @@
         </div>
     </div>
 
-    <!-- Words starting with A -->
+    <!-- كلمات تبدأ بالحرف A (صور تعمل) -->
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
-            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" 
+            <img src="https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg"
                  onerror="this.src='https://picsum.photos/id/20/120/120'"
                  alt="apple">
             <h4>Apple</h4>
             <i class="fas fa-volume-up"></i>
         </div>
         <div class="word-card" onclick="speakText('ant')">
-            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg" 
+            <img src="https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg"
                  onerror="this.src='https://picsum.photos/id/24/120/120'"
                  alt="ant">
             <h4>Ant</h4>
@@ -200,15 +188,9 @@
         </div>
     </div>
 
-    <!-- Games (will appear if data.js exists) -->
-    <h2><i class="fas fa-gamepad"></i> Games for A</h2>
-    <div class="games-grid" id="gamesGrid"></div>
-
-    <footer>✏️ Trace the letters between the lines, listen to their sounds, and enjoy the games!</footer>
+    <footer>✏️ Trace the letters between the lines. Tap any word to hear it!</footer>
 </div>
 
-<script src="../data.js"></script>
-<script src="../games-library.js"></script>
 <script>
     function speakText(text) {
         try {
@@ -219,17 +201,17 @@
                 utterance.rate = 0.9;
                 window.speechSynthesis.speak(utterance);
             }
-        } catch(e) { console.warn("Speech error", e); }
+        } catch(e) { console.warn(e); }
     }
 
-    // ----- Capital Canvas (A) with four lines -----
+    // ----- إعداد اللوحة الأولى (Capital A) مع أربعة أسطر -----
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
 
-        // خطوط المساعدة (4 أسطر)
+        // إحداثيات الأسطر (top, middle, baseline, bottom)
         const topLine = 40;
         const midLine = 100;
         const baseline = 160;
@@ -237,7 +219,7 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر
+            // رسم الأسطر الأربعة
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -246,7 +228,7 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الكبير A (بين خط الوسط وخط القاعدة)
+            // رسم الحرف الكبير A (بخط واضح للتتبع)
             ctx.font = 'bold 100px "Comic Neue", "Comic Sans MS", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
@@ -256,18 +238,41 @@
         drawLinesAndLetter();
 
         function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            if (pos) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+        }
         function stopDraw() { drawing = false; ctx.beginPath(); }
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
             let clientX, clientY;
-            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
-            else { clientX=e.clientX; clientY=e.clientY; }
-            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
-            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
-            return {x,y};
+            if (e.touches) {
+                if (e.touches.length === 0) return null;
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            let x = (clientX - rect.left) * scaleX;
+            let y = (clientY - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
         }
+
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDraw);
@@ -277,14 +282,13 @@
         return drawLinesAndLetter;
     }
 
-    // ----- Small a Canvas (round style) with four lines -----
+    // ----- إعداد اللوحة الثانية (Small a) مع أربعة أسطر وخط دائري -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
 
-        // نفس خطوط المساعدة
         const topLine = 40;
         const midLine = 100;
         const baseline = 160;
@@ -292,7 +296,7 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر
+            // رسم الأسطر الأربعة
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -301,29 +305,51 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الصغير a بشكل دائري (بخط يدوي)
+            // رسم الحرف الصغير a بخط دائري (Comic Neue)
             ctx.font = '90px "Comic Neue", "Comic Sans MS", "Segoe UI Emoji", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
-            // نضبط الحرف ليكون بين خط الوسط وخط القاعدة
             ctx.fillText('a', canvas.width/2, baseline - 5);
         }
         drawLinesAndLetter();
 
         function startDraw(e) { drawing = true; const pos = getPos(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
-        function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getPos(e); if (pos) { ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            if (pos) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+        }
         function stopDraw() { drawing = false; ctx.beginPath(); }
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
             let clientX, clientY;
-            if (e.touches) { if (e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; }
-            else { clientX=e.clientX; clientY=e.clientY; }
-            let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY;
-            x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height);
-            return {x,y};
+            if (e.touches) {
+                if (e.touches.length === 0) return null;
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            let x = (clientX - rect.left) * scaleX;
+            let y = (clientY - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
         }
+
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDraw);
@@ -336,38 +362,11 @@
     const redrawCapital = setupCapitalCanvas();
     const redrawSmall = setupSmallCanvas();
 
-    if (document.getElementById('clearCapital')) document.getElementById('clearCapital').addEventListener('click', redrawCapital);
-    if (document.getElementById('clearSmall')) document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
 
-    if (document.getElementById('speakCapital')) document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
-    if (document.getElementById('speakSmall')) document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
-
-    // عرض الألعاب (مع تجنب الأخطاء)
-    const gamesGrid = document.getElementById('gamesGrid');
-    if (gamesGrid) {
-        try {
-            if (typeof lettersData !== 'undefined' && lettersData['A'] && lettersData['A'].games && typeof gamesLibrary !== 'undefined') {
-                lettersData['A'].games.forEach(gameId => {
-                    const game = gamesLibrary[gameId];
-                    if (game) {
-                        const card = document.createElement('div');
-                        card.className = 'game-card';
-                        card.onclick = () => window.location.href = `../games/${gameId}.html`;
-                        card.innerHTML = `
-                            <i class="fas ${game.icon}"></i>
-                            <h4>${game.name}</h4>
-                            <p style="font-size:0.7rem;">${game.description}</p>
-                        `;
-                        gamesGrid.appendChild(card);
-                    }
-                });
-            } else {
-                gamesGrid.innerHTML = '<p>✨ Games will appear here once data.js is loaded.</p>';
-            }
-        } catch(e) {
-            gamesGrid.innerHTML = '<p>⚠️ Games library not loaded. You can still trace and learn!</p>';
-        }
-    }
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
 </script>
 </body>
 </html>

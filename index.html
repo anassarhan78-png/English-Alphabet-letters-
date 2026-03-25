@@ -1,123 +1,300 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Phonics Nexus | Next-Gen Learning Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03060c);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            color: #eef2ff;
-        }
-        .bg-glow {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            background: radial-gradient(circle at 70% 30%, rgba(0,255,255,0.08), transparent 60%);
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-        .hero { text-align: center; margin-bottom: 3rem; }
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #a5f3fc, #38bdf8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .hero p { font-size: 1.2rem; color: #94a3b8; margin-top: 0.5rem; }
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        .card {
-            background: rgba(15, 25, 45, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            padding: 1.8rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: #38bdf8;
-            background: rgba(20, 35, 60, 0.8);
-            box-shadow: 0 25px 40px -12px rgba(56,189,248,0.3);
-        }
-        .card-icon { font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .card h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .card p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.2rem; }
-        .card-footer { display: flex; justify-content: space-between; color: #38bdf8; font-weight: 500; }
-        .stats-row {
-            display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
-            padding-top: 1rem; border-top: 1px solid rgba(56,189,248,0.2);
-        }
-        .stat-number { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg,#fff,#38bdf8); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        .stat-label { font-size: 0.8rem; color: #64748b; }
-        footer { text-align: center; margin-top: 3rem; font-size: 0.8rem; color: #475569; }
-        @media (max-width: 700px) { .container { padding: 1rem; } .hero h1 { font-size: 2.2rem; } }
-    </style>
+<!-- زر لتوليد جميع الملفات (يظهر في أسفل الصفحة) -->
+<div style="text-align: center; margin: 2rem auto; padding: 1rem; background: #1e293b; border-radius: 2rem;">
+    <button id="generateAllBtn" style="background: #38bdf8; border: none; padding: 12px 24px; border-radius: 2rem; font-weight: bold; cursor: pointer;">
+        📦 Generate All Files (Download ZIP)
+    </button>
+    <p style="color: #94a3b8; margin-top: 8px;">Click to create a complete project ZIP with letters, games, and all pages.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+    // تأكد من وجود data.js و games-library.js في الصفحة
+    // إذا لم يكونا موجودين، سيتم استخدام بيانات مدمجة (fallback)
+    // هذا السكريبت سينشئ جميع الملفات
+
+    document.getElementById('generateAllBtn').addEventListener('click', async function() {
+        const zip = new JSZip();
+
+        // 1. الملفات الرئيسية (الموجودة بالفعل في الصفحة – نأخذها من عناصر HTML؟)
+        // لكننا سننشئها من جديد باستخدام قوالب مضمونة.
+        // سنضيف كل الملفات الضرورية.
+
+        // --- الصفحات الرئيسية (من الكود الثابت) ---
+        // index.html (نفس الصفحة الحالية لكن بدون الزر)
+        // للحصول على محتوى index.html النظيف، سنأخذ الكود الحالي ونزيل الزر.
+        // سنقوم بإنشاء نسخة من index.html بدون السكريبت الإضافي
+        const mainPageContent = document.documentElement.outerHTML
+            .replace(/<button id="generateAllBtn".*?<\/button>/s, '')
+            .replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/jszip\/.*?<\/script>/, '')
+            .replace(/<script>[\s\S]*?<\/script>/, '');
+        zip.file("index.html", mainPageContent);
+
+        // إضافة بقية الملفات الرئيسية من القوالب المضمنة
+        // letters-grid.html
+        zip.file("letters-grid.html", `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Alphabet Explorer | Phonics Nexus</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box} body{background:#0a0f1e;font-family:'Inter',sans-serif;color:#eef2ff;padding:2rem}
+.container{max-width:1200px;margin:0 auto} .back{display:inline-block;margin-bottom:2rem;color:#38bdf8;text-decoration:none}
+h1{font-size:2rem;margin-bottom:1rem} .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:1.2rem;margin-top:1.5rem}
+.letter-card{background:rgba(20,30,50,0.6);backdrop-filter:blur(8px);border-radius:1.5rem;padding:1.2rem;text-align:center;cursor:pointer;transition:0.2s;border:1px solid rgba(56,189,248,0.2)}
+.letter-card:hover{transform:scale(1.05);border-color:#38bdf8;background:rgba(56,189,248,0.1)} .letter{font-size:2.2rem;font-weight:800}
+footer{margin-top:2rem;text-align:center;color:#475569}
+</style>
 </head>
 <body>
-<div class="bg-glow"></div>
 <div class="container">
-    <div class="hero">
-        <h1>Phonics Nexus</h1>
-        <p>Master reading through play · cumulative blending · interactive tracing</p>
-    </div>
-
-    <div class="cards-grid">
-        <div class="card" onclick="window.location.href='letters-grid.html'">
-            <div class="card-icon"><i class="fas fa-letters"></i></div>
-            <h2>Alphabet</h2>
-            <p>26 interactive letter worlds with tracing, words gallery, and custom games.</p>
-            <div class="card-footer"><span>26 letters →</span><i class="fas fa-arrow-right"></i></div>
-        </div>
-
-        <div class="card" onclick="window.location.href='my-first-coding.html'">
-            <div class="card-icon"><i class="fas fa-code"></i></div>
-            <h2>My First Coding</h2>
-            <p>Cumulative blending · unlock letters by mastering sounds.</p>
-            <div class="card-footer"><span>Start coding →</span><i class="fas fa-arrow-right"></i></div>
-        </div>
-
-        <div class="card" onclick="window.location.href='letter-games.html'">
-            <div class="card-icon"><i class="fas fa-gamepad"></i></div>
-            <h2>Letter Games</h2>
-            <p>40+ interactive mini‑games to reinforce phonics skills.</p>
-            <div class="card-footer"><span>Explore games →</span><i class="fas fa-arrow-right"></i></div>
-        </div>
-
-        <div class="card" onclick="window.location.href='simple-sentences.html'">
-            <div class="card-icon"><i class="fas fa-book-open"></i></div>
-            <h2>Simple Sentences</h2>
-            <p>Build and read sentences using the words you know. Expand daily.</p>
-            <div class="card-footer"><span>Start reading →</span><i class="fas fa-arrow-right"></i></div>
-        </div>
-    </div>
-
-    <div class="stats-row">
-        <div class="stat-item"><div class="stat-number">26</div><div class="stat-label">Letters</div></div>
-        <div class="stat-item"><div class="stat-number">40+</div><div class="stat-label">Games</div></div>
-        <div class="stat-item"><div class="stat-number">100+</div><div class="stat-label">Words & Images</div></div>
-    </div>
-
-    <footer>✨ Built for young learners — expandable daily | Anas Abdulrahman</footer>
+<a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+<h1><i class="fas fa-letters"></i> Alphabet Explorer</h1>
+<p>Choose any letter to start your journey</p>
+<div class="grid" id="lettersGrid"></div>
+<footer>Each letter includes tracing, word gallery & custom games</footer>
 </div>
+<script>
+const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const grid=document.getElementById('lettersGrid');
+letters.forEach(l=>{const c=document.createElement('div');c.className='letter-card';c.innerHTML=\`<div class="letter">\${l}</div><small>Learn \${l}</small>\`;c.onclick=()=>window.location.href=\`letters/\${l}.html\`;grid.appendChild(c);});
+</script>
 </body>
-</html>
+</html>`);
+
+        // letter-games.html
+        zip.file("letter-games.html", `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Letter Games | Phonics Nexus</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box} body{background:#0a0f1e;font-family:'Inter',sans-serif;color:#eef2ff;padding:2rem}
+.container{max-width:1200px;margin:0 auto} .back{display:inline-block;margin-bottom:2rem;color:#38bdf8;text-decoration:none}
+h1{font-size:2rem;margin-bottom:1rem} .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-top:1.5rem}
+.game-card{background:rgba(20,30,50,0.6);backdrop-filter:blur(8px);border-radius:1.5rem;padding:1.5rem;cursor:pointer;transition:0.2s;border:1px solid rgba(56,189,248,0.2)}
+.game-card:hover{transform:translateY(-4px);border-color:#38bdf8;background:rgba(56,189,248,0.1)}
+.game-icon{font-size:2rem;margin-bottom:0.8rem} .game-card h3{font-size:1.2rem;margin-bottom:0.4rem}
+.game-card p{font-size:0.8rem;color:#9ca3af} footer{margin-top:2rem;text-align:center;color:#475569}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+<h1><i class="fas fa-gamepad"></i> Letter Games Library</h1>
+<p>Over 40 interactive phonics games — new games added regularly</p>
+<div class="games-grid" id="gamesGrid"></div>
+<footer>✨ Click any game to play. Expand the library by adding new files in the 'games' folder.</footer>
+</div>
+<script src="games-library.js"></script>
+<script>
+const grid=document.getElementById('gamesGrid');
+for(const [id,game] of Object.entries(gamesLibrary)){
+    const card=document.createElement('div');card.className='game-card';
+    card.innerHTML=\`<div class="game-icon"><i class="fas \${game.icon}"></i></div><h3>\${game.name}</h3><p>\${game.description}</p><div style="margin-top:12px;color:#38bdf8;"><small>\${game.difficulty==='easy'?'⭐ Easy':game.difficulty==='medium'?'⭐⭐ Medium':'⭐⭐⭐ Hard'}</small></div>\`;
+    card.onclick=()=>window.location.href=\`games/\${id}.html\`;
+    grid.appendChild(card);
+}
+</script>
+</body>
+</html>`);
+
+        // simple-sentences.html
+        zip.file("simple-sentences.html", `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simple Sentences | Phonics Nexus</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box} body{background:#0a0f1e;font-family:'Inter',sans-serif;color:#eef2ff;padding:2rem}
+.container{max-width:1000px;margin:0 auto} .back{display:inline-block;margin-bottom:2rem;color:#38bdf8;text-decoration:none}
+h1{font-size:2rem;margin-bottom:0.5rem} .sub{color:#9ca3af;margin-bottom:2rem}
+.sentence-card{background:rgba(20,30,50,0.6);border-radius:1.5rem;padding:1.5rem;margin-bottom:1rem;border-left:4px solid #38bdf8;cursor:pointer;transition:0.2s}
+.sentence-card:hover{background:rgba(56,189,248,0.1)} .sentence-text{font-size:1.4rem;font-weight:500}
+.words-list{font-size:0.8rem;color:#94a3b8;margin-top:0.5rem}
+.add-section{margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,0.05);border-radius:1rem;text-align:center}
+.add-section input{background:#1e2a3a;border:1px solid #38bdf8;padding:0.5rem 1rem;border-radius:2rem;color:white;width:60%;margin-right:0.5rem}
+button{background:#38bdf8;border:none;padding:0.5rem 1.5rem;border-radius:2rem;font-weight:bold;cursor:pointer}
+footer{margin-top:2rem;text-align:center;color:#475569}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+<h1><i class="fas fa-book-open"></i> Simple Sentences</h1>
+<p class="sub">Practice reading with decodable sentences. New sentences added daily.</p>
+<div id="sentencesList"></div>
+<div class="add-section"><p><i class="fas fa-plus-circle"></i> Expand the library – add a new sentence</p>
+<input type="text" id="newSentence" placeholder="e.g., A cat sat on the mat.">
+<button id="addBtn">Add Sentence</button>
+<p style="font-size:0.7rem;margin-top:0.5rem;">(Saved in your browser for now; later you can save to a file)</p></div>
+<footer>⭐ New sentences appear here daily. You can also edit the file \`simple-sentences.html\` to add permanent ones.</footer>
+</div>
+<script>
+let sentences=[{text:"A cat sat.",words:["cat","sat"]},{text:"The big dog ran.",words:["big","dog","ran"]},{text:"Sam has a red hat.",words:["Sam","red","hat"]},{text:"I see a bee.",words:["see","bee"]},{text:"We go up and down.",words:["go","up","down"]}];
+const saved=localStorage.getItem("phonics_sentences");if(saved)sentences=JSON.parse(saved);
+function render(){const c=document.getElementById('sentencesList');c.innerHTML='';sentences.forEach(s=>{const d=document.createElement('div');d.className='sentence-card';d.onclick=()=>speakText(s.text);d.innerHTML=\`<div class="sentence-text">\${s.text}</div><div class="words-list">🔊 tap to listen | words: \${s.words.join(', ')}</div>\`;c.appendChild(d);});}
+function speakText(t){if(window.speechSynthesis){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.85;window.speechSynthesis.speak(u);}}
+function add(){const inp=document.getElementById('newSentence');const t=inp.value.trim();if(!t)return;const w=t.split(/\\s+/).filter(w=>w);sentences.push({text:t,words:w});localStorage.setItem("phonics_sentences",JSON.stringify(sentences));render();inp.value='';speakText("New sentence added!");}
+document.getElementById('addBtn').addEventListener('click',add);render();
+</script>
+</body>
+</html>`);
+
+        // my-first-coding.html و tracing-game.html – سنقوم بإدراج نسخ بسيطة منها (يمكنك لاحقاً استبدالها بالنسخ الكاملة)
+        // نضيف نسخاً أساسية تعمل
+        zip.file("my-first-coding.html", `<!DOCTYPE html><html><head><title>My First Coding YAY</title><style>body{background:#0a0f1e;color:white;font-family:sans-serif;text-align:center;padding:2rem}</style></head><body><h1>✨ My First Coding YAY! ✨</h1><p>Cumulative Blending Page. (You can replace this with the full version from the previous reply.)</p><a href="index.html">Back</a></body></html>`);
+        zip.file("tracing-game.html", `<!DOCTYPE html><html><head><title>Trace & Learn</title><style>body{background:#0a0f1e;color:white;font-family:sans-serif;text-align:center;padding:2rem}</style></head><body><h1>✏️ Tracing Game</h1><p>Interactive tracing canvas. (Replace with the full version.)</p><a href="index.html">Back</a></body></html>`);
+
+        // data.js و games-library.js – سنقرأهما من المتغيرات الموجودة في الصفحة إن وجدت، وإلا سنستخدم نسخاً مدمجة
+        let dataJsContent = `// بيانات الحروف (26 حرفاً) – سيتم ملؤها تلقائياً`;
+        let gamesLibContent = `// مكتبة الألعاب – سيتم ملؤها تلقائياً`;
+        if (typeof lettersData !== 'undefined') {
+            dataJsContent = `const lettersData = ${JSON.stringify(lettersData, null, 2)};`;
+        } else {
+            // Fallback – نضع بيانات افتراضية لـ A,B,C فقط – يمكنك لاحقاً استبدالها
+            dataJsContent = `const lettersData = {
+                A: { name: "A", sound: "æ", words: [{ word: "Apple", img: "https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" }], games: ["initial_sound_match"] },
+                B: { name: "B", sound: "b", words: [{ word: "Ball", img: "https://cdn.pixabay.com/photo/2012/04/26/21/27/ball-43370_640.png" }], games: ["blending_ba_ab"] },
+                C: { name: "C", sound: "k", words: [{ word: "Cat", img: "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_640.jpg" }], games: ["blending_cab_bad"] }
+            };`;
+        }
+        if (typeof gamesLibrary !== 'undefined') {
+            gamesLibContent = `const gamesLibrary = ${JSON.stringify(gamesLibrary, null, 2)};`;
+        } else {
+            gamesLibContent = `const gamesLibrary = {
+                initial_sound_match: { name: "Initial Sound Match", description: "Match picture with first sound", icon: "fa-ear-listen", difficulty: "easy" },
+                blending_ba_ab: { name: "Blending BA-AB", description: "Practice ba, ab, baba", icon: "fa-code-branch", difficulty: "medium" }
+            };`;
+        }
+        zip.file("data.js", dataJsContent);
+        zip.file("games-library.js", gamesLibContent);
+
+        // 2. مجلد letters: إنشاء 26 ملف حرف (A.html ... Z.html)
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        // نحتاج إلى بيانات الحروف الكاملة – إذا كانت lettersData موجودة، نستخدمها، وإلا نستخدم بيانات افتراضية
+        const fullLettersData = (typeof lettersData !== 'undefined') ? lettersData : {};
+        for (let l of letters) {
+            const letterData = fullLettersData[l] || { name: l, sound: l.toLowerCase(), words: [], games: [] };
+            const letterHtml = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Letter ${l} | Phonics Nexus</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box} body{background:#0a0f1e;font-family:'Inter',sans-serif;color:#eef2ff;padding:2rem}
+.container{max-width:1000px;margin:0 auto;background:rgba(20,30,50,0.6);border-radius:2rem;padding:2rem}
+.back{color:#38bdf8;text-decoration:none} h1{font-size:3rem;margin:1rem 0}
+.letter{font-size:8rem;font-weight:800;background:linear-gradient(135deg,#a5f3fc,#38bdf8);-webkit-background-clip:text;background-clip:text;color:transparent}
+button{background:#38bdf8;border:none;padding:0.5rem 1rem;border-radius:2rem;cursor:pointer;margin:0.5rem}
+.words-grid{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0}
+.word-card{background:rgba(255,255,255,0.1);border-radius:1rem;padding:0.5rem;text-align:center;cursor:pointer;width:120px}
+.word-card img{width:100px;height:100px;object-fit:cover;border-radius:0.5rem}
+.games-grid{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.5rem}
+.game-card{background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:1rem;padding:0.8rem;text-align:center;cursor:pointer;width:160px}
+canvas{background:white;border-radius:1rem;margin-top:1rem;width:100%;max-width:400px;height:auto;cursor:crosshair}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+<h1>Letter <span class="letter">${l}</span></h1>
+<button onclick="speakText('${l} says /${letterData.sound}/')"><i class="fas fa-volume-up"></i> Listen</button>
+<h2><i class="fas fa-pencil-alt"></i> Trace the letter</h2>
+<canvas id="traceCanvas" width="400" height="300"></canvas>
+<button onclick="clearCanvas()">Clear</button>
+<h2><i class="fas fa-image"></i> Words starting with ${l}</h2>
+<div class="words-grid" id="wordsGrid"></div>
+<h2><i class="fas fa-gamepad"></i> Games for ${l}</h2>
+<div class="games-grid" id="gamesGrid"></div>
+</div>
+<script src="../data.js"></script>
+<script src="../games-library.js"></script>
+<script>
+    const letterData = lettersData['${l}'];
+    const letter = '${l}';
+    const wordsGrid = document.getElementById('wordsGrid');
+    if(letterData && letterData.words){
+        letterData.words.forEach(word => {
+            const card = document.createElement('div'); card.className = 'word-card';
+            card.onclick = () => speakText(word.word);
+            card.innerHTML = \`<img src="\${word.img}" onerror="this.src='https://picsum.photos/100/100?grayscale'"><div>\${word.word}</div><i class="fas fa-volume-up"></i>\`;
+            wordsGrid.appendChild(card);
+        });
+    }
+    const gamesGrid = document.getElementById('gamesGrid');
+    if(letterData && letterData.games){
+        letterData.games.forEach(gameId => {
+            const game = gamesLibrary[gameId];
+            if(!game) return;
+            const card = document.createElement('div'); card.className = 'game-card';
+            card.onclick = () => window.location.href = \`../games/\${gameId}.html\`;
+            card.innerHTML = \`<i class="fas \${game.icon}"></i><h4>\${game.name}</h4><p>\${game.description}</p>\`;
+            gamesGrid.appendChild(card);
+        });
+    }
+    const canvas = document.getElementById('traceCanvas'); const ctx = canvas.getContext('2d');
+    canvas.width = 400; canvas.height = 300; let drawing = false;
+    function drawLetter() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.font = 'bold 200px "Inter", "Comic Neue", cursive'; ctx.fillStyle = '#e9dbc9'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(letter, canvas.width/2, canvas.height/2); }
+    drawLetter();
+    function startDraw(e) { drawing = true; const pos = getPos(e); if(pos){ ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+    function draw(e) { if(!drawing) return; e.preventDefault(); const pos = getPos(e); if(pos){ ctx.strokeStyle = '#ff8c42'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+    function stopDraw() { drawing = false; ctx.beginPath(); }
+    function getPos(e) { const rect = canvas.getBoundingClientRect(); const scaleX = canvas.width/rect.width, scaleY = canvas.height/rect.height; let clientX, clientY; if(e.touches){ if(e.touches.length===0) return null; clientX=e.touches[0].clientX; clientY=e.touches[0].clientY; } else { clientX=e.clientX; clientY=e.clientY; } let x = (clientX - rect.left)*scaleX, y = (clientY - rect.top)*scaleY; x = Math.min(Math.max(0,x), canvas.width); y = Math.min(Math.max(0,y), canvas.height); return {x,y}; }
+    canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopDraw); canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stopDraw);
+    window.clearCanvas = () => drawLetter();
+    function speakText(text) { if(window.speechSynthesis){ window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'en-US'; utterance.rate = 0.9; window.speechSynthesis.speak(utterance); } }
+    window.speakText = speakText;
+</script>
+</body>
+</html>`;
+            zip.folder("letters").file(`${l}.html`, letterHtml);
+        }
+
+        // 3. مجلد games: إنشاء ملف لكل لعبة في gamesLibrary
+        const gamesData = (typeof gamesLibrary !== 'undefined') ? gamesLibrary : {};
+        for (const [gameId, game] of Object.entries(gamesData)) {
+            const gameHtml = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${game.name} | Phonics Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box} body{background:linear-gradient(135deg,#667eea,#764ba2);font-family:'Inter',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:2rem}
+.game-container{background:white;border-radius:2rem;max-width:900px;width:100%;padding:2rem;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
+h1{color:#2c3e50;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:15px}
+.game-content{margin:2rem 0} button{background:#f39c12;border:none;padding:12px 24px;border-radius:40px;font-size:1.2rem;font-weight:bold;cursor:pointer;margin:10px;transition:0.2s}
+button:hover{background:#e67e22;color:white} .back-link{display:inline-block;margin-top:20px;background:#2c3e50;color:white;padding:8px 20px;border-radius:40px;text-decoration:none}
+.feedback{margin-top:20px;font-size:1.2rem;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="game-container">
+<h1><i class="fas ${game.icon}"></i> ${game.name}</h1>
+<p style="color:#7f8c8d;">${game.description}</p>
+<div class="game-content" id="gameContent">
+<div style="background:#fef5e7;padding:2rem;border-radius:30px;">
+<p>✨ This is the game: <strong>${game.name}</strong> ✨</p>
+<p>You can now build the full game logic here.</p>
+<button onclick="alert('Game coming soon!')">Start Game</button>
+</div>
+</div>
+<div class="feedback" id="feedback"></div>
+<a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Hub</a>
+</div>
+<script>
+function speakText(text){if(window.speechSynthesis){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=0.85;window.speechSynthesis.speak(u);}}
+</script>
+</body>
+</html>`;
+            zip.folder("games").file(`${gameId}.html`, gameHtml);
+        }
+
+        // إنشاء ملف ZIP وتحميله
+        const blob = await zip.generateAsync({ type: "blob" });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = "phonics-platform-complete.zip";
+        link.click();
+        URL.revokeObjectURL(link.href);
+    });
+</script>

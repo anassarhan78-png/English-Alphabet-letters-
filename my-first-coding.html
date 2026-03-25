@@ -31,17 +31,10 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Header */
         .coding-header {
             background: linear-gradient(135deg, #f39c12, #e67e22);
             padding: 25px 30px;
@@ -76,7 +69,6 @@
             font-size: 0.9rem;
         }
 
-        /* Letter selector - dynamic */
         .letter-progress {
             background: #fef5e7;
             padding: 15px 25px;
@@ -121,7 +113,6 @@
             box-shadow: 0 3px 0 #27ae60;
         }
 
-        /* Main content */
         .blending-studio {
             padding: 30px;
         }
@@ -141,7 +132,6 @@
             font-size: 1rem;
         }
 
-        /* Blending cards */
         .blends-grid {
             display: flex;
             flex-wrap: wrap;
@@ -182,7 +172,6 @@
             font-size: 1.3rem;
         }
 
-        /* Quiz section */
         .quiz-section {
             background: #fef2e0;
             border-radius: 40px;
@@ -334,9 +323,7 @@
         </div>
     </div>
 
-    <div class="letter-progress" id="letterProgress">
-        <!-- سيتم إنشاء أزرار الحروف ديناميكياً -->
-    </div>
+    <div class="letter-progress" id="letterProgress"></div>
 
     <div class="blending-studio">
         <div class="studio-title">
@@ -344,9 +331,7 @@
             <p>اضغط على أي مقطع لسماعه | اختر الإجابة الصحيحة لتفتح حروفاً جديدة!</p>
         </div>
 
-        <div id="blendsContainer" class="blends-grid">
-            <!-- المقاطع الخاصة بالحروف المفتوحة ستظهر هنا -->
-        </div>
+        <div id="blendsContainer" class="blends-grid"></div>
 
         <div class="quiz-section" id="quizSection">
             <div class="quiz-question" id="quizQuestion">🎧 استمع واختر المقطع الصحيح</div>
@@ -371,59 +356,21 @@
 
 <script>
     // --------------------- PHONICS CUMULATIVE DATA ---------------------
-    // كل حرف جديد يضيف مقاطع جديدة تعتمد على الحروف السابقة فقط (تراكمي)
     const phonicsLevels = {
-        A: {
-            name: "A",
-            sound: "a",
-            blends: ["a"],
-            // بعد إتقان A، يمكن فتح B
-            nextLetters: ["B"]
-        },
-        B: {
-            name: "B",
-            sound: "b",
-            // جميع المقاطع الممكنة باستخدام A + B فقط (تراكمي)
-            blends: ["ba", "ab", "baba", "bab", "a", "b"],
-            dependsOn: ["A"]
-        },
-        C: {
-            name: "C",
-            sound: "c",
-            // فقط A + B + C (لا يوجد D, E,...)
-            blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "baca", "caba", "abc"],
-            dependsOn: ["A", "B"]
-        },
-        D: {
-            name: "D",
-            sound: "d",
-            blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "ad", "da", "bad", "dab", "cad", "dad", "cabad"],
-            dependsOn: ["A", "B", "C"]
-        },
-        E: {
-            name: "E",
-            sound: "e",
-            blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "ad", "da", "bad", "dab", "cad", "dad", "be", "eb", "abe", "babe", "cabe", "de", "ed", "bed", "deb", "cade"],
-            dependsOn: ["A", "B", "C", "D"]
-        }
-        // يمكنك إضافة حتى Z بنفس المنطق التراكمي
+        A: { name: "A", sound: "a", blends: ["a"], nextLetters: ["B"] },
+        B: { name: "B", sound: "b", blends: ["ba", "ab", "baba", "bab", "a", "b"], dependsOn: ["A"] },
+        C: { name: "C", sound: "c", blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "baca", "caba", "abc"], dependsOn: ["A", "B"] },
+        D: { name: "D", sound: "d", blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "ad", "da", "bad", "dab", "cad", "dad", "cabad"], dependsOn: ["A", "B", "C"] },
+        E: { name: "E", sound: "e", blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "ad", "da", "bad", "dab", "cad", "dad", "be", "eb", "abe", "babe", "cabe", "de", "ed", "bed", "deb", "cade"], dependsOn: ["A", "B", "C", "D"] }
     };
 
-    // ترتيب فتح الحروف (تسلسلي)
-    const letterOrder = ["A", "B", "C", "D", "E"]; // يمكن تمديده حتى Z
-
-    // إدارة التقدم (localStorage)
+    const letterOrder = ["A", "B", "C", "D", "E"];
     let unlockedLetters = [];
     
     function loadProgress() {
         const saved = localStorage.getItem("phonics_cumulative_unlocked");
-        if (saved) {
-            unlockedLetters = JSON.parse(saved);
-        } else {
-            // يبدأ الحرف A فقط مفتوحاً
-            unlockedLetters = ["A"];
-        }
-        // تأكد أن A موجود دائماً
+        if (saved) { unlockedLetters = JSON.parse(saved); } 
+        else { unlockedLetters = ["A"]; }
         if (!unlockedLetters.includes("A")) unlockedLetters.push("A");
         renderLetterButtons();
         renderCurrentBlends();
@@ -439,24 +386,18 @@
         updateBadges();
     }
 
-    // فتح حرف جديد إذا تم إتقان التحدي
     function unlockLetter(letter) {
         if (!unlockedLetters.includes(letter)) {
             unlockedLetters.push(letter);
             saveProgress();
-            // نطق تهاني
             speakText(`Wow! You unlocked letter ${letter}! Amazing blending! 🎉`, 0.9);
             return true;
         }
         return false;
     }
 
-    // التحقق إذا كان الحرف مفتوحاً
-    function isLetterUnlocked(letter) {
-        return unlockedLetters.includes(letter);
-    }
+    function isLetterUnlocked(letter) { return unlockedLetters.includes(letter); }
 
-    // الحصول على جميع المقاطع الممكنة بناءً على الحروف المفتوحة (تراكمي فقط)
     function getAllowedBlends() {
         let blendsSet = new Set();
         unlockedLetters.forEach(letter => {
@@ -464,9 +405,7 @@
                 phonicsLevels[letter].blends.forEach(blend => blendsSet.add(blend));
             }
         });
-        // إضافة الحروف المفردة نفسها
         unlockedLetters.forEach(l => blendsSet.add(l.toLowerCase()));
-        // تحويل إلى مصفوفة وترتيب حسب الطول
         let blends = Array.from(blendsSet);
         blends.sort((a,b) => a.length - b.length);
         return blends;
@@ -484,19 +423,12 @@
         blends.forEach(blend => {
             const card = document.createElement("div");
             card.className = "blend-card";
-            card.innerHTML = `
-                <div class="blend-text">${blend}</div>
-                <div class="speak-icon"><i class="fas fa-volume-up"></i> استمع</div>
-            `;
-            card.addEventListener("click", (e) => {
-                e.stopPropagation();
-                speakText(blend, 0.85);
-            });
+            card.innerHTML = `<div class="blend-text">${blend}</div><div class="speak-icon"><i class="fas fa-volume-up"></i> استمع</div>`;
+            card.addEventListener("click", (e) => { e.stopPropagation(); speakText(blend, 0.85); });
             container.appendChild(card);
         });
     }
 
-    // تحديث عرض أزرار الحروف
     function renderLetterButtons() {
         const container = document.getElementById("letterProgress");
         if (!container) return;
@@ -508,15 +440,11 @@
             if (unlockedLetters.includes(letter)) {
                 btn.classList.add("active");
             } else {
-                // معرفة إذا كان يمكن فتحه (جميع المتطلبات مفتوحة)
                 const level = phonicsLevels[letter];
                 let canUnlock = true;
-                if (level && level.dependsOn) {
-                    canUnlock = level.dependsOn.every(dep => unlockedLetters.includes(dep));
-                }
+                if (level && level.dependsOn) { canUnlock = level.dependsOn.every(dep => unlockedLetters.includes(dep)); }
                 if (canUnlock && !unlockedLetters.includes(letter)) {
                     btn.classList.add("unlocked");
-                    btn.style.cursor = "pointer";
                     btn.title = `جاهز للفتح! أكمل التحدي`;
                 } else {
                     btn.classList.add("locked");
@@ -527,26 +455,17 @@
                 if (!unlockedLetters.includes(letter)) {
                     const level = phonicsLevels[letter];
                     let canUnlock = true;
-                    if (level && level.dependsOn) {
-                        canUnlock = level.dependsOn.every(dep => unlockedLetters.includes(dep));
-                    }
+                    if (level && level.dependsOn) { canUnlock = level.dependsOn.every(dep => unlockedLetters.includes(dep)); }
                     if (canUnlock) {
-                        // نسمح بفتحه يدوياً من الزر إذا كان مؤهلاً
                         unlockLetter(letter);
                         speakText(`Letter ${letter} unlocked! Now you can blend new sounds.`, 0.9);
-                    } else {
-                        speakText(`You need to master previous letters first!`, 0.9);
-                        showTemporaryFeedback(`🔒 تحتاج لإتقان الحروف السابقة أولاً`, "wrong");
-                    }
-                } else {
-                    speakText(`Letter ${letter} is already unlocked!`, 0.85);
-                }
+                    } else { speakText(`You need to master previous letters first!`, 0.9); showTemporaryFeedback(`🔒 تحتاج لإتقان الحروف السابقة أولاً`, "wrong"); }
+                } else { speakText(`Letter ${letter} is already unlocked!`, 0.85); }
             });
             container.appendChild(btn);
         });
     }
 
-    // تحديث الشارات
     function updateBadges() {
         const badgesDiv = document.getElementById("badgesContainer");
         if (!badgesDiv) return;
@@ -557,12 +476,9 @@
             badge.innerHTML = `<i class="fas fa-star"></i> Letter ${letter}`;
             badgesDiv.appendChild(badge);
         });
-        if (unlockedLetters.length === 0) {
-            badgesDiv.innerHTML = "<p>ابدأ الرحلة! أكمل التحدي لفتح الحروف</p>";
-        }
+        if (unlockedLetters.length === 0) { badgesDiv.innerHTML = "<p>ابدأ الرحلة! أكمل التحدي لفتح الحروف</p>"; }
     }
 
-    // مساعد النطق
     function speakText(text, rate = 0.85) {
         if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
@@ -577,35 +493,25 @@
 
     function generateRandomQuiz() {
         const blends = getAllowedBlends();
-        if (blends.length === 0) {
-            document.getElementById("quizQuestion").innerHTML = "🎉 أكمل المستويات لفتح المزيد!";
-            return;
-        }
-        // اختيار مقطع عشوائي
+        if (blends.length === 0) { document.getElementById("quizQuestion").innerHTML = "🎉 أكمل المستويات لفتح المزيد!"; return; }
         const correct = blends[Math.floor(Math.random() * blends.length)];
         currentQuizBlend = correct;
-        
-        // إنشاء خيارات: الخيار الصحيح + 3 خيارات عشوائية أخرى مختلفة
         let options = [correct];
         const otherBlends = blends.filter(b => b !== correct);
-        // خلط عشوائي
         for (let i = 0; i < Math.min(3, otherBlends.length); i++) {
             const rand = otherBlends[Math.floor(Math.random() * otherBlends.length)];
             if (!options.includes(rand)) options.push(rand);
         }
-        // إذا قل عدد الخيارات نضيف بدائل
         while(options.length < 4 && blends.length > 1) {
             const fallback = blends.find(b => !options.includes(b));
             if(fallback) options.push(fallback);
             else break;
         }
-        // خلط عشوائي
         for (let i = options.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [options[i], options[j]] = [options[j], options[i]];
         }
         currentQuizOptions = options;
-        
         document.getElementById("quizQuestion").innerHTML = `🔊 استمع جيداً: أي مقطع تسمع؟ <i class="fas fa-headphones"></i>`;
         const optsDiv = document.getElementById("quizOptions");
         optsDiv.innerHTML = "";
@@ -616,7 +522,6 @@
             optBtn.addEventListener("click", () => handleQuizAnswer(opt, correct));
             optsDiv.appendChild(optBtn);
         });
-        // زر سماع السؤال
         const listenBtn = document.createElement("div");
         listenBtn.className = "quiz-opt";
         listenBtn.innerHTML = '<i class="fas fa-volume-up"></i> استمع للسؤال مرة أخرى';
@@ -630,8 +535,6 @@
         if (selected === correct) {
             showTemporaryFeedback(`✅ ممتاز! ${correct} هي الإجابة الصحيحة!`, "correct");
             speakText(`Great job! ${correct}`, 0.9);
-            // التحقق: هل يمكن فتح حرف جديد بعد هذه الإجابة الصحيحة؟
-            // نبحث عن أول حرف مغلق لكن متطلباته كلها مفتوحة
             let nextToUnlock = null;
             for (let i = 0; i < letterOrder.length; i++) {
                 const l = letterOrder[i];
@@ -639,27 +542,12 @@
                     const level = phonicsLevels[l];
                     if (level && level.dependsOn) {
                         const allDepsUnlocked = level.dependsOn.every(dep => unlockedLetters.includes(dep));
-                        if (allDepsUnlocked) {
-                            nextToUnlock = l;
-                            break;
-                        }
-                    } else if (!level?.dependsOn && l !== "A") {
-                        // إذا لم يكن A وليس له تبعيات يمكن فتحه تلقائياً
-                        nextToUnlock = l;
-                        break;
-                    }
+                        if (allDepsUnlocked) { nextToUnlock = l; break; }
+                    } else if (!level?.dependsOn && l !== "A") { nextToUnlock = l; break; }
                 }
             }
-            if (nextToUnlock) {
-                unlockLetter(nextToUnlock);
-                showTemporaryFeedback(`🎉 رائع! تم فتح الحرف ${nextToUnlock} 🎉`, "correct");
-            }
-            // تجديد الأسئلة والمقاطع
-            setTimeout(() => {
-                renderCurrentBlends();
-                generateRandomQuiz();
-                updateBadges();
-            }, 800);
+            if (nextToUnlock) { unlockLetter(nextToUnlock); showTemporaryFeedback(`🎉 رائع! تم فتح الحرف ${nextToUnlock} 🎉`, "correct"); }
+            setTimeout(() => { renderCurrentBlends(); generateRandomQuiz(); updateBadges(); }, 800);
         } else {
             showTemporaryFeedback(`❌ ليس تماماً. الجواب الصحيح هو ${correct}. استمع مرة أخرى!`, "wrong");
             speakText(`Try again! The correct blend is ${correct}`, 0.85);
@@ -678,7 +566,6 @@
         }, 2500);
     }
 
-    // reset
     document.getElementById("resetProgressBtn")?.addEventListener("click", () => {
         localStorage.removeItem("phonics_cumulative_unlocked");
         unlockedLetters = ["A"];
@@ -690,7 +577,6 @@
         updateBadges();
     });
 
-    // تحميل أولي
     loadProgress();
 </script>
 </body>

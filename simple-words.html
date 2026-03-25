@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Words | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a0f1e;font-family:'Inter',sans-serif;color:#eef2ff;padding:2rem}
+        .container{max-width:1200px;margin:0 auto}
+        .back{display:inline-block;margin-bottom:2rem;color:#38bdf8;text-decoration:none}
+        h1{font-size:2rem;margin-bottom:0.5rem}
+        .sub{color:#9ca3af;margin-bottom:2rem}
+        .words-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem}
+        .word-card{background:rgba(20,30,50,0.6);border-radius:1.5rem;padding:1rem;text-align:center;cursor:pointer;transition:0.2s;border:1px solid rgba(56,189,248,0.2)}
+        .word-card:hover{transform:translateY(-5px);border-color:#38bdf8;background:rgba(56,189,248,0.1)}
+        .word-card img{width:120px;height:120px;object-fit:cover;border-radius:1rem;margin-bottom:0.5rem}
+        .word-card h3{font-size:1.3rem;margin:0.5rem 0}
+        .word-card i{color:#38bdf8;font-size:1.2rem}
+        .add-section{margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,0.05);border-radius:1rem;text-align:center}
+        .add-section input, .add-section select{background:#1e2a3a;border:1px solid #38bdf8;padding:0.5rem 1rem;border-radius:2rem;color:white;margin:0.3rem}
+        button{background:#38bdf8;border:none;padding:0.5rem 1.5rem;border-radius:2rem;font-weight:bold;cursor:pointer}
+        footer{margin-top:2rem;text-align:center;color:#475569}
+        @media (max-width: 600px) { .words-grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); } .word-card img { width: 100px; height: 100px; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><i class="fas fa-words"></i> Simple Words</h1>
+    <p class="sub">Learn common words with pictures and audio. Tap any word to hear pronunciation.</p>
+
+    <div id="wordsGrid" class="words-grid"></div>
+
+    <div class="add-section">
+        <p><i class="fas fa-plus-circle"></i> Add a new word (with image URL)</p>
+        <input type="text" id="newWord" placeholder="Word (e.g., Apple)">
+        <input type="text" id="newImage" placeholder="Image URL (from the internet)">
+        <button id="addWordBtn">Add Word</button>
+        <p style="font-size:0.7rem;margin-top:0.5rem;">Words are saved in your browser. You can add as many as you like.</p>
+    </div>
+
+    <footer>⭐ New words appear here. You can also edit the file to add permanent words.</footer>
+</div>
+
+<script>
+    // Default word list
+    let words = [
+        { word: "Apple", img: "https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg" },
+        { word: "Ball", img: "https://cdn.pixabay.com/photo/2012/04/26/21/27/ball-43370_640.png" },
+        { word: "Cat", img: "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_640.jpg" },
+        { word: "Dog", img: "https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_640.jpg" },
+        { word: "Egg", img: "https://cdn.pixabay.com/photo/2015/09/17/08/31/egg-944057_640.jpg" },
+        { word: "Fish", img: "https://cdn.pixabay.com/photo/2016/02/19/11/20/fish-1210060_640.jpg" },
+        { word: "Goat", img: "https://cdn.pixabay.com/photo/2018/07/10/20/48/goat-3530045_640.jpg" },
+        { word: "Hat", img: "https://cdn.pixabay.com/photo/2017/01/19/21/06/hat-1993423_640.jpg" },
+        { word: "Igloo", img: "https://cdn.pixabay.com/photo/2016/11/29/06/20/igloo-1867924_640.jpg" },
+        { word: "Jet", img: "https://cdn.pixabay.com/photo/2014/07/31/23/40/jet-407184_640.jpg" }
+    ];
+
+    // Load from localStorage
+    const savedWords = localStorage.getItem("phonics_words");
+    if (savedWords) words = JSON.parse(savedWords);
+
+    function renderWords() {
+        const grid = document.getElementById('wordsGrid');
+        grid.innerHTML = '';
+        words.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'word-card';
+            card.onclick = () => speakText(item.word);
+            card.innerHTML = `
+                <img src="${item.img}" onerror="this.src='https://picsum.photos/120/120?grayscale'">
+                <h3>${item.word}</h3>
+                <i class="fas fa-volume-up"></i>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function speakText(text) {
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function addWord() {
+        const wordInput = document.getElementById('newWord');
+        const imgInput = document.getElementById('newImage');
+        const word = wordInput.value.trim();
+        const img = imgInput.value.trim();
+        if (!word) return;
+        words.push({ word, img: img || 'https://picsum.photos/120/120?grayscale' });
+        localStorage.setItem("phonics_words", JSON.stringify(words));
+        renderWords();
+        wordInput.value = '';
+        imgInput.value = '';
+        speakText(`Added new word: ${word}`);
+    }
+
+    document.getElementById('addWordBtn').addEventListener('click', addWord);
+    renderWords();
+</script>
+</body>
+</html>

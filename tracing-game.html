@@ -161,4 +161,85 @@
         ctx.fill();
         ctx.fillStyle = "white";
         ctx.font = "bold 18px 'Comic Neue'";
-       
+        ctx.fillText("ابدأ", startX-22, startY-10);
+        ctx.beginPath();
+        ctx.arc(endX, endY, 18, 0, 2 * Math.PI);
+        ctx.fillStyle = "#2ecc71";
+        ctx.fill();
+        ctx.fillStyle = "white";
+        ctx.font = "bold 16px 'Comic Neue'";
+        ctx.fillText("نهاية", endX-22, endY-10);
+        ctx.shadowBlur = 0;
+    }
+    
+    function startDraw(e) { drawing = true; const pos = getCanvasCoordinates(e); if (pos) { ctx.beginPath(); ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x+0.5, pos.y+0.5); ctx.stroke(); } updateLiveFeedback("جاري التتبع... استمر!", "#e67e22"); }
+    function draw(e) { if (!drawing) return; e.preventDefault(); const pos = getCanvasCoordinates(e); if (pos) { ctx.strokeStyle = "#ff8c42"; ctx.lineWidth = 22; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.setLineDash([]); ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); } }
+    function stopDraw() { drawing = false; ctx.beginPath(); updateLiveFeedback("✔️ ارفع القلم. اضغط 'تقييم التتبع' لمعرفة مدى دقتك", "#27ae60"); }
+    function getCanvasCoordinates(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        let clientX, clientY;
+        if (e.touches) { if (e.touches.length === 0) return null; clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; } 
+        else { clientX = e.clientX; clientY = e.clientY; }
+        let x = (clientX - rect.left) * scaleX; let y = (clientY - rect.top) * scaleY;
+        x = Math.min(Math.max(0, x), canvas.width); y = Math.min(Math.max(0, y), canvas.height);
+        return { x, y };
+    }
+    function evaluateTrace() {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imageData.data;
+        let drawnPixels = 0, totalArea = 0;
+        const centerX = canvas.width/2, centerY = canvas.height/2;
+        for (let y = centerY - 210; y < centerY + 210; y++) {
+            for (let x = centerX - 180; x < centerX + 180; x++) {
+                if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+                    const idx = (y * canvas.width + x) * 4;
+                    const isDrawn = (pixels[idx] > 200 && pixels[idx+1] < 160 && pixels[idx+2] < 120);
+                    if (isDrawn) drawnPixels++;
+                    totalArea++;
+                }
+            }
+        }
+        let percentage = totalArea > 0 ? (drawnPixels / totalArea) * 100 : 0;
+        percentage = Math.min(100, percentage);
+        document.getElementById('traceProgressFill').style.width = `${percentage}%`;
+        let message = "";
+        if (percentage >= 70) { message = `🎉 ممتاز! تغطية ${Math.round(percentage)}% - تتبع رائع جداً! 🎉`; document.getElementById('liveFeedback').className = "feedback-big success"; speakText(`Excellent tracing! ${Math.round(percentage)} percent accuracy. Great job!`, 0.9); }
+        else if (percentage >= 40) { message = `👍 جيد جداً! ${Math.round(percentage)}% - حاول تتبع الخط الرمادي أكثر`; document.getElementById('liveFeedback').className = "feedback-big warning"; speakText(`Good try! Follow the dotted line for better tracing.`, 0.85); }
+        else { message = `✏️ ${Math.round(percentage)}% - ابدأ من النقطة الحمراء واتبع الخط المنقط حتى النجمة الخضراء`; document.getElementById('liveFeedback').className = "feedback-big warning"; speakText(`Start at the red dot and follow the dotted line to the green star.`, 0.9); }
+        updateLiveFeedback(message, percentage >= 70 ? "#27ae60" : "#e67e22");
+        return percentage;
+    }
+    function updateLiveFeedback(msg, colorHint) { const fbDiv = document.getElementById('liveFeedback'); fbDiv.innerHTML = `<i class="fas fa-chalkboard-teacher"></i> ${msg}`; fbDiv.style.background = colorHint === "#27ae60" ? "#d5f5e3" : "#fef5e7"; }
+    function speakText(text, rate = 0.85) { if (!window.speechSynthesis) return; window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = "en-US"; utterance.rate = rate; window.speechSynthesis.speak(utterance); }
+    function clearCanvas() { drawLetterOutline(); document.getElementById('traceProgressFill').style.width = '0%'; updateLiveFeedback("🧽 تم المسح! ابدأ من النقطة الحمراء واتبع الخط المنقط", "#e67e22"); speakText("Canvas cleared. Start from the red dot and follow the dotted line.", 0.9); }
+    function showGuidance() { speakText(`Start at the red dot. Follow the dotted gray line until the green star. Try to stay on the line!`, 0.85); updateLiveFeedback("🔊 تذكر: ابدأ من الدائرة الحمراء → اتبع الخط الرمادي → انتهي عند النجمة الخضراء", "#f39c12"); }
+    function setLetter(letter) { currentLetter = letter; drawLetterOutline(); clearCanvas(); speakText(`Now tracing letter ${currentCase === 'upper' ? 'capital' : 'small'} ${letter}`, 0.9); updateLiveFeedback(`ابدأ تتبع الحرف ${letter} من النقطة الحمراء`, "#e67e22"); }
+    function setCase(caseType) { currentCase = caseType; drawLetterOutline(); clearCanvas(); speakText(`Now ${caseType === 'upper' ? 'capital' : 'small'} letters. Trace carefully!`, 0.9); }
+    function initLetterButtons() {
+        const container = document.getElementById('letterSelector');
+        const letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+        container.innerHTML = '';
+        letters.forEach(letter => {
+            const btn = document.createElement('button');
+            btn.textContent = letter;
+            btn.classList.add('letter-btn');
+            if (letter === currentLetter) btn.classList.add('active');
+            btn.addEventListener('click', () => { document.querySelectorAll('.letter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setLetter(letter); });
+            container.appendChild(btn);
+        });
+    }
+    function setupEventListeners() {
+        canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stopDraw);
+        document.getElementById('clearBtn').addEventListener('click', clearCanvas);
+        document.getElementById('speakLetterBtn').addEventListener('click', () => { speakText(`Letter ${currentLetter}. ${currentCase === 'upper' ? 'Capital' : 'Small'} ${currentLetter}. Start at red dot.`, 0.9); });
+        document.getElementById('checkTraceBtn').addEventListener('click', evaluateTrace);
+        document.getElementById('showGuideBtn').addEventListener('click', showGuidance);
+        document.querySelectorAll('.case-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.case-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setCase(btn.getAttribute('data-case')); }); });
+    }
+    resizeCanvas(); initLetterButtons(); setupEventListeners(); drawLetterOutline(); updateLiveFeedback("✨ ابدأ من الدائرة الحمراء، واتبع الخط الرمادي المنقط حتى النجمة الخضراء", "#e67e22");
+</script>
+</body>
+</html>

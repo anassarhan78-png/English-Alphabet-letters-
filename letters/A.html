@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Letter A | Phonics Nexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Andika font (handwriting) -->
+    <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -145,7 +147,7 @@
 <div class="container">
     <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
     <h1>
-        <span class="letter-badge">A a</span>
+        <span class="letter-badge">A ɑ</span>
         <span>Let's learn the letter A</span>
     </h1>
 
@@ -160,7 +162,7 @@
             </div>
         </div>
         <div class="trace-card">
-            <h3><i class="fas fa-arrow-down"></i> Small a (round, 4 lines)</h3>
+            <h3><i class="fas fa-arrow-down"></i> Small ɑ (phonics style, 4 lines)</h3>
             <canvas id="smallCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
@@ -169,7 +171,7 @@
         </div>
     </div>
 
-    <!-- كلمات تبدأ بالحرف A (صور تعمل) -->
+    <!-- كلمات تبدأ بالحرف A -->
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
@@ -204,14 +206,13 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ----- إعداد اللوحة الأولى (Capital A) مع أربعة أسطر -----
+    // ----- Canvas للحرف الكبير A (بخط Andika) -----
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
 
-        // إحداثيات الأسطر (top, middle, baseline, bottom)
         const topLine = 40;
         const midLine = 100;
         const baseline = 160;
@@ -219,7 +220,7 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر الأربعة
+            // رسم الأسطر
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -228,8 +229,8 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الكبير A (بخط واضح للتتبع)
-            ctx.font = 'bold 100px "Comic Neue", "Comic Sans MS", cursive';
+            // رسم الحرف الكبير A بخط Andika
+            ctx.font = 'bold 100px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
@@ -282,7 +283,7 @@
         return drawLinesAndLetter;
     }
 
-    // ----- إعداد اللوحة الثانية (Small a) مع أربعة أسطر وخط دائري -----
+    // ----- Canvas للحرف الصغير ɑ (IPA, Andika) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
@@ -296,7 +297,7 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر الأربعة
+            // رسم الأسطر
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -305,12 +306,13 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الصغير a بخط دائري (Comic Neue)
-            ctx.font = '90px "Comic Neue", "Comic Sans MS", "Segoe UI Emoji", cursive';
+            // رسم الحرف الصغير ɑ (IPA) بخط Andika
+            ctx.font = '100px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText('a', canvas.width/2, baseline - 5);
+            // استخدام الحرف IPA "ɑ" (U+0251)
+            ctx.fillText('ɑ', canvas.width/2, baseline - 5);
         }
         drawLinesAndLetter();
 

@@ -26,16 +26,64 @@
         .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
         .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
         .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
-        .game-area { background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
-        .game-area h2 { font-size: 1.5rem; margin-bottom: 1rem; }
-        .letter-options { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
-        .option-btn { background: #2d3748; border: 3px solid #38bdf8; color: white; font-size: 3rem; font-weight: bold; width: 100px; height: 100px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .option-btn:hover { transform: scale(1.05); background: #38bdf8; color: #0a0f1e; }
-        .game-feedback { font-size: 1.2rem; margin-top: 1rem; padding: 0.5rem; border-radius: 2rem; }
-        .game-feedback.correct { background: #2ecc71; color: white; }
-        .game-feedback.wrong { background: #e74c3c; color: white; }
+        /* لعبة التلوين */
+        .coloring-game {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .coloring-game h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .letters-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .letter-tile {
+            background: #2d3748;
+            border: 2px solid #38bdf8;
+            border-radius: 1rem;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: 'Andika', 'Comic Neue', cursive;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+        }
+        .letter-tile.correct {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            cursor: default;
+            opacity: 0.7;
+        }
+        .letter-tile.incorrect {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+        .game-controls {
+            margin-top: 1rem;
+        }
+        .score {
+            font-size: 1.2rem;
+            margin: 0.5rem;
+        }
         footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
-        @media (max-width: 700px) { .container { padding: 1rem; } .word-card img { width: 100px; height: 100px; } .option-btn { width: 70px; height: 70px; font-size: 2rem; } }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .letter-tile { width: 60px; height: 60px; font-size: 2rem; }
+        }
     </style>
 </head>
 <body>
@@ -74,16 +122,22 @@
         </div>
     </div>
 
-    <div class="game-area">
-        <h2><i class="fas fa-gamepad"></i> Find the Letter A</h2>
-        <div class="letter-options" id="gameOptions"></div>
-        <div id="gameFeedback" class="game-feedback"></div>
+    <!-- لعبة التلوين: تعرف على الحرف A -->
+    <div class="coloring-game">
+        <h2><i class="fas fa-paint-bucket"></i> Color the Letter A</h2>
+        <p>Tap on all the letters that are <strong>A (capital) or a (small)</strong> to color them!</p>
+        <div id="coloringLetters" class="letters-grid"></div>
+        <div class="game-controls">
+            <span id="coloringScore" class="score">Found: 0 / 10</span>
+            <button class="btn" id="resetColoring">Reset Game</button>
+        </div>
     </div>
 
-    <footer>✏️ Trace the letters between the lines. Tap any word to hear it!</footer>
+    <footer>✏️ Trace the letters, tap words, and color the correct letters!</footer>
 </div>
 
 <script>
+    // ---------- النطق ----------
     function speakText(text) {
         try {
             if (window.speechSynthesis) {
@@ -96,122 +150,242 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ---- Find the Letter A ----
-    const letters = ['A', 'B', 'C', 'D'];
-    function buildGame() {
-        const container = document.getElementById('gameOptions');
+    // ---------- لعبة التلوين ----------
+    // توليد 5 أحرف كبيرة و 5 أحرف صغيرة عشوائية، بعضها A والبعض الآخر أحرف أخرى
+    function generateColoringLetters() {
+        const otherCapitals = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        const otherSmalls = ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+        // نريد 5 كبيرة: نضع 2 أو 3 منها A، والباقي من الأخرى
+        let caps = [];
+        let smalls = [];
+        // عدد A كبير
+        let aCapCount = Math.floor(Math.random() * 3) + 2; // 2 أو 3
+        for (let i = 0; i < aCapCount; i++) caps.push('A');
+        while (caps.length < 5) {
+            let rand = otherCapitals[Math.floor(Math.random() * otherCapitals.length)];
+            caps.push(rand);
+        }
+        // خلط الكابيتال
+        for (let i = caps.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [caps[i], caps[j]] = [caps[j], caps[i]];
+        }
+
+        // عدد a صغير
+        let aSmallCount = Math.floor(Math.random() * 3) + 2; // 2 أو 3
+        for (let i = 0; i < aSmallCount; i++) smalls.push('a');
+        while (smalls.length < 5) {
+            let rand = otherSmalls[Math.floor(Math.random() * otherSmalls.length)];
+            smalls.push(rand);
+        }
+        // خلط الصغيرة
+        for (let i = smalls.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [smalls[i], smalls[j]] = [smalls[j], smalls[i]];
+        }
+        return [...caps, ...smalls];
+    }
+
+    let currentLetters = [];
+    let foundCount = 0;
+    let totalCorrect = 0; // سيتم حسابه بعد التوليد
+
+    function renderColoringGame() {
+        const container = document.getElementById('coloringLetters');
         container.innerHTML = '';
-        letters.forEach(letter => {
-            const btn = document.createElement('div');
-            btn.className = 'option-btn';
-            btn.textContent = letter;
-            btn.onclick = () => handleAnswer(letter);
-            container.appendChild(btn);
+        // نحسب كم حرف صحيح في القائمة
+        totalCorrect = currentLetters.filter(l => l === 'A' || l === 'a').length;
+        foundCount = 0;
+        document.getElementById('coloringScore').innerText = `Found: 0 / ${totalCorrect}`;
+        currentLetters.forEach((letter, index) => {
+            const tile = document.createElement('div');
+            tile.className = 'letter-tile';
+            tile.textContent = letter;
+            tile.dataset.index = index;
+            tile.dataset.letter = letter;
+            tile.onclick = () => handleTileClick(tile, letter);
+            container.appendChild(tile);
         });
     }
-    function handleAnswer(selected) {
-        const feedback = document.getElementById('gameFeedback');
-        if (selected === 'A') {
-            feedback.textContent = '✅ Correct! Great job! ✅';
-            feedback.className = 'game-feedback correct';
-            speakText('Correct! A is the letter A!');
-            setTimeout(() => { feedback.textContent = ''; feedback.className = 'game-feedback'; }, 2000);
+
+    function handleTileClick(tile, letter) {
+        if (tile.classList.contains('correct')) return; // already colored
+        if (letter === 'A' || letter === 'a') {
+            tile.classList.add('correct');
+            foundCount++;
+            document.getElementById('coloringScore').innerText = `Found: ${foundCount} / ${totalCorrect}`;
+            speakText('Correct!');
+            if (foundCount === totalCorrect) {
+                speakText('Excellent! You found all the letter A\'s!');
+                setTimeout(() => alert('🎉 Great job! You found all the A letters! 🎉'), 100);
+            }
         } else {
-            feedback.textContent = `❌ Not quite! The letter ${selected} is not A. Try again! ❌`;
-            feedback.className = 'game-feedback wrong';
-            speakText(`Oops! ${selected} is not A. Try again!`);
+            tile.classList.add('incorrect');
+            speakText(`Oops! ${letter} is not A.`);
+            setTimeout(() => {
+                tile.classList.remove('incorrect');
+            }, 500);
         }
     }
-    buildGame();
 
-    // ----- Capital A canvas (as before) -----
+    function resetColoringGame() {
+        currentLetters = generateColoringLetters();
+        renderColoringGame();
+        speakText('Game reset. Find all the letter A\'s!');
+    }
+
+    // تهيئة اللعبة
+    currentLetters = generateColoringLetters();
+    renderColoringGame();
+    document.getElementById('resetColoring').addEventListener('click', resetColoringGame);
+
+    // ---------- رسم الحروف في لوحتي التتبع (بالمسافات الصحيحة) ----------
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
-        const topLine=40, midLine=100, baseline=160, bottomLine=210;
-        function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
+        // تعريف الخطوط الأربعة (top, midline, baseline, bottom)
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // رسم الأسطر
             ctx.beginPath();
-            ctx.lineWidth=1.5;
-            ctx.strokeStyle='#aaa';
-            ctx.moveTo(0,topLine); ctx.lineTo(canvas.width,topLine); ctx.stroke();
-            ctx.moveTo(0,midLine); ctx.lineTo(canvas.width,midLine); ctx.stroke();
-            ctx.moveTo(0,baseline); ctx.lineTo(canvas.width,baseline); ctx.stroke();
-            ctx.moveTo(0,bottomLine); ctx.lineTo(canvas.width,bottomLine); ctx.stroke();
-            ctx.font='bold 120px "Andika", "Comic Neue", cursive';
-            ctx.fillStyle='#e9dbc9';
-            ctx.textAlign='center';
-            ctx.textBaseline='alphabetic';
-            ctx.fillText('A', canvas.width/2, baseline-5);
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // رسم الحرف الكبير A بين topLine و baseline
+            ctx.font = 'bold 120px "Andika", "Comic Neue", cursive';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('A', canvas.width/2, baseline - 5);
         }
-        draw();
-        function start(e) { drawing=true; const p=getPos(e); if(p){ ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
-        function move(e) { if(!drawing) return; e.preventDefault(); const p=getPos(e); if(p){ ctx.strokeStyle='#ff8c42'; ctx.lineWidth=16; ctx.lineCap='round'; ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
-        function stop() { drawing=false; ctx.beginPath(); }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
         function getPos(e) {
-            const rect=canvas.getBoundingClientRect();
-            const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
-            let cx,cy;
-            if(e.touches){ if(!e.touches.length) return null; cx=e.touches[0].clientX; cy=e.touches[0].clientY; }
-            else { cx=e.clientX; cy=e.clientY; }
-            let x=(cx-rect.left)*scaleX, y=(cy-rect.top)*scaleY;
-            x=Math.min(Math.max(0,x),canvas.width); y=Math.min(Math.max(0,y),canvas.height);
-            return {x,y};
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
         }
-        canvas.addEventListener('mousedown',start);
-        canvas.addEventListener('mousemove',move);
-        canvas.addEventListener('mouseup',stop);
-        canvas.addEventListener('touchstart',start);
-        canvas.addEventListener('touchmove',move);
-        canvas.addEventListener('touchend',stop);
-        return draw;
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
     }
 
-    // ----- Small a canvas (ɑ) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
-        const topLine=40, midLine=100, baseline=160, bottomLine=210;
-        function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
-            ctx.lineWidth=1.5;
-            ctx.strokeStyle='#aaa';
-            ctx.moveTo(0,topLine); ctx.lineTo(canvas.width,topLine); ctx.stroke();
-            ctx.moveTo(0,midLine); ctx.lineTo(canvas.width,midLine); ctx.stroke();
-            ctx.moveTo(0,baseline); ctx.lineTo(canvas.width,baseline); ctx.stroke();
-            ctx.moveTo(0,bottomLine); ctx.lineTo(canvas.width,bottomLine); ctx.stroke();
-            ctx.font='90px "Andika", "Comic Neue", cursive';
-            ctx.fillStyle='#e9dbc9';
-            ctx.textAlign='center';
-            ctx.textBaseline='alphabetic';
-            ctx.fillText('ɑ', canvas.width/2, baseline-5);
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // رسم الحرف الصغير ɑ بين midline و baseline
+            ctx.font = '90px "Andika", "Comic Neue", cursive';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('ɑ', canvas.width/2, baseline - 5);
         }
-        draw();
-        function start(e) { drawing=true; const p=getPos(e); if(p){ ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
-        function move(e) { if(!drawing) return; e.preventDefault(); const p=getPos(e); if(p){ ctx.strokeStyle='#ff8c42'; ctx.lineWidth=14; ctx.lineCap='round'; ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y); } }
-        function stop() { drawing=false; ctx.beginPath(); }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
         function getPos(e) {
-            const rect=canvas.getBoundingClientRect();
-            const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
-            let cx,cy;
-            if(e.touches){ if(!e.touches.length) return null; cx=e.touches[0].clientX; cy=e.touches[0].clientY; }
-            else { cx=e.clientX; cy=e.clientY; }
-            let x=(cx-rect.left)*scaleX, y=(cy-rect.top)*scaleY;
-            x=Math.min(Math.max(0,x),canvas.width); y=Math.min(Math.max(0,y),canvas.height);
-            return {x,y};
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
         }
-        canvas.addEventListener('mousedown',start);
-        canvas.addEventListener('mousemove',move);
-        canvas.addEventListener('mouseup',stop);
-        canvas.addEventListener('touchstart',start);
-        canvas.addEventListener('touchmove',move);
-        canvas.addEventListener('touchend',stop);
-        return draw;
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
     }
 
     const redrawCapital = setupCapitalCanvas();

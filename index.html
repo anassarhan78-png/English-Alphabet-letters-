@@ -140,32 +140,6 @@
             transform: translateX(5px);
         }
 
-        /* Special Games inner buttons */
-        .special-game-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 179, 71, 0.2);
-            border-radius: 3rem;
-            padding: 0.6rem 1rem;
-            margin-bottom: 0.6rem;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .special-game-item:hover {
-            background: rgba(255, 179, 71, 0.4);
-            transform: translateX(5px);
-        }
-        .special-game-item i:first-child {
-            margin-right: 0.8rem;
-            color: #FFB347;
-        }
-        .special-game-item span {
-            flex: 1;
-            text-align: left;
-            font-weight: 600;
-        }
-
         .stats-row {
             display: flex;
             justify-content: center;
@@ -231,7 +205,7 @@
         <div class="card" onclick="window.location.href='letter-games.html'">
             <div class="card-icon"><i class="fas fa-gamepad"></i></div>
             <h2>Letter Games</h2>
-            <p>40+ interactive mini‑games from our library to reinforce phonics skills.</p>
+            <p>All our phonics games in one place. 44+ interactive mini‑games to reinforce skills.</p>
             <div class="card-footer"><span>Explore games →</span><i class="fas fa-arrow-right"></i></div>
         </div>
 
@@ -248,38 +222,11 @@
             <p>Learn common words with pictures and audio. New words added regularly.</p>
             <div class="card-footer"><span>Explore words →</span><i class="fas fa-arrow-right"></i></div>
         </div>
-
-        <!-- Special Games Card with direct links to custom games -->
-        <div class="card" style="cursor: default;">
-            <div class="card-icon"><i class="fas fa-star"></i></div>
-            <h2>🎲 Special Games</h2>
-            <p>Try our exclusive interactive games!</p>
-            <div style="margin-top: 1rem;">
-                <div class="special-game-item" onclick="window.location.href='games/spinning-wheel.html'">
-                    <i class="fas fa-cog"></i>
-                    <span>Spinning Wheel</span>
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-                <div class="special-game-item" onclick="window.location.href='games/match-picture-letter.html'">
-                    <i class="fas fa-puzzle-piece"></i>
-                    <span>Match Picture to Letter</span>
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-                <div class="special-game-item" onclick="window.location.href='games/computer-teacher-tic-tac-toe.html'">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <span>Computer Teacher – Letter Tic‑Tac‑Toe</span>
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-            </div>
-            <div class="card-footer" style="margin-top: 1rem;">
-                <span>3 exclusive games →</span>
-            </div>
-        </div>
     </div>
 
     <div class="stats-row">
         <div class="stat-item"><div class="stat-number">26</div><div class="stat-label">Letters</div></div>
-        <div class="stat-item"><div class="stat-number">43+</div><div class="stat-label">Games</div></div>
+        <div class="stat-item"><div class="stat-number">44+</div><div class="stat-label">Games</div></div>
         <div class="stat-item"><div class="stat-number">150+</div><div class="stat-label">Words & Images</div></div>
     </div>
 

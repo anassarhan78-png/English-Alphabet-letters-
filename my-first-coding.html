@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>My First Coding YAY! | Pure Phonetic Cumulative (A-Z)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <title>My First Coding YAY! | Teacher Controlled Blending</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -53,24 +53,38 @@
             font-size: 0.8rem;
             margin-top: 0.5rem;
         }
+        .teacher-mode {
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .teacher-mode .btn {
+            background: #f39c12;
+        }
+        .teacher-mode .btn.active {
+            background: #2ecc71;
+        }
 
+        /* letters row */
         .unlocked-letters {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.8rem;
             margin: 1.5rem 0;
         }
         .letter-pill {
             background: #2c3e50;
             border-radius: 3rem;
-            padding: 0.5rem 1.2rem;
-            font-size: 1.8rem;
+            padding: 0.5rem 1rem;
+            font-size: 1.6rem;
             font-weight: bold;
             font-family: monospace;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             transition: 0.2s;
-            cursor: default;
+            cursor: pointer;
         }
         .letter-pill.unlocked {
             background: #2ecc71;
@@ -79,31 +93,16 @@
         .letter-pill.locked {
             background: #4a5568;
             filter: grayscale(0.3);
-            opacity: 0.6;
-        }
-        .letter-pill.next {
-            background: #f39c12;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.7; }
+            opacity: 0.7;
         }
 
-        .split {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        .blends-section, .trace-section {
-            flex: 1;
+        .blends-section {
             background: rgba(0,0,0,0.3);
             border-radius: 1.5rem;
             padding: 1.5rem;
+            margin-bottom: 2rem;
         }
-        .blends-section h2, .trace-section h2 {
+        .blends-section h2 {
             font-size: 1.4rem;
             margin-bottom: 1rem;
             display: flex;
@@ -135,45 +134,10 @@
             transform: scale(0.96);
         }
 
-        canvas {
-            background: white;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            cursor: crosshair;
-            touch-action: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .trace-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .btn {
-            background: #38bdf8;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-secondary {
-            background: #475569;
-        }
-        .btn-secondary:hover {
-            background: #5b6b8c;
-        }
-
         .quiz-area {
             background: rgba(0,0,0,0.4);
             border-radius: 1.5rem;
             padding: 1.5rem;
-            margin-top: 1.5rem;
             text-align: center;
         }
         .quiz-question {
@@ -206,7 +170,6 @@
         }
         .feedback.correct { color: #2ecc71; }
         .feedback.wrong { color: #e74c3c; }
-
         .progress {
             margin-top: 1rem;
             text-align: center;
@@ -225,85 +188,109 @@
         @media (max-width: 700px) {
             .container { padding: 1rem; }
             .blend-card { font-size: 1rem; padding: 0.4rem 0.8rem; }
+            .letter-pill { font-size: 1.2rem; padding: 0.3rem 0.7rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="hero">
-        <h1><i class="fas fa-code"></i> My First Coding YAY! <i class="fas fa-laugh-beam"></i></h1>
-        <div class="badge">🔊 Pure phonics · only blend what you know · unlock letters step by step (A → Z)</div>
+        <h1><i class="fas fa-code"></i> My First Coding YAY! <i class="fas fa-chalkboard-teacher"></i></h1>
+        <div class="badge">👩‍🏫 Teacher mode: Click any letter to unlock/lock it. Only unlocked letters appear in blends.</div>
     </div>
 
-    <!-- unlocked letters row -->
+    <div class="teacher-mode">
+        <button id="resetAllBtn" class="btn reset-btn"><i class="fas fa-undo-alt"></i> Reset (lock all except A)</button>
+        <button id="unlockAllBtn" class="btn"><i class="fas fa-unlock-alt"></i> Unlock All Letters</button>
+    </div>
+
+    <!-- letters row (clickable) -->
     <div id="lettersRow" class="unlocked-letters"></div>
 
-    <div class="split">
-        <!-- blending words section -->
-        <div class="blends-section">
-            <h2><i class="fas fa-magic"></i> Words you can read</h2>
-            <div id="blendsGrid" class="blends-grid"></div>
-        </div>
-
-        <!-- tracing section for the next letter -->
-        <div class="trace-section">
-            <h2><i class="fas fa-pencil-alt"></i> Trace the next letter</h2>
-            <canvas id="traceCanvas" width="300" height="200"></canvas>
-            <div class="trace-buttons">
-                <button id="clearCanvasBtn" class="btn btn-secondary"><i class="fas fa-eraser"></i> Clear</button>
-                <button id="speakLetterBtn" class="btn"><i class="fas fa-volume-up"></i> Sound</button>
-            </div>
-            <p id="traceHint" style="font-size:0.8rem; margin-top:0.5rem; text-align:center;"></p>
-        </div>
+    <!-- blending section -->
+    <div class="blends-section">
+        <h2><i class="fas fa-magic"></i> Words you can read (using unlocked letters)</h2>
+        <div id="blendsGrid" class="blends-grid"></div>
     </div>
 
-    <!-- quiz section -->
+    <!-- optional quiz for practice -->
     <div class="quiz-area">
-        <h2><i class="fas fa-headphones"></i> Listening challenge</h2>
-        <div class="quiz-question" id="quizQuestion">🎧 Press the play button and choose the right blend</div>
+        <h2><i class="fas fa-headphones"></i> Listening Practice (optional)</h2>
+        <div class="quiz-question" id="quizQuestion">🎧 Click "Listen" and choose the right blend</div>
         <div class="quiz-options" id="quizOptions"></div>
         <div id="quizFeedback" class="feedback"></div>
         <div class="progress" id="progressMessage"></div>
-        <button id="resetAllBtn" class="btn reset-btn"><i class="fas fa-undo-alt"></i> Reset progress</button>
     </div>
 
-    <footer>✨ Only letters you’ve unlocked appear in blends. Answer correctly to unlock new letters!</footer>
+    <footer>✨ Teacher: click letters to unlock. Blends are generated from unlocked letters only.</footer>
 </div>
 
 <script>
-    // ---------- CUMULATIVE PHONICS (A TO Z) ----------
+    // all letters A-Z
     const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
     let unlockedLetters = [];
 
-    // load / save progress
+    // load/save
     function loadProgress() {
-        const saved = localStorage.getItem("phonics_cumulative_unlocked");
+        const saved = localStorage.getItem("teacher_unlocked_letters");
         if (saved) {
             unlockedLetters = JSON.parse(saved);
         } else {
-            unlockedLetters = ["A"];
+            unlockedLetters = ["A"]; // start with A
         }
         if (!unlockedLetters.includes("A")) unlockedLetters.push("A");
         saveProgress();
     }
     function saveProgress() {
-        localStorage.setItem("phonics_cumulative_unlocked", JSON.stringify(unlockedLetters));
+        localStorage.setItem("teacher_unlocked_letters", JSON.stringify(unlockedLetters));
     }
 
-    // helpers
-    function isLetterUnlocked(l) { return unlockedLetters.includes(l); }
-    function getNextLockable() {
-        for (let l of allLetters) {
-            if (!unlockedLetters.includes(l)) return l;
+    // toggle letter unlock (teacher clicks)
+    function toggleLetter(letter) {
+        if (unlockedLetters.includes(letter)) {
+            // remove if it's not A (A must stay unlocked to have any blends)
+            if (letter !== "A") {
+                unlockedLetters = unlockedLetters.filter(l => l !== letter);
+            } else {
+                // cannot lock A
+                alert("Letter A must remain unlocked to start blending.");
+                return;
+            }
+        } else {
+            unlockedLetters.push(letter);
         }
-        return null; // all unlocked
+        saveProgress();
+        renderLettersRow();
+        renderBlends();
+        generateQuiz(); // refresh quiz
+        updateProgressMessage();
     }
 
-    // generate all possible blends (strings of length 1, 2, 3) using only unlocked letters
-    // to keep it manageable, we generate up to length 2 by default, and optionally length 3 for variety
-    // we'll generate lengths 1-2 for better performance; you can increase to 3 if desired.
+    // reset: only A unlocked
+    function resetProgress() {
+        unlockedLetters = ["A"];
+        saveProgress();
+        renderLettersRow();
+        renderBlends();
+        generateQuiz();
+        updateProgressMessage();
+        speakText("Progress reset. Only letter A is unlocked.");
+    }
+
+    // unlock all letters
+    function unlockAll() {
+        unlockedLetters = [...allLetters];
+        saveProgress();
+        renderLettersRow();
+        renderBlends();
+        generateQuiz();
+        updateProgressMessage();
+        speakText("All letters unlocked!");
+    }
+
+    // generate blends (1-3 letter combos) using unlocked letters
     function getAllowedBlends() {
-        const letters = unlockedLetters.map(l => l.toLowerCase()); // use lowercase for blending
+        const letters = unlockedLetters.map(l => l.toLowerCase());
         if (letters.length === 0) return [];
         let blends = new Set();
         // single letters
@@ -314,7 +301,7 @@
                 blends.add(a + b);
             }
         }
-        // optional three-letter combos (adds many but still okay)
+        // three-letter combos
         for (let a of letters) {
             for (let b of letters) {
                 for (let c of letters) {
@@ -322,17 +309,14 @@
                 }
             }
         }
-        // sort by length then alphabetically
         let result = Array.from(blends);
         result.sort((a,b) => a.length - b.length || a.localeCompare(b));
         return result;
     }
 
-    // render unlocked letters row
     function renderLettersRow() {
         const container = document.getElementById('lettersRow');
         container.innerHTML = '';
-        const nextLetter = getNextLockable();
         allLetters.forEach(letter => {
             const pill = document.createElement('div');
             pill.className = 'letter-pill';
@@ -341,18 +325,17 @@
                 pill.classList.add('unlocked');
             } else {
                 pill.classList.add('locked');
-                if (letter === nextLetter) pill.classList.add('next');
             }
+            pill.addEventListener('click', () => toggleLetter(letter));
             container.appendChild(pill);
         });
     }
 
-    // render blending grid
     function renderBlends() {
         const container = document.getElementById('blendsGrid');
         const blends = getAllowedBlends();
         container.innerHTML = '';
-        // show only first 100 blends to avoid overwhelming the UI
+        // show first 100 blends for performance
         const displayBlends = blends.slice(0, 100);
         displayBlends.forEach(blend => {
             const card = document.createElement('div');
@@ -370,105 +353,22 @@
             more.addEventListener('click', () => speakText('Many more blends available!'));
             container.appendChild(more);
         }
-        if (blends.length === 0) container.innerHTML = '<p style="text-align:center">✨ Unlock more letters to see blends ✨</p>';
+        if (blends.length === 0) container.innerHTML = '<p style="text-align:center">✨ Unlock at least one letter to see blends ✨</p>';
     }
 
-    // tracing canvas: show the next letter to be unlocked (or latest unlocked if all done)
-    let currentTraceLetter = 'A';
-    let ctx, canvas;
-    let drawing = false;
-    let redrawTrace = null;
-
-    function setupTracingCanvas() {
-        canvas = document.getElementById('traceCanvas');
-        ctx = canvas.getContext('2d');
-        canvas.width = 300;
-        canvas.height = 200;
-
-        function drawLetterOutline() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = `bold 140px "Arial", "Inter", sans-serif`;
-            ctx.fillStyle = '#e9dbc9';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(currentTraceLetter, canvas.width/2, canvas.height/2);
-        }
-        drawLetterOutline();
-
-        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
-        function draw(e) {
-            if (!drawing) return;
-            e.preventDefault();
-            const p = getPos(e);
-            if (p) {
-                ctx.strokeStyle = '#ff8c42';
-                ctx.lineWidth = 12;
-                ctx.lineCap = 'round';
-                ctx.lineTo(p.x, p.y);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-            }
-        }
-        function stopDraw() { drawing = false; ctx.beginPath(); }
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let cx, cy;
-            if (e.touches) {
-                if (!e.touches.length) return null;
-                cx = e.touches[0].clientX;
-                cy = e.touches[0].clientY;
-            } else {
-                cx = e.clientX;
-                cy = e.clientY;
-            }
-            let x = (cx - rect.left) * scaleX;
-            let y = (cy - rect.top) * scaleY;
-            x = Math.min(Math.max(0, x), canvas.width);
-            y = Math.min(Math.max(0, y), canvas.height);
-            return { x, y };
-        }
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
-        return drawLetterOutline;
-    }
-
-    function updateTraceLetter() {
-        const next = getNextLockable();
-        if (next) {
-            currentTraceLetter = next;
-            document.getElementById('traceHint').innerHTML = `✏️ Trace the letter ${next} to practice.`;
-        } else {
-            currentTraceLetter = "🎉";
-            document.getElementById('traceHint').innerHTML = `✨ You've unlocked all letters! ✨`;
-        }
-        if (redrawTrace) redrawTrace();
-        else redrawTrace = setupTracingCanvas();
-        redrawTrace();
-    }
-
-    // ----- quiz & unlocking mechanism -----
+    // quiz logic (practice only, doesn't unlock anything)
     let currentQuizBlend = "";
     let currentOptions = [];
-    let correctAnswersNeeded = 3;  // number of correct answers to unlock next letter
-    let correctCount = 0;
 
     function generateQuiz() {
         const blends = getAllowedBlends();
         if (blends.length === 0) {
-            document.getElementById('quizQuestion').innerHTML = "🎉 Unlock more letters first!";
+            document.getElementById('quizQuestion').innerHTML = "🎉 Unlock letters to start the quiz!";
             document.getElementById('quizOptions').innerHTML = "";
             return;
         }
         const correct = blends[Math.floor(Math.random() * blends.length)];
         currentQuizBlend = correct;
-        // create 3 other random distinct options
         let others = blends.filter(b => b !== correct);
         others.sort(() => 0.5 - Math.random());
         let options = [correct, ...others.slice(0, 3)];
@@ -477,7 +377,6 @@
             if (fallback) options.push(fallback);
             else break;
         }
-        // shuffle options
         for (let i = options.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [options[i], options[j]] = [options[j], options[i]];
@@ -490,79 +389,39 @@
             const btn = document.createElement('div');
             btn.className = 'quiz-opt';
             btn.textContent = opt;
-            btn.addEventListener('click', () => handleAnswer(opt, correct));
+            btn.addEventListener('click', () => handleQuizAnswer(opt, correct));
             container.appendChild(btn);
         });
-        // add "listen again" button
         const listenBtn = document.createElement('div');
         listenBtn.className = 'quiz-opt';
         listenBtn.innerHTML = '<i class="fas fa-volume-up"></i> Listen again';
         listenBtn.addEventListener('click', () => speakText(currentQuizBlend));
         container.appendChild(listenBtn);
-
-        document.getElementById('quizQuestion').innerHTML = `🎧 Which word do you hear?`;
+        document.getElementById('quizQuestion').innerHTML = `🎧 Which blend do you hear?`;
         speakText(currentQuizBlend);
     }
 
-    function handleAnswer(selected, correct) {
+    function handleQuizAnswer(selected, correct) {
         const feedbackDiv = document.getElementById('quizFeedback');
         if (selected === correct) {
-            feedbackDiv.innerHTML = '✅ Correct! ✅';
+            feedbackDiv.innerHTML = '✅ Correct! Great listening! ✅';
             feedbackDiv.className = 'feedback correct';
             speakText('Correct!');
-            correctCount++;
-            updateProgressMessage();
-
-            const next = getNextLockable();
-            if (next && correctCount >= correctAnswersNeeded) {
-                // unlock next letter
-                unlockedLetters.push(next);
-                saveProgress();
-                correctCount = 0;
-                // refresh everything
-                renderLettersRow();
-                renderBlends();
-                updateTraceLetter();
-                updateProgressMessage();
-                generateQuiz();
-                speakText(`Congratulations! You unlocked letter ${next}!`);
-                feedbackDiv.innerHTML = `🎉 New letter ${next} unlocked! 🎉`;
-                setTimeout(() => feedbackDiv.innerHTML = '', 2000);
-            } else {
-                setTimeout(() => generateQuiz(), 800);
-            }
         } else {
-            feedbackDiv.innerHTML = `❌ Not quite. The right word was ${correct}. Try again! ❌`;
+            feedbackDiv.innerHTML = `❌ Not quite. The correct blend was ${correct}. Try again! ❌`;
             feedbackDiv.className = 'feedback wrong';
-            speakText(`Try again. The correct blend is ${correct}`);
-            setTimeout(() => {
-                generateQuiz();
-                feedbackDiv.innerHTML = '';
-            }, 1500);
+            speakText(`The correct blend is ${correct}`);
         }
+        // automatically generate new quiz after a short delay
+        setTimeout(() => {
+            generateQuiz();
+            feedbackDiv.innerHTML = '';
+        }, 1500);
     }
 
     function updateProgressMessage() {
-        const next = getNextLockable();
-        if (next) {
-            document.getElementById('progressMessage').innerHTML = `🔓 Answer ${correctCount}/${correctAnswersNeeded} correctly to unlock letter ${next}.`;
-        } else {
-            document.getElementById('progressMessage').innerHTML = `🏆 You mastered all letters A-Z! 🏆`;
-        }
-    }
-
-    function resetProgress() {
-        localStorage.removeItem("phonics_cumulative_unlocked");
-        unlockedLetters = ["A"];
-        saveProgress();
-        correctCount = 0;
-        renderLettersRow();
-        renderBlends();
-        updateTraceLetter();
-        generateQuiz();
-        updateProgressMessage();
-        speakText("Progress reset. Start from letter A.");
-        document.getElementById('quizFeedback').innerHTML = '';
+        const count = unlockedLetters.length;
+        document.getElementById('progressMessage').innerHTML = `🔓 Unlocked letters: ${count} / 26. Click any letter to add or remove.`;
     }
 
     function speakText(text) {
@@ -578,22 +437,12 @@
     loadProgress();
     renderLettersRow();
     renderBlends();
-    updateTraceLetter();
     generateQuiz();
     updateProgressMessage();
 
-    // event listeners
-    document.getElementById('clearCanvasBtn').addEventListener('click', () => {
-        if (redrawTrace) redrawTrace();
-    });
-    document.getElementById('speakLetterBtn').addEventListener('click', () => {
-        if (currentTraceLetter && currentTraceLetter !== "🎉") {
-            speakText(`Letter ${currentTraceLetter}`);
-        } else {
-            speakText("You've unlocked all letters! Great job!");
-        }
-    });
+    // button events
     document.getElementById('resetAllBtn').addEventListener('click', resetProgress);
+    document.getElementById('unlockAllBtn').addEventListener('click', unlockAll);
 </script>
 </body>
 </html>

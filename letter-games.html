@@ -81,29 +81,29 @@
     <footer>✨ New games added regularly. Have fun learning!</footer>
 </div>
 
-<script src="games/games-library.js"></script>
 <script>
+    // قائمة الألعاب (مضمنة هنا لضمان العمل)
+    const gamesList = [
+        { id: "spinning-wheel", name: "Spinning Wheel", description: "Spin the wheel and match the word to the correct picture!", icon: "fa-cog", difficulty: "easy" },
+        { id: "match-picture-letter", name: "Match Picture to Letter", description: "Match each picture with the correct letter (A-D).", icon: "fa-puzzle-piece", difficulty: "easy" },
+        { id: "computer-teacher-tic-tac-toe", name: "Computer Teacher – Letter Tic‑Tac‑Toe", description: "Listen to the letter and click the correct cell. Complete a line to win!", icon: "fa-chalkboard-teacher", difficulty: "medium" },
+        { id: "match-to-letter-f", name: "Match to Letter F", description: "Connect pictures that start with F to the letter F.", icon: "fa-link", difficulty: "easy" },
+        { id: "my-game", name: "Listen & Click", description: "Listen to the letter and click the correct button!", icon: "fa-ear-listen", difficulty: "easy" },
+        { id: "magnetic-letters", name: "Magnetic Letters", description: "Listen to the teacher, pick the correct magnetic letter, and place it on the fridge!", icon: "fa-magnet", difficulty: "easy" },
+        { id: "tracing-game", name: "Trace & Learn", description: "Practice writing letters on an interactive board with guided tracing.", icon: "fa-pencil-ruler", difficulty: "easy" }
+    ];
+
+    // أضف هنا أي ألعاب أخرى حسب الملفات الموجودة في مجلد games
+
     function loadGames() {
         const grid = document.getElementById('gamesGrid');
         if (!grid) return;
 
-        if (typeof gamesLibrary === 'undefined') {
-            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">⚠️ Games library not loaded. Please ensure games/games-library.js exists.</p>';
-            return;
-        }
-
-        const games = Object.entries(gamesLibrary);
-        if (games.length === 0) {
-            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">✨ No games found yet. Check back soon!</p>';
-            return;
-        }
-
-        games.sort((a, b) => a[1].name.localeCompare(b[1].name));
-
-        games.forEach(([id, game]) => {
+        grid.innerHTML = '';
+        gamesList.forEach(game => {
             const card = document.createElement('div');
             card.className = 'game-card';
-            card.onclick = () => window.location.href = `games/${id}.html`;
+            card.onclick = () => window.location.href = `games/${game.id}.html`;
 
             let difficultyClass = '';
             if (game.difficulty === 'easy') difficultyClass = 'easy';
@@ -114,7 +114,7 @@
                 <div class="game-icon"><i class="fas ${game.icon}"></i></div>
                 <h3>${game.name}</h3>
                 <p>${game.description}</p>
-                <div class="game-difficulty ${difficultyClass}">⭐ ${game.difficulty ? game.difficulty.toUpperCase() : 'EASY'}</div>
+                <div class="game-difficulty ${difficultyClass}">⭐ ${game.difficulty.toUpperCase()}</div>
             `;
             grid.appendChild(card);
         });

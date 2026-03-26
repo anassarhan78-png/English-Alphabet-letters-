@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>My First Coding YAY | Phonics Blending Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>My First Coding YAY! | Pure Phonetic Cumulative (A-Z)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -14,570 +14,586 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1e3c2c 0%, #2a5a3a 100%);
-            min-height: 100vh;
-            font-family: 'Comic Neue', 'Inter', sans-serif;
-            padding: 20px;
+            background: linear-gradient(145deg, #1a2a3a, #0f172a);
+            font-family: 'Inter', sans-serif;
+            padding: 2rem;
+            color: #f1f5f9;
         }
 
-        .coding-container {
+        .container {
             max-width: 1300px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 50px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-            animation: slideUp 0.5s ease;
+            background: rgba(20, 30, 50, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            border: 1px solid rgba(56,189,248,0.3);
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .coding-header {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            padding: 25px 30px;
+        .hero {
             text-align: center;
-            color: white;
+            margin-bottom: 2rem;
         }
-
-        .coding-header h1 {
+        .hero h1 {
             font-size: 2.5rem;
-            font-weight: 800;
-            display: flex;
+            background: linear-gradient(135deg, #a5f3fc, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 0.5rem;
         }
-
-        .coding-header h1 i {
-            background: white;
-            color: #e67e22;
-            padding: 12px;
-            border-radius: 50%;
-            font-size: 1.8rem;
-        }
-
         .badge {
-            background: #2c3e50;
+            background: #2d3748;
             display: inline-block;
-            padding: 8px 20px;
-            border-radius: 50px;
-            margin-top: 12px;
-            font-size: 0.9rem;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
         }
 
-        .letter-progress {
-            background: #fef5e7;
-            padding: 15px 25px;
-            border-bottom: 3px solid #f39c12;
+        .unlocked-letters {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 12px;
+            gap: 1rem;
+            margin: 1.5rem 0;
         }
-
-        .letter-progress-btn {
-            background: #ecf0f1;
-            border: none;
-            width: 65px;
-            padding: 12px 0;
+        .letter-pill {
+            background: #2c3e50;
+            border-radius: 3rem;
+            padding: 0.5rem 1.2rem;
             font-size: 1.8rem;
             font-weight: bold;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.2s;
             font-family: monospace;
-            color: #2c3e50;
-            box-shadow: 0 3px 0 #bdc3c7;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: 0.2s;
+            cursor: default;
         }
-
-        .letter-progress-btn.active {
-            background: #f39c12;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 0 #e67e22;
-        }
-
-        .letter-progress-btn.locked {
-            opacity: 0.5;
-            cursor: not-allowed;
-            filter: grayscale(0.2);
-        }
-
-        .letter-progress-btn.unlocked {
+        .letter-pill.unlocked {
             background: #2ecc71;
-            color: white;
-            box-shadow: 0 3px 0 #27ae60;
+            box-shadow: 0 0 10px #2ecc71aa;
+        }
+        .letter-pill.locked {
+            background: #4a5568;
+            filter: grayscale(0.3);
+            opacity: 0.6;
+        }
+        .letter-pill.next {
+            background: #f39c12;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
         }
 
-        .blending-studio {
-            padding: 30px;
+        .split {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
         }
-
-        .studio-title {
-            text-align: center;
-            margin-bottom: 25px;
+        .blends-section, .trace-section {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
         }
-
-        .studio-title h2 {
-            font-size: 1.8rem;
-            color: #2c3e50;
+        .blends-section h2, .trace-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-
-        .studio-title p {
-            color: #7f8c8d;
-            font-size: 1rem;
-        }
-
         .blends-grid {
             display: flex;
             flex-wrap: wrap;
+            gap: 0.8rem;
             justify-content: center;
-            gap: 20px;
-            margin: 30px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 0.5rem;
         }
-
         .blend-card {
-            background: linear-gradient(145deg, #ffffff, #f9f9f9);
-            border-radius: 35px;
-            padding: 20px 28px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            border: 3px solid #f39c12;
-            min-width: 120px;
-        }
-
-        .blend-card:hover {
-            transform: scale(1.05);
-            background: #fff8e7;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-        .blend-text {
-            font-size: 2.2rem;
-            font-weight: 800;
-            font-family: monospace;
-            letter-spacing: 2px;
-            color: #e67e22;
-        }
-
-        .speak-icon {
-            margin-top: 10px;
-            color: #3498db;
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 3rem;
+            padding: 0.6rem 1.2rem;
             font-size: 1.3rem;
+            font-weight: bold;
+            font-family: monospace;
+            cursor: pointer;
+            transition: 0.1s;
+            color: #e2e8f0;
+        }
+        .blend-card:active {
+            transform: scale(0.96);
         }
 
-        .quiz-section {
-            background: #fef2e0;
-            border-radius: 40px;
-            padding: 25px;
-            margin-top: 30px;
+        canvas {
+            background: white;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            cursor: crosshair;
+            touch-action: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .trace-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn {
+            background: #38bdf8;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-secondary {
+            background: #475569;
+        }
+        .btn-secondary:hover {
+            background: #5b6b8c;
+        }
+
+        .quiz-area {
+            background: rgba(0,0,0,0.4);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
             text-align: center;
         }
-
         .quiz-question {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
         }
-
         .quiz-options {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
+            gap: 1rem;
+            margin: 1rem 0;
         }
-
         .quiz-opt {
-            background: white;
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-size: 1.3rem;
+            background: #2d3748;
+            border: 2px solid #38bdf8;
+            border-radius: 2rem;
+            padding: 0.6rem 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            font-family: monospace;
             cursor: pointer;
-            transition: 0.2s;
-            border: 2px solid #f39c12;
-            color: #2c3e50;
+            transition: 0.1s;
         }
-
-        .quiz-opt:hover {
-            background: #f39c12;
-            color: white;
-            transform: scale(1.02);
+        .quiz-opt:active {
+            transform: scale(0.96);
         }
-
         .feedback {
-            font-size: 1.2rem;
+            margin-top: 0.5rem;
             font-weight: bold;
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 50px;
         }
+        .feedback.correct { color: #2ecc71; }
+        .feedback.wrong { color: #e74c3c; }
 
-        .feedback.correct {
-            background: #d5f5e3;
-            color: #27ae60;
-        }
-
-        .feedback.wrong {
-            background: #fadbd7;
-            color: #e74c3c;
-        }
-
-        .progress-tracker {
-            background: #ecf0f1;
-            border-radius: 40px;
-            padding: 20px;
-            margin-top: 30px;
+        .progress {
+            margin-top: 1rem;
             text-align: center;
+            font-size: 0.9rem;
         }
-
-        .progress-tracker h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .badges-earned {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-
-        .badge-item {
-            background: #f39c12;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-weight: bold;
-        }
-
         .reset-btn {
+            margin-top: 1rem;
             background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 40px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.2s;
         }
-
-        .reset-btn:hover {
-            background: #c0392b;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin: 20px;
-            background: #2c3e50;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .back-link:hover {
-            background: #3498db;
-            transform: translateX(-5px);
-        }
-
         footer {
+            margin-top: 2rem;
             text-align: center;
-            padding: 20px;
-            background: #2c3e50;
-            color: white;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            opacity: 0.7;
         }
-
-        @media (max-width: 600px) {
-            .blend-text { font-size: 1.5rem; }
-            .blend-card { padding: 12px 18px; min-width: 90px; }
-            .quiz-opt { font-size: 1rem; padding: 8px 18px; }
-            .letter-progress-btn { width: 50px; font-size: 1.4rem; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .blend-card { font-size: 1rem; padding: 0.4rem 0.8rem; }
         }
     </style>
 </head>
 <body>
-<div class="coding-container">
-    <div class="coding-header">
-        <h1>
-            <i class="fas fa-code"></i>
-            My First Coding YAY!
-            <i class="fas fa-laugh-beam"></i>
-        </h1>
-        <div class="badge">
-            <i class="fas fa-brain"></i> Cumulative Phonics · Blend only what you know!
+<div class="container">
+    <div class="hero">
+        <h1><i class="fas fa-code"></i> My First Coding YAY! <i class="fas fa-laugh-beam"></i></h1>
+        <div class="badge">🔊 Pure phonics · only blend what you know · unlock letters step by step (A → Z)</div>
+    </div>
+
+    <!-- unlocked letters row -->
+    <div id="lettersRow" class="unlocked-letters"></div>
+
+    <div class="split">
+        <!-- blending words section -->
+        <div class="blends-section">
+            <h2><i class="fas fa-magic"></i> Words you can read</h2>
+            <div id="blendsGrid" class="blends-grid"></div>
+        </div>
+
+        <!-- tracing section for the next letter -->
+        <div class="trace-section">
+            <h2><i class="fas fa-pencil-alt"></i> Trace the next letter</h2>
+            <canvas id="traceCanvas" width="300" height="200"></canvas>
+            <div class="trace-buttons">
+                <button id="clearCanvasBtn" class="btn btn-secondary"><i class="fas fa-eraser"></i> Clear</button>
+                <button id="speakLetterBtn" class="btn"><i class="fas fa-volume-up"></i> Sound</button>
+            </div>
+            <p id="traceHint" style="font-size:0.8rem; margin-top:0.5rem; text-align:center;"></p>
         </div>
     </div>
 
-    <div class="letter-progress" id="letterProgress"></div>
-
-    <div class="blending-studio">
-        <div class="studio-title">
-            <h2><i class="fas fa-magic"></i> Blending Studio</h2>
-            <p>اضغط على أي مقطع لسماعه | اختر الإجابة الصحيحة لتفتح حروفاً جديدة!</p>
-        </div>
-
-        <div id="blendsContainer" class="blends-grid"></div>
-
-        <div class="quiz-section" id="quizSection">
-            <div class="quiz-question" id="quizQuestion">🎧 استمع واختر المقطع الصحيح</div>
-            <div class="quiz-options" id="quizOptions"></div>
-            <div class="feedback" id="feedbackMessage"></div>
-        </div>
-
-        <div class="progress-tracker">
-            <h3><i class="fas fa-trophy"></i> Your Phonics Journey</h3>
-            <div id="badgesContainer" class="badges-earned"></div>
-            <button class="reset-btn" id="resetProgressBtn">
-                <i class="fas fa-undo-alt"></i> Reset Progress
-            </button>
-        </div>
+    <!-- quiz section -->
+    <div class="quiz-area">
+        <h2><i class="fas fa-headphones"></i> Listening challenge</h2>
+        <div class="quiz-question" id="quizQuestion">🎧 Press the play button and choose the right blend</div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div id="quizFeedback" class="feedback"></div>
+        <div class="progress" id="progressMessage"></div>
+        <button id="resetAllBtn" class="btn reset-btn"><i class="fas fa-undo-alt"></i> Reset progress</button>
     </div>
 
-    <a href="index.html" class="back-link"><i class="fas fa-home"></i> العودة للبوابة الرئيسية</a>
-    <footer>
-        🌟 Cumulative Blending | Only letters you've unlocked appear in blends | Next letter unlocks after mastering quizzes!
-    </footer>
+    <footer>✨ Only letters you’ve unlocked appear in blends. Answer correctly to unlock new letters!</footer>
 </div>
 
 <script>
-    // --------------------- PHONICS CUMULATIVE DATA ---------------------
-    const phonicsLevels = {
-        A: { name: "A", sound: "a", blends: ["a"], nextLetters: ["B"] },
-        B: { name: "B", sound: "b", blends: ["ba", "ab", "baba", "bab", "a", "b"], dependsOn: ["A"] },
-        C: { name: "C", sound: "c", blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "baca", "caba", "abc"], dependsOn: ["A", "B"] },
-        D: { name: "D", sound: "d", blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "ad", "da", "bad", "dab", "cad", "dad", "cabad"], dependsOn: ["A", "B", "C"] },
-        E: { name: "E", sound: "e", blends: ["ba", "ab", "baba", "bab", "a", "b", "c", "ca", "ac", "bac", "cab", "cac", "ad", "da", "bad", "dab", "cad", "dad", "be", "eb", "abe", "babe", "cabe", "de", "ed", "bed", "deb", "cade"], dependsOn: ["A", "B", "C", "D"] }
-    };
-
-    const letterOrder = ["A", "B", "C", "D", "E"];
+    // ---------- CUMULATIVE PHONICS (A TO Z) ----------
+    const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
     let unlockedLetters = [];
-    
+
+    // load / save progress
     function loadProgress() {
         const saved = localStorage.getItem("phonics_cumulative_unlocked");
-        if (saved) { unlockedLetters = JSON.parse(saved); } 
-        else { unlockedLetters = ["A"]; }
+        if (saved) {
+            unlockedLetters = JSON.parse(saved);
+        } else {
+            unlockedLetters = ["A"];
+        }
         if (!unlockedLetters.includes("A")) unlockedLetters.push("A");
-        renderLetterButtons();
-        renderCurrentBlends();
-        generateRandomQuiz();
-        updateBadges();
+        saveProgress();
     }
-
     function saveProgress() {
         localStorage.setItem("phonics_cumulative_unlocked", JSON.stringify(unlockedLetters));
-        renderLetterButtons();
-        renderCurrentBlends();
-        generateRandomQuiz();
-        updateBadges();
     }
 
-    function unlockLetter(letter) {
-        if (!unlockedLetters.includes(letter)) {
-            unlockedLetters.push(letter);
-            saveProgress();
-            speakText(`Wow! You unlocked letter ${letter}! Amazing blending! 🎉`, 0.9);
-            return true;
+    // helpers
+    function isLetterUnlocked(l) { return unlockedLetters.includes(l); }
+    function getNextLockable() {
+        for (let l of allLetters) {
+            if (!unlockedLetters.includes(l)) return l;
         }
-        return false;
+        return null; // all unlocked
     }
 
-    function isLetterUnlocked(letter) { return unlockedLetters.includes(letter); }
-
+    // generate all possible blends (strings of length 1, 2, 3) using only unlocked letters
+    // to keep it manageable, we generate up to length 2 by default, and optionally length 3 for variety
+    // we'll generate lengths 1-2 for better performance; you can increase to 3 if desired.
     function getAllowedBlends() {
-        let blendsSet = new Set();
-        unlockedLetters.forEach(letter => {
-            if (phonicsLevels[letter] && phonicsLevels[letter].blends) {
-                phonicsLevels[letter].blends.forEach(blend => blendsSet.add(blend));
+        const letters = unlockedLetters.map(l => l.toLowerCase()); // use lowercase for blending
+        if (letters.length === 0) return [];
+        let blends = new Set();
+        // single letters
+        letters.forEach(l => blends.add(l));
+        // two-letter combos
+        for (let a of letters) {
+            for (let b of letters) {
+                blends.add(a + b);
             }
-        });
-        unlockedLetters.forEach(l => blendsSet.add(l.toLowerCase()));
-        let blends = Array.from(blendsSet);
-        blends.sort((a,b) => a.length - b.length);
-        return blends;
-    }
-
-    function renderCurrentBlends() {
-        const container = document.getElementById("blendsContainer");
-        if (!container) return;
-        const blends = getAllowedBlends();
-        container.innerHTML = "";
-        if (blends.length === 0) {
-            container.innerHTML = "<p style='text-align:center'>✨ أكمل التحدي لفتح مقاطع جديدة ✨</p>";
-            return;
         }
-        blends.forEach(blend => {
-            const card = document.createElement("div");
-            card.className = "blend-card";
-            card.innerHTML = `<div class="blend-text">${blend}</div><div class="speak-icon"><i class="fas fa-volume-up"></i> استمع</div>`;
-            card.addEventListener("click", (e) => { e.stopPropagation(); speakText(blend, 0.85); });
-            container.appendChild(card);
-        });
-    }
-
-    function renderLetterButtons() {
-        const container = document.getElementById("letterProgress");
-        if (!container) return;
-        container.innerHTML = "";
-        letterOrder.forEach(letter => {
-            const btn = document.createElement("button");
-            btn.textContent = letter;
-            btn.classList.add("letter-progress-btn");
-            if (unlockedLetters.includes(letter)) {
-                btn.classList.add("active");
-            } else {
-                const level = phonicsLevels[letter];
-                let canUnlock = true;
-                if (level && level.dependsOn) { canUnlock = level.dependsOn.every(dep => unlockedLetters.includes(dep)); }
-                if (canUnlock && !unlockedLetters.includes(letter)) {
-                    btn.classList.add("unlocked");
-                    btn.title = `جاهز للفتح! أكمل التحدي`;
-                } else {
-                    btn.classList.add("locked");
-                    btn.title = `أكمل الحروف السابقة أولاً`;
+        // optional three-letter combos (adds many but still okay)
+        for (let a of letters) {
+            for (let b of letters) {
+                for (let c of letters) {
+                    blends.add(a + b + c);
                 }
             }
-            btn.addEventListener("click", () => {
-                if (!unlockedLetters.includes(letter)) {
-                    const level = phonicsLevels[letter];
-                    let canUnlock = true;
-                    if (level && level.dependsOn) { canUnlock = level.dependsOn.every(dep => unlockedLetters.includes(dep)); }
-                    if (canUnlock) {
-                        unlockLetter(letter);
-                        speakText(`Letter ${letter} unlocked! Now you can blend new sounds.`, 0.9);
-                    } else { speakText(`You need to master previous letters first!`, 0.9); showTemporaryFeedback(`🔒 تحتاج لإتقان الحروف السابقة أولاً`, "wrong"); }
-                } else { speakText(`Letter ${letter} is already unlocked!`, 0.85); }
-            });
-            container.appendChild(btn);
+        }
+        // sort by length then alphabetically
+        let result = Array.from(blends);
+        result.sort((a,b) => a.length - b.length || a.localeCompare(b));
+        return result;
+    }
+
+    // render unlocked letters row
+    function renderLettersRow() {
+        const container = document.getElementById('lettersRow');
+        container.innerHTML = '';
+        const nextLetter = getNextLockable();
+        allLetters.forEach(letter => {
+            const pill = document.createElement('div');
+            pill.className = 'letter-pill';
+            pill.textContent = letter;
+            if (unlockedLetters.includes(letter)) {
+                pill.classList.add('unlocked');
+            } else {
+                pill.classList.add('locked');
+                if (letter === nextLetter) pill.classList.add('next');
+            }
+            container.appendChild(pill);
         });
     }
 
-    function updateBadges() {
-        const badgesDiv = document.getElementById("badgesContainer");
-        if (!badgesDiv) return;
-        badgesDiv.innerHTML = "";
-        unlockedLetters.forEach(letter => {
-            const badge = document.createElement("div");
-            badge.className = "badge-item";
-            badge.innerHTML = `<i class="fas fa-star"></i> Letter ${letter}`;
-            badgesDiv.appendChild(badge);
-        });
-        if (unlockedLetters.length === 0) { badgesDiv.innerHTML = "<p>ابدأ الرحلة! أكمل التحدي لفتح الحروف</p>"; }
-    }
-
-    function speakText(text, rate = 0.85) {
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "en-US";
-        utterance.rate = rate;
-        window.speechSynthesis.speak(utterance);
-    }
-
-    let currentQuizBlend = "";
-    let currentQuizOptions = [];
-
-    function generateRandomQuiz() {
+    // render blending grid
+    function renderBlends() {
+        const container = document.getElementById('blendsGrid');
         const blends = getAllowedBlends();
-        if (blends.length === 0) { document.getElementById("quizQuestion").innerHTML = "🎉 أكمل المستويات لفتح المزيد!"; return; }
+        container.innerHTML = '';
+        // show only first 100 blends to avoid overwhelming the UI
+        const displayBlends = blends.slice(0, 100);
+        displayBlends.forEach(blend => {
+            const card = document.createElement('div');
+            card.className = 'blend-card';
+            card.textContent = blend;
+            card.addEventListener('click', () => speakText(blend));
+            container.appendChild(card);
+        });
+        if (blends.length > 100) {
+            const more = document.createElement('div');
+            more.className = 'blend-card';
+            more.textContent = `+${blends.length - 100} more`;
+            more.style.opacity = '0.6';
+            more.style.cursor = 'default';
+            more.addEventListener('click', () => speakText('Many more blends available!'));
+            container.appendChild(more);
+        }
+        if (blends.length === 0) container.innerHTML = '<p style="text-align:center">✨ Unlock more letters to see blends ✨</p>';
+    }
+
+    // tracing canvas: show the next letter to be unlocked (or latest unlocked if all done)
+    let currentTraceLetter = 'A';
+    let ctx, canvas;
+    let drawing = false;
+    let redrawTrace = null;
+
+    function setupTracingCanvas() {
+        canvas = document.getElementById('traceCanvas');
+        ctx = canvas.getContext('2d');
+        canvas.width = 300;
+        canvas.height = 200;
+
+        function drawLetterOutline() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = `bold 140px "Arial", "Inter", sans-serif`;
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(currentTraceLetter, canvas.width/2, canvas.height/2);
+        }
+        drawLetterOutline();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 12;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLetterOutline;
+    }
+
+    function updateTraceLetter() {
+        const next = getNextLockable();
+        if (next) {
+            currentTraceLetter = next;
+            document.getElementById('traceHint').innerHTML = `✏️ Trace the letter ${next} to practice.`;
+        } else {
+            currentTraceLetter = "🎉";
+            document.getElementById('traceHint').innerHTML = `✨ You've unlocked all letters! ✨`;
+        }
+        if (redrawTrace) redrawTrace();
+        else redrawTrace = setupTracingCanvas();
+        redrawTrace();
+    }
+
+    // ----- quiz & unlocking mechanism -----
+    let currentQuizBlend = "";
+    let currentOptions = [];
+    let correctAnswersNeeded = 3;  // number of correct answers to unlock next letter
+    let correctCount = 0;
+
+    function generateQuiz() {
+        const blends = getAllowedBlends();
+        if (blends.length === 0) {
+            document.getElementById('quizQuestion').innerHTML = "🎉 Unlock more letters first!";
+            document.getElementById('quizOptions').innerHTML = "";
+            return;
+        }
         const correct = blends[Math.floor(Math.random() * blends.length)];
         currentQuizBlend = correct;
-        let options = [correct];
-        const otherBlends = blends.filter(b => b !== correct);
-        for (let i = 0; i < Math.min(3, otherBlends.length); i++) {
-            const rand = otherBlends[Math.floor(Math.random() * otherBlends.length)];
-            if (!options.includes(rand)) options.push(rand);
-        }
-        while(options.length < 4 && blends.length > 1) {
+        // create 3 other random distinct options
+        let others = blends.filter(b => b !== correct);
+        others.sort(() => 0.5 - Math.random());
+        let options = [correct, ...others.slice(0, 3)];
+        while (options.length < 4 && blends.length > 1) {
             const fallback = blends.find(b => !options.includes(b));
-            if(fallback) options.push(fallback);
+            if (fallback) options.push(fallback);
             else break;
         }
+        // shuffle options
         for (let i = options.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [options[i], options[j]] = [options[j], options[i]];
         }
-        currentQuizOptions = options;
-        document.getElementById("quizQuestion").innerHTML = `🔊 استمع جيداً: أي مقطع تسمع؟ <i class="fas fa-headphones"></i>`;
-        const optsDiv = document.getElementById("quizOptions");
-        optsDiv.innerHTML = "";
-        currentQuizOptions.forEach(opt => {
-            const optBtn = document.createElement("div");
-            optBtn.className = "quiz-opt";
-            optBtn.textContent = opt;
-            optBtn.addEventListener("click", () => handleQuizAnswer(opt, correct));
-            optsDiv.appendChild(optBtn);
+        currentOptions = options;
+
+        const container = document.getElementById('quizOptions');
+        container.innerHTML = '';
+        currentOptions.forEach(opt => {
+            const btn = document.createElement('div');
+            btn.className = 'quiz-opt';
+            btn.textContent = opt;
+            btn.addEventListener('click', () => handleAnswer(opt, correct));
+            container.appendChild(btn);
         });
-        const listenBtn = document.createElement("div");
-        listenBtn.className = "quiz-opt";
-        listenBtn.innerHTML = '<i class="fas fa-volume-up"></i> استمع للسؤال مرة أخرى';
-        listenBtn.style.background = "#3498db";
-        listenBtn.style.color = "white";
-        listenBtn.addEventListener("click", () => speakText(currentQuizBlend, 0.85));
-        optsDiv.appendChild(listenBtn);
+        // add "listen again" button
+        const listenBtn = document.createElement('div');
+        listenBtn.className = 'quiz-opt';
+        listenBtn.innerHTML = '<i class="fas fa-volume-up"></i> Listen again';
+        listenBtn.addEventListener('click', () => speakText(currentQuizBlend));
+        container.appendChild(listenBtn);
+
+        document.getElementById('quizQuestion').innerHTML = `🎧 Which word do you hear?`;
+        speakText(currentQuizBlend);
     }
 
-    function handleQuizAnswer(selected, correct) {
+    function handleAnswer(selected, correct) {
+        const feedbackDiv = document.getElementById('quizFeedback');
         if (selected === correct) {
-            showTemporaryFeedback(`✅ ممتاز! ${correct} هي الإجابة الصحيحة!`, "correct");
-            speakText(`Great job! ${correct}`, 0.9);
-            let nextToUnlock = null;
-            for (let i = 0; i < letterOrder.length; i++) {
-                const l = letterOrder[i];
-                if (!unlockedLetters.includes(l)) {
-                    const level = phonicsLevels[l];
-                    if (level && level.dependsOn) {
-                        const allDepsUnlocked = level.dependsOn.every(dep => unlockedLetters.includes(dep));
-                        if (allDepsUnlocked) { nextToUnlock = l; break; }
-                    } else if (!level?.dependsOn && l !== "A") { nextToUnlock = l; break; }
-                }
+            feedbackDiv.innerHTML = '✅ Correct! ✅';
+            feedbackDiv.className = 'feedback correct';
+            speakText('Correct!');
+            correctCount++;
+            updateProgressMessage();
+
+            const next = getNextLockable();
+            if (next && correctCount >= correctAnswersNeeded) {
+                // unlock next letter
+                unlockedLetters.push(next);
+                saveProgress();
+                correctCount = 0;
+                // refresh everything
+                renderLettersRow();
+                renderBlends();
+                updateTraceLetter();
+                updateProgressMessage();
+                generateQuiz();
+                speakText(`Congratulations! You unlocked letter ${next}!`);
+                feedbackDiv.innerHTML = `🎉 New letter ${next} unlocked! 🎉`;
+                setTimeout(() => feedbackDiv.innerHTML = '', 2000);
+            } else {
+                setTimeout(() => generateQuiz(), 800);
             }
-            if (nextToUnlock) { unlockLetter(nextToUnlock); showTemporaryFeedback(`🎉 رائع! تم فتح الحرف ${nextToUnlock} 🎉`, "correct"); }
-            setTimeout(() => { renderCurrentBlends(); generateRandomQuiz(); updateBadges(); }, 800);
         } else {
-            showTemporaryFeedback(`❌ ليس تماماً. الجواب الصحيح هو ${correct}. استمع مرة أخرى!`, "wrong");
-            speakText(`Try again! The correct blend is ${correct}`, 0.85);
+            feedbackDiv.innerHTML = `❌ Not quite. The right word was ${correct}. Try again! ❌`;
+            feedbackDiv.className = 'feedback wrong';
+            speakText(`Try again. The correct blend is ${correct}`);
+            setTimeout(() => {
+                generateQuiz();
+                feedbackDiv.innerHTML = '';
+            }, 1500);
         }
     }
 
-    function showTemporaryFeedback(msg, type) {
-        const fbDiv = document.getElementById("feedbackMessage");
-        fbDiv.textContent = msg;
-        fbDiv.className = `feedback ${type}`;
-        setTimeout(() => {
-            if (document.getElementById("feedbackMessage") === fbDiv) {
-                fbDiv.className = "feedback";
-                fbDiv.textContent = "⭐ اختر الإجابة الصحيحة لتفتح حروفاً جديدة!";
-            }
-        }, 2500);
+    function updateProgressMessage() {
+        const next = getNextLockable();
+        if (next) {
+            document.getElementById('progressMessage').innerHTML = `🔓 Answer ${correctCount}/${correctAnswersNeeded} correctly to unlock letter ${next}.`;
+        } else {
+            document.getElementById('progressMessage').innerHTML = `🏆 You mastered all letters A-Z! 🏆`;
+        }
     }
 
-    document.getElementById("resetProgressBtn")?.addEventListener("click", () => {
+    function resetProgress() {
         localStorage.removeItem("phonics_cumulative_unlocked");
         unlockedLetters = ["A"];
         saveProgress();
-        showTemporaryFeedback("🔄 تم إعادة ضبط التقدم! ابدأ من الحرف A", "correct");
-        speakText("Progress reset. Start fresh with letter A!", 0.9);
-        renderCurrentBlends();
-        generateRandomQuiz();
-        updateBadges();
-    });
+        correctCount = 0;
+        renderLettersRow();
+        renderBlends();
+        updateTraceLetter();
+        generateQuiz();
+        updateProgressMessage();
+        speakText("Progress reset. Start from letter A.");
+        document.getElementById('quizFeedback').innerHTML = '';
+    }
 
+    function speakText(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // initialise
     loadProgress();
+    renderLettersRow();
+    renderBlends();
+    updateTraceLetter();
+    generateQuiz();
+    updateProgressMessage();
+
+    // event listeners
+    document.getElementById('clearCanvasBtn').addEventListener('click', () => {
+        if (redrawTrace) redrawTrace();
+    });
+    document.getElementById('speakLetterBtn').addEventListener('click', () => {
+        if (currentTraceLetter && currentTraceLetter !== "🎉") {
+            speakText(`Letter ${currentTraceLetter}`);
+        } else {
+            speakText("You've unlocked all letters! Great job!");
+        }
+    });
+    document.getElementById('resetAllBtn').addEventListener('click', resetProgress);
 </script>
 </body>
 </html>

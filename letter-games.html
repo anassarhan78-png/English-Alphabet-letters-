@@ -7,24 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: linear-gradient(145deg, #1e2a3a, #0f172a);
             font-family: 'Inter', 'Comic Neue', sans-serif;
             color: #eef2ff;
             padding: 2rem;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
+        .container { max-width: 1400px; margin: 0 auto; }
         .back {
             display: inline-block;
             margin-bottom: 2rem;
@@ -33,11 +23,7 @@
             font-weight: 600;
             transition: 0.2s;
         }
-        .back:hover {
-            transform: translateX(-5px);
-            color: #FFD966;
-        }
-
+        .back:hover { transform: translateX(-5px); color: #FFD966; }
         h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
@@ -46,25 +32,13 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
-        h1 i {
-            background: linear-gradient(135deg, #FFB347, #FF6B6B);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .subtitle {
-            color: #FFE0B5;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
+        h1 i { background: linear-gradient(135deg, #FFB347, #FF6B6B); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .subtitle { color: #FFE0B5; margin-bottom: 2rem; font-size: 1.1rem; }
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.8rem;
         }
-
         .game-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(8px);
@@ -80,21 +54,9 @@
             border-color: #FFB347;
             box-shadow: 0 15px 30px -10px rgba(255, 179, 71, 0.3);
         }
-        .game-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #FFB347;
-        }
-        .game-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
-        }
-        .game-card p {
-            font-size: 0.85rem;
-            color: #E2E8F0;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-        }
+        .game-icon { font-size: 2.5rem; margin-bottom: 1rem; color: #FFB347; }
+        .game-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+        .game-card p { font-size: 0.85rem; color: #E2E8F0; margin-bottom: 1rem; line-height: 1.4; }
         .game-difficulty {
             display: inline-block;
             background: rgba(0,0,0,0.3);
@@ -106,19 +68,8 @@
         .easy { background: #2ecc71; color: #0a0f1e; }
         .medium { background: #f39c12; color: #0a0f1e; }
         .hard { background: #e74c3c; color: white; }
-
-        footer {
-            margin-top: 3rem;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        @media (max-width: 700px) {
-            body { padding: 1rem; }
-            h1 { font-size: 1.8rem; }
-            .game-card h3 { font-size: 1.2rem; }
-        }
+        footer { margin-top: 3rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) { body { padding: 1rem; } h1 { font-size: 1.8rem; } .game-card h3 { font-size: 1.2rem; } }
     </style>
 </head>
 <body>
@@ -126,20 +77,18 @@
     <a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
     <h1><i class="fas fa-gamepad"></i> Letter Games Library</h1>
     <div class="subtitle">Over 40 interactive phonics games – click any game to play!</div>
-
     <div id="gamesGrid" class="games-grid"></div>
-
     <footer>✨ New games added regularly. Have fun learning!</footer>
 </div>
 
-<script src="games-library.js"></script>
+<script src="games/games-library.js"></script>
 <script>
     function loadGames() {
         const grid = document.getElementById('gamesGrid');
         if (!grid) return;
 
         if (typeof gamesLibrary === 'undefined') {
-            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">⚠️ Games library not loaded. Please ensure games-library.js exists.</p>';
+            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">⚠️ Games library not loaded. Please ensure games/games-library.js exists.</p>';
             return;
         }
 

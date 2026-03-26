@@ -1,205 +1,183 @@
-// مكتبة الألعاب - أكثر من 40 لعبة تفاعلية
-const gamesLibrary = {
-    // ألعاب للحرف A
-    initial_sound_match: {
-        name: "تطابق الصوت الأول",
-        description: "اختر الصورة التي تبدأ بالصوت الصحيح",
-        icon: "fa-ear-listen",
-        difficulty: "easy"
-    },
-    find_the_letter: {
-        name: "ابحث عن الحرف",
-        description: "حدد موقع الحرف بين الحروف الأخرى",
-        icon: "fa-search",
-        difficulty: "easy"
-    },
-    memory_match: {
-        name: "لعبة الذاكرة",
-        description: "طابق الحرف مع الصورة المناسبة",
-        icon: "fa-brain",
-        difficulty: "medium"
-    },
-    
-    // ألعاب للحرف B
-    blending_ba_ab: {
-        name: "دمج المقاطع BA - AB",
-        description: "تعلم دمج المقاطع الصوتية ba, ab, baba, bab",
-        icon: "fa-code-branch",
-        difficulty: "medium",
-        special: "b_syllable_blending"
-    },
-    syllable_sort: {
-        name: "ترتيب المقاطع",
-        description: "رتب المقاطع لتكوين كلمات صحيحة",
-        icon: "fa-sort-alpha-down",
-        difficulty: "medium"
-    },
-    word_builder: {
-        name: "باني الكلمات",
-        description: "اجمع الحروف لتكوين كلمات تبدأ بالحرف",
-        icon: "fa-cubes",
-        difficulty: "hard"
-    },
-    
-    // ألعاب للحرف C
-    blending_cab_bad: {
-        name: "دمج الكلمات C",
-        description: "تعلم دمج الكلمات: cab, bad, cac, ac, ca",
-        icon: "fa-link",
-        difficulty: "medium",
-        special: "c_blending_game"
-    },
-    picture_match: {
-        name: "طابق الصورة",
-        description: "صل الصورة بالكلمة الصحيحة",
-        icon: "fa-images",
-        difficulty: "easy"
-    },
-    drag_and_drop: {
-        name: "سحب وإفلات",
-        description: "اسحب الحرف إلى الصورة المناسبة",
-        icon: "fa-arrows-alt",
-        difficulty: "medium"
-    },
-    
-    // ألعاب إضافية متنوعة (أكثر من 40 لعبة)
-    tracing_game: {
-        name: "تتبع الحرف",
-        description: "تتبع الحرف بإصبعك لتعلم الكتابة",
-        icon: "fa-pencil-alt",
-        difficulty: "easy"
-    },
-    letter_hunt: {
-        name: "صيد الحروف",
-        description: "ابحث عن الحرف المخفي بين الكلمات",
-        icon: "fa-gamepad",
-        difficulty: "easy"
-    },
-    phonics_quiz: {
-        name: "اختبار الصوتيات",
-        description: "استمع واختر الإجابة الصحيحة",
-        icon: "fa-question-circle",
-        difficulty: "medium"
-    },
-    word_search: {
-        name: "البحث عن الكلمات",
-        description: "جد الكلمات التي تبدأ بالحرف",
-        icon: "fa-search",
-        difficulty: "hard"
-    },
-    spelling_bee: {
-        name: "تهجئة النحلة",
-        description: "هجئ الكلمة بعد سماعها",
-        icon: "fa-bee",
-        difficulty: "hard"
-    },
-    balloon_pop: {
-        name: "فرقعة البالونات",
-        description: "افقع البالون الذي يحمل الحرف الصحيح",
-        icon: "fa-balloon",
-        difficulty: "easy"
-    },
-    matching_pairs: {
-        name: "الأزواج المتطابقة",
-        description: "جد الأزواج المتطابقة من الحروف والصور",
-        icon: "fa-clone",
-        difficulty: "medium"
-    },
-    alphabet_train: {
-        name: "قطار الأبجدية",
-        description: "رتب الحروف في القطار بالترتيب",
-        icon: "fa-train",
-        difficulty: "medium"
-    },
-    sound_studio: {
-        name: "استوديو الصوت",
-        description: "سجل وكرر الأصوات الصحيحة",
-        icon: "fa-microphone-alt",
-        difficulty: "hard"
-    },
-    puzzle_time: {
-        name: "وقت الألغاز",
-        description: "ركب الصورة ثم اقرأ الكلمة",
-        icon: "fa-puzzle-piece",
-        difficulty: "hard"
-    },
-    flash_cards: {
-        name: "بطاقات التعلم",
-        description: "تصفح البطاقات وتعلم الكلمات الجديدة",
-        icon: "fa-cards",
-        difficulty: "easy"
-    },
-    story_time: {
-        name: "وقت القصة",
-        description: "استمع لقصة مليئة بالحرف",
-        icon: "fa-book",
-        difficulty: "medium"
-    },
-    coloring_book: {
-        name: "كتاب التلوين",
-        description: "لون الصور التي تبدأ بالحرف",
-        icon: "fa-palette",
-        difficulty: "easy"
-    },
-    rhythm_and_rhyme: {
-        name: "إيقاع وقافية",
-        description: "أنشودة تفاعلية للحرف",
-        icon: "fa-music",
-        difficulty: "easy"
-    },
-    letter_cook: {
-        name: "طبخ الحروف",
-        description: "اطبخ الحروف الصحيحة في القدر",
-        icon: "fa-utensils",
-        difficulty: "medium"
-    },
-    space_letters: {
-        name: "حروف الفضاء",
-        description: "اجمع الحروف الطائرة في المركبة",
-        icon: "fa-rocket",
-        difficulty: "medium"
-    },
-    underwater_alphabet: {
-        name: "أبجدية تحت الماء",
-        description: "ساعد السمكة في جمع الحروف",
-        icon: "fa-fish",
-        difficulty: "easy"
-    },
-    letter_race: {
-        name: "سباق الحروف",
-        description: "تسابق مع الحروف للوصول للخط النهاية",
-        icon: "fa-flag-checkered",
-        difficulty: "hard"
-    },
-    mystery_box: {
-        name: "الصندوق الغامض",
-        description: "خمن ما داخل الصندوق من خلال الصوت",
-        icon: "fa-box",
-        difficulty: "medium"
-    },
-    alphabet_bingo: {
-        name: "بينجو الأبجدية",
-        description: "لعبة بينجو تعليمية للحروف",
-        icon: "fa-gripfire",
-        difficulty: "medium"
-    },
-    letter_sort: {
-        name: "فرز الحروف",
-        description: "صنف الحروف حسب صوتها",
-        icon: "fa-filter",
-        difficulty: "hard"
-    },
-    phonics_wheel: {
-        name: "عجلة الصوتيات",
-        description: "دور العجلة واختر الكلمة الصحيحة",
-        icon: "fa-circle-notch",
-        difficulty: "medium"
-    },
-    syllable_stacker: {
-        name: "مكدس المقاطع",
-        description: "كد المقاطع لتكوين كلمات",
-        icon: "fa-layer-group",
-        difficulty: "hard"
-    },
-    vowel_finder: {
-        name: "صائد الأصوات الطويلة
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter Games | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1e2a3a, #0f172a);
+            font-family: 'Inter', 'Comic Neue', sans-serif;
+            color: #eef2ff;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #FFB347;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .back:hover {
+            transform: translateX(-5px);
+            color: #FFD966;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        h1 i {
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            color: #FFE0B5;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 179, 71, 0.3);
+        }
+        .game-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #FFB347;
+            box-shadow: 0 15px 30px -10px rgba(255, 179, 71, 0.3);
+        }
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #FFB347;
+        }
+        .game-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+        .game-card p {
+            font-size: 0.85rem;
+            color: #E2E8F0;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        .game-difficulty {
+            display: inline-block;
+            background: rgba(0,0,0,0.3);
+            padding: 0.2rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .easy { background: #2ecc71; color: #0a0f1e; }
+        .medium { background: #f39c12; color: #0a0f1e; }
+        .hard { background: #e74c3c; color: white; }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.8rem; }
+            .game-card h3 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><i class="fas fa-gamepad"></i> Letter Games Library</h1>
+    <div class="subtitle">Over 40 interactive phonics games – click any game to play!</div>
+
+    <div id="gamesGrid" class="games-grid"></div>
+
+    <footer>✨ New games added regularly. Have fun learning!</footer>
+</div>
+
+<script src="games-library.js"></script>
+<script>
+    // Function to create game cards dynamically from gamesLibrary
+    function loadGames() {
+        const grid = document.getElementById('gamesGrid');
+        if (!grid) return;
+
+        // Check if gamesLibrary is defined
+        if (typeof gamesLibrary === 'undefined') {
+            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">⚠️ Games library not loaded. Please ensure games-library.js exists.</p>';
+            return;
+        }
+
+        // Convert gamesLibrary object to array of entries
+        const games = Object.entries(gamesLibrary);
+        if (games.length === 0) {
+            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">✨ No games found yet. Check back soon!</p>';
+            return;
+        }
+
+        // Sort games by name
+        games.sort((a, b) => a[1].name.localeCompare(b[1].name));
+
+        games.forEach(([id, game]) => {
+            const card = document.createElement('div');
+            card.className = 'game-card';
+            // The game file is expected to be in the 'games' folder with the same ID
+            card.onclick = () => window.location.href = `games/${id}.html`;
+
+            // Determine difficulty class
+            let difficultyClass = '';
+            if (game.difficulty === 'easy') difficultyClass = 'easy';
+            else if (game.difficulty === 'medium') difficultyClass = 'medium';
+            else if (game.difficulty === 'hard') difficultyClass = 'hard';
+
+            card.innerHTML = `
+                <div class="game-icon"><i class="fas ${game.icon}"></i></div>
+                <h3>${game.name}</h3>
+                <p>${game.description}</p>
+                <div class="game-difficulty ${difficultyClass}">⭐ ${game.difficulty ? game.difficulty.toUpperCase() : 'EASY'}</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    loadGames();
+</script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 // games-library.js – all game definitions
 const gamesLibrary = {
-    // Original games from the library
     initial_sound_match: {
         name: "Initial Sound Match",
         description: "Match the picture with its starting sound.",
@@ -31,7 +30,6 @@ const gamesLibrary = {
         icon: "fa-brain",
         difficulty: "medium"
     },
-    // New games we built
     spinning_wheel: {
         name: "Spinning Wheel",
         description: "Spin the wheel and match the word to the correct picture!",

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Computer Teacher – Letter Tic‑Tac‑Toe | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            font-family: 'Inter', 'Comic Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .game-container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            text-align: center;
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #a5f3fc, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .sub {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+        .level-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .level-btn {
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+            font-size: 0.8rem;
+        }
+        .level-btn.active {
+            background: #f39c12;
+            border-color: #f39c12;
+            color: #0f172a;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            padding: 10px;
+            margin: 1rem 0;
+        }
+        .cell {
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 1rem;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.1s;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        .cell.marked {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            color: white;
+            cursor: default;
+            opacity: 0.7;
+        }
+        .cell.disabled {
+            cursor: default;
+        }
+        .instruction {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        .current-word {
+            background: #2c3e50;
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .message {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+        .reset-btn {
+            background: #38bdf8;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .cell { font-size: 1.5rem; }
+            .current-word { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1><i class="fas fa-chalkboard-teacher"></i> Computer Teacher <i class="fas fa-ear-listen"></i></h1>
+    <div class="sub">استمع للحرف، ثم اضغط على الخلية التي تحويه!</div>
+
+    <div class="level-selector">
+        <button data-level="1" class="level-btn active">🌟 مستوى 1 (A‑I)</button>
+        <button data-level="2" class="level-btn">🌟🌟 مستوى 2 (A‑M)</button>
+        <button data-level="3" class="level-btn">🌟🌟🌟 مستوى 3 (A‑P)</button>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="current-word" id="currentLetter"></div>
+    <div class="instruction" id="instruction">اضغط على الحرف الذي تسمعه 👂</div>
+    <div id="message" class="message"></div>
+
+    <button id="resetBtn" class="reset-btn"><i class="fas fa-undo-alt"></i> لعبة جديدة</button>
+    <div><a href="../index.html" class="back-link"><i class="fas fa-home"></i> العودة للرئيسية</a></div>
+</div>
+
+<script>
+    // -------------------- إعدادات المستوى --------------------
+    const letterSets = {
+        1: ['A','B','C','D','E','F','G','H','I'],
+        2: ['A','B','C','D','E','F','G','H','I','J','K','L','M'],
+        3: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P']
+    };
+    let currentLevel = 1;
+    let board = [];           // array of { letter, marked }
+    let gameActive = true;
+    let cellsElements = [];
+    let currentTargetLetter = null;
+    let waitingForClick = false;
+
+    // -------------------- منطق الفوز --------------------
+    function checkWin() {
+        const lines = [
+            [0,1,2], [3,4,5], [6,7,8],
+            [0,3,6], [1,4,7], [2,5,8],
+            [0,4,8], [2,4,6]
+        ];
+        for (let line of lines) {
+            if (line.every(idx => board[idx].marked === true)) return true;
+        }
+        return false;
+    }
+
+    function isBoardFull() {
+        return board.every(cell => cell.marked === true);
+    }
+
+    // -------------------- تحديث الواجهة --------------------
+    function renderBoard() {
+        for (let i = 0; i < 9; i++) {
+            const cell = cellsElements[i];
+            const data = board[i];
+            cell.textContent = data.letter;
+            if (data.marked) {
+                cell.classList.add('marked');
+                cell.classList.add('disabled');
+            } else {
+                cell.classList.remove('marked');
+                cell.classList.remove('disabled');
+            }
+        }
+    }
+
+    // -------------------- نطق الحرف --------------------
+    function speakLetter(letter) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(letter);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.8;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function speakMessage(text) {
+        if (!window.speechSynthesis) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ar';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // -------------------- اختيار حرف عشوائي من الخلايا غير المحددة --------------------
+    function pickRandomUnmarkedLetter() {
+        const unmarked = [];
+        for (let i = 0; i < 9; i++) {
+            if (!board[i].marked) unmarked.push(board[i].letter);
+        }
+        if (unmarked.length === 0) return null;
+        const randomLetter = unmarked[Math.floor(Math.random() * unmarked.length)];
+        return randomLetter;
+    }
+
+    function startNewRound() {
+        if (!gameActive) return;
+        const nextLetter = pickRandomUnmarkedLetter();
+        if (nextLetter === null) {
+            // لوحة ممتلئة ولم يفز أحد
+            if (!checkWin()) {
+                document.getElementById('message').innerHTML = '🎉 انتهت اللعبة – تعادل! 🎉';
+                gameActive = false;
+                waitingForClick = false;
+                document.getElementById('currentLetter').innerHTML = '';
+                document.getElementById('instruction').innerHTML = 'اللعبة انتهت. اضغط "لعبة جديدة".';
+            }
+            return;
+        }
+        currentTargetLetter = nextLetter;
+        document.getElementById('currentLetter').innerHTML = `🔊 استمع: ${currentTargetLetter}`;
+        document.getElementById('instruction').innerHTML = 'اضغط على الخلية التي تحوي هذا الحرف';
+        waitingForClick = true;
+        speakLetter(currentTargetLetter);
+    }
+
+    // -------------------- معالجة ضغطة الطالب --------------------
+    function handleCellClick(index) {
+        if (!gameActive) return;
+        if (!waitingForClick) return;
+        const cell = board[index];
+        if (cell.marked) return; // تم تحديدها مسبقاً
+
+        if (cell.letter === currentTargetLetter) {
+            // إجابة صحيحة
+            cell.marked = true;
+            renderBoard();
+            waitingForClick = false;
+            document.getElementById('instruction').innerHTML = '✅ أحسنت! انتظر الحرف التالي...';
+
+            // التحقق من الفوز
+            if (checkWin()) {
+                gameActive = false;
+                document.getElementById('message').innerHTML = '🏆 فزت! أكملت خطاً! 🏆';
+                document.getElementById('instruction').innerHTML = 'مبروك! اضغط "لعبة جديدة" للعب مرة أخرى.';
+                speakMessage('مبروك! لقد فزت!');
+                return;
+            }
+            if (isBoardFull()) {
+                gameActive = false;
+                document.getElementById('message').innerHTML = '🎉 تعادل! جميع الخلايا ممتلئة 🎉';
+                document.getElementById('instruction').innerHTML = 'اضغط "لعبة جديدة".';
+                speakMessage('تعادل!');
+                return;
+            }
+            // بدء جولة جديدة بعد تأخير بسيط
+            setTimeout(() => {
+                startNewRound();
+            }, 800);
+        } else {
+            // إجابة خاطئة
+            document.getElementById('instruction').innerHTML = '❌ خطأ! حاول مرة أخرى.';
+            document.getElementById('message').innerHTML = `الحرف الصحيح هو ${currentTargetLetter}. اضغط على الخلية الصحيحة.`;
+            speakLetter(currentTargetLetter);
+            // لا ننهي الانتظار، يظل waitingForClick = true ليحاول مرة أخرى
+            setTimeout(() => {
+                document.getElementById('instruction').innerHTML = 'اضغط على الخلية التي تحوي هذا الحرف';
+                document.getElementById('message').innerHTML = '';
+            }, 1500);
+        }
+    }
+
+    // -------------------- إنشاء لوحة جديدة --------------------
+    function generateRandomBoard() {
+        const letters = letterSets[currentLevel];
+        const newBoard = [];
+        for (let i = 0; i < 9; i++) {
+            const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+            newBoard.push({ letter: randomLetter, marked: false });
+        }
+        return newBoard;
+    }
+
+    function resetGame() {
+        board = generateRandomBoard();
+        gameActive = true;
+        waitingForClick = false;
+        currentTargetLetter = null;
+        document.getElementById('message').innerHTML = '';
+        document.getElementById('instruction').innerHTML = 'اضغط على الحرف الذي تسمعه 👂';
+        document.getElementById('currentLetter').innerHTML = '';
+        renderBoard();
+        // بدأ اللعبة بطلب الحرف الأول
+        setTimeout(() => {
+            if (gameActive) startNewRound();
+        }, 300);
+    }
+
+    function changeLevel(level) {
+        currentLevel = level;
+        resetGame();
+    }
+
+    // -------------------- واجهة المستخدم --------------------
+    function createBoardUI() {
+        const boardDiv = document.getElementById('board');
+        boardDiv.innerHTML = '';
+        cellsElements = [];
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.addEventListener('click', (function(idx) {
+                return function() { handleCellClick(idx); };
+            })(i));
+            boardDiv.appendChild(cell);
+            cellsElements.push(cell);
+        }
+    }
+
+    function initButtons() {
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const level = parseInt(btn.getAttribute('data-level'));
+                changeLevel(level);
+                document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+        document.getElementById('resetBtn').addEventListener('click', () => resetGame());
+    }
+
+    // -------------------- بدء اللعبة --------------------
+    createBoardUI();
+    initButtons();
+    resetGame();
+</script>
+</body>
+</html>

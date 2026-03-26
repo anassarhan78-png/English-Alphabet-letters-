@@ -40,8 +40,8 @@
         .hero p { font-size: 1.2rem; color: #94a3b8; margin-top: 0.5rem; }
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
             margin-bottom: 3rem;
         }
         .card {
@@ -49,20 +49,38 @@
             backdrop-filter: blur(12px);
             border-radius: 2rem;
             border: 1px solid rgba(56, 189, 248, 0.2);
-            padding: 1.8rem;
+            padding: 1.5rem;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(56,189,248,0) 0%, rgba(56,189,248,0.1) 50%, rgba(56,189,248,0) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        .card:hover::after {
+            transform: translateX(100%);
         }
         .card:hover {
             transform: translateY(-8px);
             border-color: #38bdf8;
             background: rgba(20, 35, 60, 0.8);
-            box-shadow: 0 25px 40px -12px rgba(56,189,248,0.3);
+            box-shadow: 0 25px 40px -12px rgba(56,189,248,0.4);
         }
         .card-icon { font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .card h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
         .card p { color: #9ca3af; font-size: 0.85rem; margin-bottom: 1.2rem; }
-        .card-footer { display: flex; justify-content: space-between; color: #38bdf8; font-weight: 500; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; color: #38bdf8; font-weight: 500; }
+        .card-footer i { transition: transform 0.2s; }
+        .card:hover .card-footer i { transform: translateX(5px); }
         .stats-row {
             display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
             padding-top: 1rem; border-top: 1px solid rgba(56,189,248,0.2);
@@ -78,7 +96,7 @@
 <div class="container">
     <div class="hero">
         <h1>Phonics Nexus</h1>
-        <p>Master reading through play · cumulative blending · interactive tracing</p>
+        <p>Master reading through play · cumulative blending · interactive games</p>
     </div>
 
     <div class="cards-grid">
@@ -99,7 +117,7 @@
         <div class="card" onclick="window.location.href='letter-games.html'">
             <div class="card-icon"><i class="fas fa-gamepad"></i></div>
             <h2>Letter Games</h2>
-            <p>40+ interactive mini‑games to reinforce phonics skills.</p>
+            <p>40+ interactive mini‑games from our library to reinforce phonics skills.</p>
             <div class="card-footer"><span>Explore games →</span><i class="fas fa-arrow-right"></i></div>
         </div>
 
@@ -116,11 +134,31 @@
             <p>Learn common words with pictures and audio. New words added regularly.</p>
             <div class="card-footer"><span>Explore words →</span><i class="fas fa-arrow-right"></i></div>
         </div>
+
+        <!-- New Card: Special Games (direct links to the two custom games) -->
+        <div class="card" style="cursor: default;">
+            <div class="card-icon"><i class="fas fa-star"></i></div>
+            <h2>🎲 Special Games</h2>
+            <p>Try our exclusive interactive games!</p>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.8rem;">
+                <div onclick="window.location.href='games/spinning-wheel.html'" style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.8rem; background: rgba(56,189,248,0.1); border-radius: 2rem; cursor: pointer;">
+                    <span><i class="fas fa-cog"></i> Spinning Wheel</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div onclick="window.location.href='games/match-picture-letter.html'" style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.8rem; background: rgba(56,189,248,0.1); border-radius: 2rem; cursor: pointer;">
+                    <span><i class="fas fa-puzzle-piece"></i> Match Picture to Letter</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+            <div class="card-footer" style="margin-top: 1rem;">
+                <span>2 exclusive games →</span>
+            </div>
+        </div>
     </div>
 
     <div class="stats-row">
         <div class="stat-item"><div class="stat-number">26</div><div class="stat-label">Letters</div></div>
-        <div class="stat-item"><div class="stat-number">40+</div><div class="stat-label">Games</div></div>
+        <div class="stat-item"><div class="stat-number">42+</div><div class="stat-label">Games</div></div>
         <div class="stat-item"><div class="stat-number">150+</div><div class="stat-label">Words & Images</div></div>
     </div>
 

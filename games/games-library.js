@@ -70,3 +70,9 @@ magnetic_letters: {
     icon: "fa-magnet",
     difficulty: "easy"
 }
+tracing_game: {
+    name: "Trace & Learn",
+    description: "Practice writing letters on an interactive board with guided tracing.",
+    icon: "fa-pencil-ruler",
+    difficulty: "easy"
+}

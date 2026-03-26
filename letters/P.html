@@ -127,13 +127,13 @@
         </div>
     </div>
 
-    <!-- لعبة Penguin's P Fish -->
+    <!-- لعبة Penguin's P Fish (بدون خنزير، مع طاووس) -->
     <div class="fish-game">
         <h2><i class="fas fa-fish"></i> Penguin's P Fish</h2>
         <p>Click on the fish that have words starting with <strong>P</strong> to feed the penguin!</p>
         <div id="aquarium" class="aquarium"></div>
         <div class="fish-score">
-            <span id="fishScore">Fish caught: 0 / 5</span>
+            <span id="fishScore">Fish caught: 0 / 4</span>
             <button class="btn" id="resetFish">New School</button>
         </div>
         <div id="fishMessage" style="margin-top: 0.5rem;"></div>
@@ -156,11 +156,12 @@
     }
 
     // ----- لعبة Penguin's P Fish -----
+    // تم إزالة الخنزير (pig) وإضافة الطاووس (peacock)
     const fishItems = [
         { name: "Penguin", img: "../images/penguin.jpg", fallback: "🐧", startsWithP: true },
         { name: "Panda", img: "../images/panda.jpg", fallback: "🐼", startsWithP: true },
         { name: "Parrot", img: "../images/parrot.jpg", fallback: "🦜", startsWithP: true },
-        { name: "Pig", img: "../images/pig.jpg", fallback: "🐷", startsWithP: true },
+        { name: "Peacock", img: "../images/peacock.jpg", fallback: "🦚", startsWithP: true },
         { name: "Cat", img: "../images/cat.jpg", fallback: "🐱", startsWithP: false },
         { name: "Dog", img: "../images/dog.jpg", fallback: "🐕", startsWithP: false },
         { name: "Fish", img: "../images/fish.jpg", fallback: "🐟", startsWithP: false },
@@ -169,7 +170,7 @@
 
     let activeFish = [];
     let score = 0;
-    let targetScore = 5;
+    let targetScore = 4;   // 4 كلمات تبدأ بحرف P (penguin, panda, parrot, peacock)
     let gameActive = true;
     let fishInterval = null;
 
@@ -194,7 +195,6 @@
         fishDiv.onclick = () => catchFish(item, fishDiv);
         aquarium.appendChild(fishDiv);
         activeFish.push({ element: fishDiv, item: item, id: item.id });
-        // remove after animation ends (6s)
         setTimeout(() => {
             if (fishDiv.parentNode) {
                 fishDiv.remove();
@@ -223,7 +223,6 @@
             speakText(`Oops! ${item.name} does not start with P.`);
             document.getElementById('fishMessage').innerHTML = '❌ That fish doesn\'t start with P. Try again! ❌';
             setTimeout(() => document.getElementById('fishMessage').innerHTML = '', 1000);
-            // Flash red
             element.style.filter = 'brightness(0.7)';
             setTimeout(() => element.style.filter = '', 300);
         }
@@ -243,7 +242,6 @@
                 createFish();
             }
         }, 2000);
-        // initial fish
         setTimeout(() => createFish(), 300);
         setTimeout(() => createFish(), 800);
         setTimeout(() => createFish(), 1300);
@@ -347,7 +345,6 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // Small p has a descender, so sits between midline and bottom line
             ctx.font = '90px "Arial", "Inter", sans-serif';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';

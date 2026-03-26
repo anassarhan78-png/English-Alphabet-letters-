@@ -1,6 +1,6 @@
 // games-library.js – all game definitions
 const gamesLibrary = {
-    // Original games from the library (you can add more)
+    // Original games from the library
     initial_sound_match: {
         name: "Initial Sound Match",
         description: "Match the picture with its starting sound.",
@@ -61,18 +61,17 @@ const gamesLibrary = {
         description: "Listen to the letter and click the correct button!",
         icon: "fa-ear-listen",
         difficulty: "easy"
+    },
+    magnetic_letters: {
+        name: "Magnetic Letters",
+        description: "Listen to the teacher, pick the correct magnetic letter, and place it on the fridge!",
+        icon: "fa-magnet",
+        difficulty: "easy"
+    },
+    tracing_game: {
+        name: "Trace & Learn",
+        description: "Practice writing letters on an interactive board with guided tracing.",
+        icon: "fa-pencil-ruler",
+        difficulty: "easy"
     }
-    // Add more games here as needed
 };
-magnetic_letters: {
-    name: "Magnetic Letters",
-    description: "Listen to the teacher, pick the correct magnetic letter, and place it on the fridge!",
-    icon: "fa-magnet",
-    difficulty: "easy"
-}
-tracing_game: {
-    name: "Trace & Learn",
-    description: "Practice writing letters on an interactive board with guided tracing.",
-    icon: "fa-pencil-ruler",
-    difficulty: "easy"
-}

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Spinning Wheel Game | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            text-align: center;
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #a5f3fc, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+
+        .spin-btn {
+            background: #f39c12;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: 0.2s;
+            color: #1e293b;
+            box-shadow: 0 4px 0 #b45f1b;
+        }
+        .spin-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #b45f1b;
+        }
+
+        .result-area {
+            background: #1e293b;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .result-image {
+            width: 100px;
+            height: 100px;
+            background: #0f172a;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .result-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .result-word {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: #38bdf8;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: #0f172a;
+        }
+        .sound-btn {
+            background: #475569;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .game-container { padding: 1rem; }
+            .wheel-wrapper { width: 220px; height: 220px; }
+            .result-image { width: 80px; height: 80px; }
+            .result-word { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1><i class="fas fa-cog"></i> Spinning Wheel <i class="fas fa-chalkboard"></i></h1>
+    <p style="margin-bottom: 1rem;">Spin the wheel and discover new words! Click on the word to hear it again.</p>
+
+    <div class="wheel-wrapper">
+        <canvas id="wheelCanvas" width="600" height="600"></canvas>
+    </div>
+
+    <div>
+        <button id="spinBtn" class="spin-btn"><i class="fas fa-sync-alt"></i> SPIN!</button>
+    </div>
+
+    <div class="result-area" id="resultArea">
+        <div class="result-image" id="resultImage">
+            <i class="fas fa-spinner fa-pulse"></i>
+        </div>
+        <div class="result-word" id="resultWord">—</div>
+        <button id="speakResultBtn" class="sound-btn"><i class="fas fa-volume-up"></i> Listen</button>
+    </div>
+
+    <a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Main</a>
+</div>
+
+<script>
+    // Data for wheel segments: word, image path (relative to this file's location inside 'games' folder)
+    const segments = [
+        { word: "Apple", img: "../images/apple.jpg", fallback: "🍎" },
+        { word: "Ant", img: "../images/ant.jpg", fallback: "🐜" },
+        { word: "Ball", img: "../images/ball.jpg", fallback: "⚽" },
+        { word: "Banana", img: "../images/banana.jpg", fallback: "🍌" },
+        { word: "Cat", img: "../images/cat.jpg", fallback: "🐱" },
+        { word: "Car", img: "../images/car.jpg", fallback: "🚗" },
+        { word: "Dog", img: "../images/dog.jpg", fallback: "🐕" },
+        { word: "Duck", img: "../images/duck.jpg", fallback: "🦆" }
+    ];
+
+    const segmentCount = segments.length;
+    let currentAngle = 0;
+    let isSpinning = false;
+    let animationId = null;
+    let spinStartTime = 0;
+    const spinDuration = 2000; // ms
+
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resizeCanvas() {
+        const container = canvas.parentElement;
+        const size = container.clientWidth;
+        canvas.width = size;
+        canvas.height = size;
+        width = size;
+        height = size;
+        drawWheel();
+    }
+
+    function drawWheel() {
+        if (!ctx) return;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = width / 2 - 5;
+        const angleStep = (Math.PI * 2) / segmentCount;
+
+        for (let i = 0; i < segmentCount; i++) {
+            const startAngle = i * angleStep + currentAngle;
+            const endAngle = (i + 1) * angleStep + currentAngle;
+            const seg = segments[i];
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = i % 2 === 0 ? "#ff6b6b" : "#4ecdc4";
+            ctx.fill();
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(startAngle + angleStep / 2);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = `bold ${Math.floor(radius * 0.12)}px "Inter", sans-serif`;
+            ctx.fillStyle = "white";
+            ctx.shadowBlur = 2;
+            ctx.fillText(seg.word, radius * 0.65, 0);
+            ctx.restore();
+        }
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius * 0.12, 0, 2 * Math.PI);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(centerX - 12, 10);
+        ctx.lineTo(centerX, -8);
+        ctx.lineTo(centerX + 12, 10);
+        ctx.fillStyle = "#f39c12";
+        ctx.fill();
+    }
+
+    function getRandomFinalAngle() {
+        const extraSpins = 5 * 2 * Math.PI; // 5 full rotations
+        const randomOffset = Math.random() * 2 * Math.PI;
+        return currentAngle + extraSpins + randomOffset;
+    }
+
+    function spinWheel() {
+        if (isSpinning) return;
+        isSpinning = true;
+        const startAngle = currentAngle;
+        const targetAngle = getRandomFinalAngle();
+        const startTime = performance.now();
+
+        function animate(now) {
+            const elapsed = now - startTime;
+            let t = Math.min(1, elapsed / spinDuration);
+            const easeOut = 1 - Math.pow(1 - t, 3);
+            currentAngle = startAngle + (targetAngle - startAngle) * easeOut;
+            drawWheel();
+            if (t < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                currentAngle = targetAngle % (2 * Math.PI);
+                drawWheel();
+                isSpinning = false;
+                determineSegment();
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    function determineSegment() {
+        let angle = currentAngle % (2 * Math.PI);
+        if (angle < 0) angle += 2 * Math.PI;
+        const angleStep = (2 * Math.PI) / segmentCount;
+        const pointerAngle = (3 * Math.PI) / 2; // pointing upward
+        let relativeAngle = (pointerAngle - currentAngle) % (2 * Math.PI);
+        if (relativeAngle < 0) relativeAngle += 2 * Math.PI;
+        let idx = Math.floor(relativeAngle / angleStep);
+        idx = Math.min(idx, segmentCount - 1);
+        const selected = segments[idx];
+        displayResult(selected);
+    }
+
+    function displayResult(segment) {
+        const imgElement = document.getElementById('resultImage');
+        const wordElement = document.getElementById('resultWord');
+        const speakBtn = document.getElementById('speakResultBtn');
+
+        const img = new Image();
+        img.onload = () => {
+            imgElement.innerHTML = '';
+            imgElement.appendChild(img);
+        };
+        img.onerror = () => {
+            imgElement.innerHTML = `<span style="font-size: 2rem;">${segment.fallback}</span>`;
+        };
+        img.src = segment.img;
+        wordElement.textContent = segment.word;
+
+        speakBtn.onclick = () => speakText(segment.word);
+        speakText(segment.word);
+    }
+
+    function speakText(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+    });
+
+    resizeCanvas();
+    drawWheel();
+
+    document.getElementById('spinBtn').addEventListener('click', spinWheel);
+    setTimeout(() => {
+        const randomSegment = segments[Math.floor(Math.random() * segments.length)];
+        displayResult(randomSegment);
+    }, 100);
+</script>
+</body>
+</html>

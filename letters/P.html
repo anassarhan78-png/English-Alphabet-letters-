@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter P | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+        .back i { margin-left: 5px; }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
+        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+
+        /* لعبة Penguin's P Fish */
+        .fish-game {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .fish-game h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .aquarium {
+            position: relative;
+            height: 280px;
+            background: linear-gradient(to bottom, #0f4c5f, #1e6f5c);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            cursor: pointer;
+        }
+        .fish {
+            position: absolute;
+            width: 100px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+            animation: swim 6s linear forwards;
+        }
+        @keyframes swim {
+            0% { left: -120px; }
+            100% { left: 100%; }
+        }
+        .fish img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            padding: 5px;
+            border: 2px solid #38bdf8;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .fish span {
+            display: block;
+            font-size: 0.7rem;
+            background: #0a0f1ecc;
+            border-radius: 20px;
+            padding: 2px 5px;
+            margin-top: 2px;
+            color: white;
+        }
+        .fish-score {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .fish { width: 80px; }
+            .fish img { width: 55px; height: 55px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><span class="letter-badge">P p</span><span>Let's learn the letter P</span></h1>
+
+    <div class="trace-row">
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-up"></i> Capital P (top → baseline)</h3>
+            <canvas id="capitalCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-down"></i> Small p (midline → bottom line)</h3>
+            <canvas id="smallCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-image"></i> Words starting with P</h2>
+    <div class="words-grid">
+        <div class="word-card" onclick="speakText('penguin')">
+            <img src="../images/penguin.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23333\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🐧%3C/text%3E%3C/svg%3E'"
+                 alt="penguin">
+            <h4>Penguin</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="word-card" onclick="speakText('panda')">
+            <img src="../images/panda.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23000\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🐼%3C/text%3E%3C/svg%3E'"
+                 alt="panda">
+            <h4>Panda</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- لعبة Penguin's P Fish -->
+    <div class="fish-game">
+        <h2><i class="fas fa-fish"></i> Penguin's P Fish</h2>
+        <p>Click on the fish that have words starting with <strong>P</strong> to feed the penguin!</p>
+        <div id="aquarium" class="aquarium"></div>
+        <div class="fish-score">
+            <span id="fishScore">Fish caught: 0 / 5</span>
+            <button class="btn" id="resetFish">New School</button>
+        </div>
+        <div id="fishMessage" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <footer>✏️ Trace the letters, tap words, and catch the P fish!</footer>
+</div>
+
+<script>
+    function speakText(text) {
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    // ----- لعبة Penguin's P Fish -----
+    const fishItems = [
+        { name: "Penguin", img: "../images/penguin.jpg", fallback: "🐧", startsWithP: true },
+        { name: "Panda", img: "../images/panda.jpg", fallback: "🐼", startsWithP: true },
+        { name: "Parrot", img: "../images/parrot.jpg", fallback: "🦜", startsWithP: true },
+        { name: "Pig", img: "../images/pig.jpg", fallback: "🐷", startsWithP: true },
+        { name: "Cat", img: "../images/cat.jpg", fallback: "🐱", startsWithP: false },
+        { name: "Dog", img: "../images/dog.jpg", fallback: "🐕", startsWithP: false },
+        { name: "Fish", img: "../images/fish.jpg", fallback: "🐟", startsWithP: false },
+        { name: "Bird", img: "../images/bird.jpg", fallback: "🐦", startsWithP: false }
+    ];
+
+    let activeFish = [];
+    let score = 0;
+    let targetScore = 5;
+    let gameActive = true;
+    let fishInterval = null;
+
+    function getRandomFish() {
+        const randomIndex = Math.floor(Math.random() * fishItems.length);
+        return { ...fishItems[randomIndex], id: Date.now() + Math.random() };
+    }
+
+    function createFish() {
+        if (!gameActive) return;
+        const item = getRandomFish();
+        const aquarium = document.getElementById('aquarium');
+        const fishDiv = document.createElement('div');
+        fishDiv.className = 'fish';
+        fishDiv.style.top = Math.random() * (aquarium.clientHeight - 80) + 'px';
+        fishDiv.style.left = '-120px';
+        fishDiv.setAttribute('data-id', item.id);
+        fishDiv.innerHTML = `
+            <img src="${item.img}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E${item.fallback}%3C/text%3E%3C/svg%3E'">
+            <span>${item.name}</span>
+        `;
+        fishDiv.onclick = () => catchFish(item, fishDiv);
+        aquarium.appendChild(fishDiv);
+        activeFish.push({ element: fishDiv, item: item, id: item.id });
+        // remove after animation ends (6s)
+        setTimeout(() => {
+            if (fishDiv.parentNode) {
+                fishDiv.remove();
+                activeFish = activeFish.filter(f => f.element !== fishDiv);
+            }
+        }, 6000);
+    }
+
+    function catchFish(item, element) {
+        if (!gameActive) return;
+        if (item.startsWithP) {
+            element.remove();
+            activeFish = activeFish.filter(f => f.element !== element);
+            score++;
+            document.getElementById('fishScore').innerText = `Fish caught: ${score} / ${targetScore}`;
+            speakText(`Yum! ${item.name} starts with P!`);
+            document.getElementById('fishMessage').innerHTML = '✅ +1 fish! ✅';
+            setTimeout(() => document.getElementById('fishMessage').innerHTML = '', 800);
+            if (score >= targetScore) {
+                gameActive = false;
+                clearInterval(fishInterval);
+                speakText('Hooray! The penguin is full! You caught all the P fish!');
+                document.getElementById('fishMessage').innerHTML = '🏆 You win! 🏆';
+            }
+        } else {
+            speakText(`Oops! ${item.name} does not start with P.`);
+            document.getElementById('fishMessage').innerHTML = '❌ That fish doesn\'t start with P. Try again! ❌';
+            setTimeout(() => document.getElementById('fishMessage').innerHTML = '', 1000);
+            // Flash red
+            element.style.filter = 'brightness(0.7)';
+            setTimeout(() => element.style.filter = '', 300);
+        }
+    }
+
+    function startFishGame() {
+        if (fishInterval) clearInterval(fishInterval);
+        gameActive = true;
+        score = 0;
+        document.getElementById('fishScore').innerText = `Fish caught: 0 / ${targetScore}`;
+        document.getElementById('fishMessage').innerHTML = '';
+        const aquarium = document.getElementById('aquarium');
+        aquarium.innerHTML = '';
+        activeFish = [];
+        fishInterval = setInterval(() => {
+            if (gameActive && activeFish.length < 10) {
+                createFish();
+            }
+        }, 2000);
+        // initial fish
+        setTimeout(() => createFish(), 300);
+        setTimeout(() => createFish(), 800);
+        setTimeout(() => createFish(), 1300);
+    }
+
+    function resetFishGame() {
+        startFishGame();
+        speakText('New school of fish! Catch the ones starting with P!');
+    }
+
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي Arial) ----------
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('P', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // Small p has a descender, so sits between midline and bottom line
+            ctx.font = '90px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('p', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('P says /p/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('p says /p/'));
+
+    // Start fish game
+    startFishGame();
+    document.getElementById('resetFish').addEventListener('click', resetFishGame);
+</script>
+</body>
+</html>

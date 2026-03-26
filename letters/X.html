@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter X | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+        .back i { margin-left: 5px; }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
+        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+
+        /* لعبة X Marks the Spot */
+        .xgame {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .xgame h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .xgame-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .xcard {
+            background: #2d3748;
+            border: 2px solid #38bdf8;
+            border-radius: 1rem;
+            width: 130px;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .xcard:hover {
+            transform: scale(1.02);
+            background: #3a4a6a;
+        }
+        .xcard img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .xcard span {
+            display: block;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .xcard.collected {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            cursor: default;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .xcard.incorrect {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+        .xgame-score {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .xcard { width: 110px; }
+            .xcard img { width: 70px; height: 70px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><span class="letter-badge">X x</span><span>Let's learn the letter X</span></h1>
+
+    <div class="trace-row">
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-up"></i> Capital X (top → baseline)</h3>
+            <canvas id="capitalCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-down"></i> Small x (midline → baseline)</h3>
+            <canvas id="smallCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-image"></i> Words starting with X</h2>
+    <div class="words-grid">
+        <div class="word-card" onclick="speakText('x-ray')">
+            <img src="../images/xray.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'80\' height=\'80\' x=\'10\' y=\'10\' fill=\'%23333\'/%3E%3Ctext x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'white\'%3E🩻%3C/text%3E%3C/svg%3E'"
+                 alt="x-ray">
+            <h4>X‑ray</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="word-card" onclick="speakText('xylophone')">
+            <img src="../images/xylophone.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'70\' height=\'20\' x=\'15\' y=\'30\' fill=\'%23f39c12\'/%3E%3Crect width=\'70\' height=\'20\' x=\'15\' y=\'55\' fill=\'%23e67e22\'/%3E%3Ctext x=\'50\' y=\'80\' font-size=\'25\' text-anchor=\'middle\' fill=\'white\'%3E🎵%3C/text%3E%3C/svg%3E'"
+                 alt="xylophone">
+            <h4>Xylophone</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- لعبة X Marks the Spot -->
+    <div class="xgame">
+        <h2><i class="fas fa-map-marked-alt"></i> X Marks the Spot – Find the X Words</h2>
+        <p>Click on the treasures that show words starting with <strong>X</strong>!</p>
+        <div id="xgameGrid" class="xgame-grid"></div>
+        <div class="xgame-score">
+            <span id="xgameScore">Found: 0 / 4</span>
+            <button class="btn" id="resetXGame">New Treasure</button>
+        </div>
+        <div id="xgameMessage" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <footer>✏️ Trace the letters, tap words, and find the X treasures!</footer>
+</div>
+
+<script>
+    function speakText(text) {
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    // ----- لعبة X Marks the Spot -----
+    const xItems = [
+        { name: "X‑ray", img: "../images/xray.jpg", fallback: "🩻", startsWithX: true },
+        { name: "Xylophone", img: "../images/xylophone.jpg", fallback: "🎵", startsWithX: true },
+        { name: "X‑ray Fish", img: "../images/xrayfish.jpg", fallback: "🐟", startsWithX: true },
+        { name: "Xenops", img: "../images/xenops.jpg", fallback: "🐦", startsWithX: true },
+        { name: "Cat", img: "../images/cat.jpg", fallback: "🐱", startsWithX: false },
+        { name: "Dog", img: "../images/dog.jpg", fallback: "🐕", startsWithX: false },
+        { name: "Fish", img: "../images/fish.jpg", fallback: "🐟", startsWithX: false },
+        { name: "Bird", img: "../images/bird.jpg", fallback: "🐦", startsWithX: false }
+    ];
+
+    let currentXItems = [];
+    let foundCount = 0;
+    let totalX = 4;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initXGame() {
+        currentXItems = xItems.map(item => ({ ...item, clicked: false }));
+        currentXItems = shuffleArray(currentXItems);
+        foundCount = 0;
+        totalX = currentXItems.filter(i => i.startsWithX).length;
+        renderXGame();
+        document.getElementById('xgameScore').innerText = `Found: 0 / ${totalX}`;
+        document.getElementById('xgameMessage').innerHTML = '';
+    }
+
+    function renderXGame() {
+        const container = document.getElementById('xgameGrid');
+        container.innerHTML = '';
+        currentXItems.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'xcard';
+            if (item.clicked) card.classList.add('collected');
+            card.innerHTML = `
+                <img src="${item.img}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E${item.fallback}%3C/text%3E%3C/svg%3E'">
+                <span>${item.name}</span>
+            `;
+            card.onclick = () => handleXClick(item, idx);
+            container.appendChild(card);
+        });
+    }
+
+    function handleXClick(item, idx) {
+        if (item.clicked) return;
+        if (item.startsWithX) {
+            item.clicked = true;
+            foundCount++;
+            document.getElementById('xgameScore').innerText = `Found: ${foundCount} / ${totalX}`;
+            speakText(`Great! ${item.name} starts with X!`);
+            document.getElementById('xgameMessage').innerHTML = '✨ +1 treasure! ✨';
+            setTimeout(() => document.getElementById('xgameMessage').innerHTML = '', 800);
+            renderXGame();
+            if (foundCount === totalX) {
+                speakText('Amazing! You found all the X treasures!');
+                document.getElementById('xgameMessage').innerHTML = '🏆 YOU WIN! X marks the spot! 🏆';
+            }
+        } else {
+            speakText(`Oops! ${item.name} does not start with X.`);
+            document.getElementById('xgameMessage').innerHTML = '❌ That treasure doesn\'t start with X. Try again! ❌';
+            setTimeout(() => document.getElementById('xgameMessage').innerHTML = '', 1000);
+            const cards = document.querySelectorAll('.xcard');
+            if (cards[idx]) {
+                cards[idx].classList.add('incorrect');
+                setTimeout(() => cards[idx].classList.remove('incorrect'), 300);
+            }
+        }
+    }
+
+    function resetXGame() {
+        initXGame();
+        speakText('New treasure hunt! Find the X words!');
+    }
+
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي Arial) ----------
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('X', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // Small x sits between midline and baseline
+            ctx.font = '90px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('x', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('X says /ks/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('x says /ks/'));
+
+    // Initialize X game
+    initXGame();
+    document.getElementById('resetXGame').addEventListener('click', resetXGame);
+</script>
+</body>
+</html>

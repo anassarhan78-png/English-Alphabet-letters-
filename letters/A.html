@@ -51,12 +51,16 @@
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
-            <img id="appleImg" alt="apple">
+            <img src="../images/A/apple.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23ff6b6b\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🍎%3C/text%3E%3C/svg%3E'"
+                 alt="apple">
             <h4>Apple</h4>
             <i class="fas fa-volume-up"></i>
         </div>
         <div class="word-card" onclick="speakText('ant')">
-            <img id="antImg" alt="ant">
+            <img src="../images/A/ant.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23333\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🐜%3C/text%3E%3C/svg%3E'"
+                 alt="ant">
             <h4>Ant</h4>
             <i class="fas fa-volume-up"></i>
         </div>
@@ -66,35 +70,6 @@
 </div>
 
 <script>
-    // صورة تفاحة (حقيقية)
-    const appleUrls = [
-        'https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg',
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/320px-Red_Apple.jpg',
-        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23ff6b6b"/%3E%3Ctext x="50" y="65" font-size="40" text-anchor="middle" fill="white"%3E🍎%3C/text%3E%3C/svg%3E'
-    ];
-    // صورة نملة (حقيقية)
-    const antUrls = [
-        'https://cdn.pixabay.com/photo/2016/04/19/18/01/ant-1339560_640.jpg',
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Formica_rufa_ant.jpg/320px-Formica_rufa_ant.jpg',
-        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="45" fill="%23333"/%3E%3Ctext x="50" y="65" font-size="40" text-anchor="middle" fill="white"%3E🐜%3C/text%3E%3C/svg%3E'
-    ];
-
-    function setImage(imgElement, urls) {
-        let idx = 0;
-        function tryNext() {
-            if (idx >= urls.length) {
-                imgElement.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23444"/%3E%3Ctext x="50" y="55" font-size="20" text-anchor="middle" fill="white"%3ENo%20image%3C/text%3E%3C/svg%3E';
-                return;
-            }
-            imgElement.src = urls[idx];
-            imgElement.onerror = function() { idx++; tryNext(); };
-        }
-        tryNext();
-    }
-
-    setImage(document.getElementById('appleImg'), appleUrls);
-    setImage(document.getElementById('antImg'), antUrls);
-
     function speakText(text) {
         try {
             if (window.speechSynthesis) {
@@ -107,7 +82,7 @@
         } catch(e) { console.warn(e); }
     }
 
-    // رسم الحروف (نفس الكود السابق، مع اختصار)
+    // ----- Capital A canvas -----
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
@@ -151,6 +126,8 @@
         canvas.addEventListener('touchend',stop);
         return draw;
     }
+
+    // ----- Small a canvas (IPA) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
@@ -194,6 +171,7 @@
         canvas.addEventListener('touchend',stop);
         return draw;
     }
+
     const redrawCapital = setupCapitalCanvas();
     const redrawSmall = setupSmallCanvas();
     document.getElementById('clearCapital').addEventListener('click', redrawCapital);

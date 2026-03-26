@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter O | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+        .back i { margin-left: 5px; }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
+        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+
+        /* لعبة O Bubbles */
+        .bubble-game {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .bubble-game h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .bubble-area {
+            position: relative;
+            height: 300px;
+            background: #1e2a3a;
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            background: linear-gradient(to bottom, #0f4c5f, #2c3e50);
+        }
+        .bubble {
+            position: absolute;
+            width: 90px;
+            text-align: center;
+            cursor: pointer;
+            transition: top 0.03s linear;
+            animation: floatUp 5s linear forwards;
+        }
+        @keyframes floatUp {
+            0% { top: 100%; }
+            100% { top: -100px; }
+        }
+        .bubble img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            border: 2px solid #38bdf8;
+        }
+        .bubble span {
+            display: block;
+            font-size: 0.8rem;
+            background: #0a0f1ecc;
+            border-radius: 20px;
+            padding: 2px 5px;
+            margin-top: 4px;
+            color: white;
+        }
+        .bubble-score {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .bubble { width: 70px; }
+            .bubble img { width: 55px; height: 55px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><span class="letter-badge">O o</span><span>Let's learn the letter O</span></h1>
+
+    <div class="trace-row">
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-up"></i> Capital O (top → baseline)</h3>
+            <canvas id="capitalCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-down"></i> Small o (midline → baseline)</h3>
+            <canvas id="smallCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-image"></i> Words starting with O</h2>
+    <div class="words-grid">
+        <div class="word-card" onclick="speakText('octopus')">
+            <img src="../images/octopus.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23945e3a\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🐙%3C/text%3E%3C/svg%3E'"
+                 alt="octopus">
+            <h4>Octopus</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="word-card" onclick="speakText('orange')">
+            <img src="../images/orange.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23f39c12\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🍊%3C/text%3E%3C/svg%3E'"
+                 alt="orange">
+            <h4>Orange</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- لعبة O Bubbles -->
+    <div class="bubble-game">
+        <h2><i class="fas fa-fish"></i> O Bubbles</h2>
+        <p>Pop the bubbles that show words starting with <strong>O</strong>!</p>
+        <div id="bubbleArea" class="bubble-area"></div>
+        <div class="bubble-score">
+            <span id="bubbleScore">Score: 0 / 5</span>
+            <button class="btn" id="resetBubble">New Bubbles</button>
+        </div>
+        <div id="bubbleMessage" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <footer>✏️ Trace the letters, tap words, and pop the O bubbles!</footer>
+</div>
+
+<script>
+    function speakText(text) {
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    // ----- لعبة O Bubbles -----
+    const bubbleItems = [
+        { name: "Octopus", img: "../images/octopus.jpg", fallback: "🐙", startsWithO: true },
+        { name: "Orange", img: "../images/orange.jpg", fallback: "🍊", startsWithO: true },
+        { name: "Owl", img: "../images/owl.jpg", fallback: "🦉", startsWithO: true },
+        { name: "Ostrich", img: "../images/ostrich.jpg", fallback: "🐦", startsWithO: true },
+        { name: "Cat", img: "../images/cat.jpg", fallback: "🐱", startsWithO: false },
+        { name: "Dog", img: "../images/dog.jpg", fallback: "🐕", startsWithO: false },
+        { name: "Fish", img: "../images/fish.jpg", fallback: "🐟", startsWithO: false },
+        { name: "Ball", img: "../images/ball.jpg", fallback: "⚽", startsWithO: false }
+    ];
+
+    let activeBubbles = [];
+    let score = 0;
+    let targetScore = 5;
+    let gameActive = true;
+    let bubbleInterval = null;
+
+    function getRandomBubble() {
+        const randomIndex = Math.floor(Math.random() * bubbleItems.length);
+        return { ...bubbleItems[randomIndex], id: Date.now() + Math.random() };
+    }
+
+    function createBubble() {
+        if (!gameActive) return;
+        const item = getRandomBubble();
+        const area = document.getElementById('bubbleArea');
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.style.left = Math.random() * (area.clientWidth - 90) + 'px';
+        bubble.style.top = '100%';
+        bubble.setAttribute('data-id', item.id);
+        bubble.innerHTML = `
+            <img src="${item.img}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E${item.fallback}%3C/text%3E%3C/svg%3E'">
+            <span>${item.name}</span>
+        `;
+        bubble.onclick = () => popBubble(item, bubble);
+        area.appendChild(bubble);
+        activeBubbles.push({ element: bubble, item: item, id: item.id });
+        // remove after animation ends (5s)
+        setTimeout(() => {
+            if (bubble.parentNode) {
+                bubble.remove();
+                activeBubbles = activeBubbles.filter(b => b.element !== bubble);
+            }
+        }, 5000);
+    }
+
+    function popBubble(item, element) {
+        if (!gameActive) return;
+        if (item.startsWithO) {
+            // Correct pop
+            element.remove();
+            activeBubbles = activeBubbles.filter(b => b.element !== element);
+            score++;
+            document.getElementById('bubbleScore').innerText = `Score: ${score} / ${targetScore}`;
+            speakText(`Pop! ${item.name} starts with O!`);
+            document.getElementById('bubbleMessage').innerHTML = '✅ +1 point! ✅';
+            setTimeout(() => document.getElementById('bubbleMessage').innerHTML = '', 800);
+            if (score >= targetScore) {
+                gameActive = false;
+                clearInterval(bubbleInterval);
+                speakText('Amazing! You popped all the O bubbles!');
+                document.getElementById('bubbleMessage').innerHTML = '🏆 You win! 🏆';
+            }
+        } else {
+            // Wrong pop
+            speakText(`Oops! ${item.name} does not start with O.`);
+            document.getElementById('bubbleMessage').innerHTML = '❌ That bubble is not an O word. Try again! ❌';
+            setTimeout(() => document.getElementById('bubbleMessage').innerHTML = '', 1000);
+            // Flash red
+            element.style.filter = 'brightness(0.7)';
+            setTimeout(() => element.style.filter = '', 300);
+        }
+    }
+
+    function startBubbleGame() {
+        if (bubbleInterval) clearInterval(bubbleInterval);
+        gameActive = true;
+        score = 0;
+        document.getElementById('bubbleScore').innerText = `Score: 0 / ${targetScore}`;
+        document.getElementById('bubbleMessage').innerHTML = '';
+        // Clear existing bubbles
+        const area = document.getElementById('bubbleArea');
+        area.innerHTML = '';
+        activeBubbles = [];
+        // Spawn bubbles every 1.5 seconds
+        bubbleInterval = setInterval(() => {
+            if (gameActive && activeBubbles.length < 12) {
+                createBubble();
+            }
+        }, 1500);
+        // Add initial bubbles
+        setTimeout(() => createBubble(), 200);
+        setTimeout(() => createBubble(), 600);
+        setTimeout(() => createBubble(), 1000);
+    }
+
+    function resetBubbleGame() {
+        startBubbleGame();
+        speakText('New bubbles! Pop the O words!');
+    }
+
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي Arial) ----------
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('O', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // Small o sits between midline and baseline
+            ctx.font = '90px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('o', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('O says /ɒ/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('o says /ɒ/'));
+
+    // Start bubble game
+    startBubbleGame();
+    document.getElementById('resetBubble').addEventListener('click', resetBubbleGame);
+</script>
+</body>
+</html>

@@ -26,8 +26,16 @@
         .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
         .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
         .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+        .game-area { background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+        .game-area h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .letter-options { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .option-btn { background: #2d3748; border: 3px solid #38bdf8; color: white; font-size: 3rem; font-weight: bold; width: 100px; height: 100px; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .option-btn:hover { transform: scale(1.05); background: #38bdf8; color: #0a0f1e; }
+        .game-feedback { font-size: 1.2rem; margin-top: 1rem; padding: 0.5rem; border-radius: 2rem; }
+        .game-feedback.correct { background: #2ecc71; color: white; }
+        .game-feedback.wrong { background: #e74c3c; color: white; }
         footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
-        @media (max-width: 700px) { .container { padding: 1rem; } .word-card img { width: 100px; height: 100px; } }
+        @media (max-width: 700px) { .container { padding: 1rem; } .word-card img { width: 100px; height: 100px; } .option-btn { width: 70px; height: 70px; font-size: 2rem; } }
     </style>
 </head>
 <body>
@@ -51,19 +59,25 @@
     <h2><i class="fas fa-image"></i> Words starting with A</h2>
     <div class="words-grid">
         <div class="word-card" onclick="speakText('apple')">
-            <img src="../images/A/apple.jpg" 
+            <img src="../images/apple.jpg" 
                  onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23ff6b6b\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🍎%3C/text%3E%3C/svg%3E'"
                  alt="apple">
             <h4>Apple</h4>
             <i class="fas fa-volume-up"></i>
         </div>
         <div class="word-card" onclick="speakText('ant')">
-            <img src="../images/A/ant.jpg" 
+            <img src="../images/ant.jpg" 
                  onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23333\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🐜%3C/text%3E%3C/svg%3E'"
                  alt="ant">
             <h4>Ant</h4>
             <i class="fas fa-volume-up"></i>
         </div>
+    </div>
+
+    <div class="game-area">
+        <h2><i class="fas fa-gamepad"></i> Find the Letter A</h2>
+        <div class="letter-options" id="gameOptions"></div>
+        <div id="gameFeedback" class="game-feedback"></div>
     </div>
 
     <footer>✏️ Trace the letters between the lines. Tap any word to hear it!</footer>
@@ -82,7 +96,35 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ----- Capital A canvas -----
+    // ---- Find the Letter A ----
+    const letters = ['A', 'B', 'C', 'D'];
+    function buildGame() {
+        const container = document.getElementById('gameOptions');
+        container.innerHTML = '';
+        letters.forEach(letter => {
+            const btn = document.createElement('div');
+            btn.className = 'option-btn';
+            btn.textContent = letter;
+            btn.onclick = () => handleAnswer(letter);
+            container.appendChild(btn);
+        });
+    }
+    function handleAnswer(selected) {
+        const feedback = document.getElementById('gameFeedback');
+        if (selected === 'A') {
+            feedback.textContent = '✅ Correct! Great job! ✅';
+            feedback.className = 'game-feedback correct';
+            speakText('Correct! A is the letter A!');
+            setTimeout(() => { feedback.textContent = ''; feedback.className = 'game-feedback'; }, 2000);
+        } else {
+            feedback.textContent = `❌ Not quite! The letter ${selected} is not A. Try again! ❌`;
+            feedback.className = 'game-feedback wrong';
+            speakText(`Oops! ${selected} is not A. Try again!`);
+        }
+    }
+    buildGame();
+
+    // ----- Capital A canvas (as before) -----
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
@@ -127,7 +169,7 @@
         return draw;
     }
 
-    // ----- Small a canvas (IPA) -----
+    // ----- Small a canvas (ɑ) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;

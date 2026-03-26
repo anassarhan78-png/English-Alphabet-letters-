@@ -6,7 +6,7 @@
     <title>Letter B | Phonics Nexus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <!-- لا نحتاج Andika الآن، سنستخدم خطاً عادياً -->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
@@ -55,7 +55,7 @@
             justify-content: center;
             font-size: 3rem;
             font-weight: bold;
-            font-family: 'Andika', 'Comic Neue', cursive;
+            font-family: 'Inter', 'Arial', sans-serif;
             cursor: pointer;
             transition: 0.2s;
             color: white;
@@ -121,7 +121,7 @@
         </div>
     </div>
 
-    <!-- لعبة التلوين: تعرف على الحرف B -->
+    <!-- لعبة التلوين -->
     <div class="coloring-game">
         <h2><i class="fas fa-paint-bucket"></i> Color the Letter B</h2>
         <p>Tap on all the letters that are <strong>B (capital) or b (small)</strong> to color them!</p>
@@ -136,7 +136,6 @@
 </div>
 
 <script>
-    // ---------- النطق ----------
     function speakText(text) {
         try {
             if (window.speechSynthesis) {
@@ -149,26 +148,22 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ---------- لعبة التلوين (الهدف: B و b) ----------
+    // ---------- لعبة التلوين ----------
     function generateColoringLetters() {
         const otherCapitals = ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         const otherSmalls = ['a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-        // 5 أحرف كبيرة: 2-3 منها B، والباقي من الأخرى
         let caps = [];
         let smalls = [];
-        let bCapCount = Math.floor(Math.random() * 3) + 2; // 2 أو 3
+        let bCapCount = Math.floor(Math.random() * 3) + 2;
         for (let i = 0; i < bCapCount; i++) caps.push('B');
         while (caps.length < 5) {
             let rand = otherCapitals[Math.floor(Math.random() * otherCapitals.length)];
             caps.push(rand);
         }
-        // خلط
         for (let i = caps.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [caps[i], caps[j]] = [caps[j], caps[i]];
         }
-
-        // 5 أحرف صغيرة: 2-3 منها b، والباقي من الأخرى
         let bSmallCount = Math.floor(Math.random() * 3) + 2;
         for (let i = 0; i < bSmallCount; i++) smalls.push('b');
         while (smalls.length < 5) {
@@ -192,12 +187,10 @@
         totalCorrect = currentLetters.filter(l => l === 'B' || l === 'b').length;
         foundCount = 0;
         document.getElementById('coloringScore').innerText = `Found: 0 / ${totalCorrect}`;
-        currentLetters.forEach((letter, index) => {
+        currentLetters.forEach((letter) => {
             const tile = document.createElement('div');
             tile.className = 'letter-tile';
             tile.textContent = letter;
-            tile.dataset.index = index;
-            tile.dataset.letter = letter;
             tile.onclick = () => handleTileClick(tile, letter);
             container.appendChild(tile);
         });
@@ -217,9 +210,7 @@
         } else {
             tile.classList.add('incorrect');
             speakText(`Oops! ${letter} is not B.`);
-            setTimeout(() => {
-                tile.classList.remove('incorrect');
-            }, 500);
+            setTimeout(() => { tile.classList.remove('incorrect'); }, 500);
         }
     }
 
@@ -233,7 +224,7 @@
     renderColoringGame();
     document.getElementById('resetColoring').addEventListener('click', resetColoringGame);
 
-    // ---------- رسم الحروف في لوحتي التتبع (بالمواضع الصحيحة) ----------
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي) ----------
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
@@ -254,7 +245,8 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            ctx.font = 'bold 120px "Andika", "Comic Neue", cursive';
+            // خط عادي جداً (Arial) للحرف الشبح
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
@@ -326,8 +318,8 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // الحرف الصغير b له عصا ترتفع للخط العلوي، لذا نضبط حجم الخط ليملأ المسافة
-            ctx.font = '110px "Andika", "Comic Neue", cursive';
+            // خط عادي جداً للحرف الصغير
+            ctx.font = '110px "Arial", "Inter", sans-serif';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';

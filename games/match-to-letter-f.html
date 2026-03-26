@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Match to Letter F | Phonics Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            font-family: 'Inter', 'Comic Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .game-container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(20,30,50,0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255,179,71,0.3);
+        }
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .target-area {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .letter-box {
+            background: #f39c12;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            font-weight: bold;
+            border-radius: 2rem;
+            box-shadow: 0 8px 0 #b45f1b;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+        .letter-box:active { transform: translateY(2px); box-shadow: 0 4px 0 #b45f1b; }
+        .instructions {
+            background: #1e293b;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            margin: 1rem 0;
+        }
+        .pictures-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .picture-card {
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 1rem;
+            width: 140px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .picture-card.selected { background: #f39c12; border-color: #f39c12; transform: scale(1.02); }
+        .picture-card:hover { transform: scale(1.02); background: #334155; }
+        .picture-card img { width: 100px; height: 100px; object-fit: cover; border-radius: 0.8rem; margin-bottom: 0.5rem; }
+        .picture-card.matched { opacity: 0.4; filter: grayscale(0.5); cursor: default; pointer-events: none; }
+        .score-area { font-size: 1.2rem; margin-top: 1rem; }
+        .message { margin: 1rem 0; padding: 0.5rem; border-radius: 2rem; font-weight: bold; }
+        .message.correct { background: #2ecc71; color: white; }
+        .message.wrong { background: #e74c3c; color: white; }
+        button { background: #f39c12; border: none; padding: 0.5rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin-top: 0.5rem; }
+        .back-link { display: inline-block; margin-top: 1rem; color: #38bdf8; text-decoration: none; }
+        @media (max-width: 600px) { .letter-box { width: 100px; height: 100px; font-size: 4rem; } .picture-card { width: 110px; } .picture-card img { width: 70px; height: 70px; } }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1><i class="fas fa-link"></i> Match to Letter F</h1>
+    <div class="target-area"><div id="letterF" class="letter-box">F</div></div>
+    <div class="instructions"><i class="fas fa-hand-pointer"></i> Step 1: Select a picture &nbsp;&nbsp;➡&nbsp;&nbsp; Step 2: Click the letter F</div>
+    <div id="picturesGrid" class="pictures-grid"></div>
+    <div class="score-area">Matched: <span id="matchedCount">0</span> / <span id="totalF">0</span></div>
+    <div id="messageBox" class="message"></div>
+    <button id="resetBtn">🔄 New Game</button>
+    <div><a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Main</a></div>
+</div>
+<script>
+    const pictures = [
+        { name: "Fish", img: "../images/fish.jpg", fallback: "🐟", startsWithF: true },
+        { name: "Frog", img: "../images/frog.jpg", fallback: "🐸", startsWithF: true },
+        { name: "Flower", img: "../images/flower.jpg", fallback: "🌻", startsWithF: true },
+        { name: "Fox", img: "../images/fox.jpg", fallback: "🦊", startsWithF: true },
+        { name: "Cat", img: "../images/cat.jpg", fallback: "🐱", startsWithF: false },
+        { name: "Dog", img: "../images/dog.jpg", fallback: "🐕", startsWithF: false },
+        { name: "Apple", img: "../images/apple.jpg", fallback: "🍎", startsWithF: false },
+        { name: "Ball", img: "../images/ball.jpg", fallback: "⚽", startsWithF: false }
+    ];
+    let items = [], selectedPicture = null, matchedCount = 0, totalF = 0;
+    function initGame() {
+        items = pictures.map(p => ({ ...p, matched: false }));
+        totalF = items.filter(i => i.startsWithF).length;
+        matchedCount = 0;
+        selectedPicture = null;
+        render();
+        document.getElementById('matchedCount').innerText = matchedCount;
+        document.getElementById('totalF').innerText = totalF;
+        document.getElementById('messageBox').innerHTML = '';
+    }
+    function render() {
+        const container = document.getElementById('picturesGrid');
+        container.innerHTML = '';
+        items.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'picture-card';
+            if (item.matched) card.classList.add('matched');
+            if (selectedPicture === idx) card.classList.add('selected');
+            const img = document.createElement('img');
+            img.src = item.img;
+            img.onerror = () => { img.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' font-size='40' text-anchor='middle' fill='white'%3E${item.fallback}%3C/text%3E%3C/svg%3E`; };
+            card.appendChild(img);
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = item.name;
+            card.appendChild(nameSpan);
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (item.matched) return;
+                if (selectedPicture === idx) selectedPicture = null;
+                else selectedPicture = idx;
+                render();
+            });
+            container.appendChild(card);
+        });
+    }
+    function attemptMatch() {
+        if (selectedPicture === null) {
+            showMessage('⚠️ First, click on a picture!', 'wrong');
+            return;
+        }
+        const item = items[selectedPicture];
+        if (item.matched) {
+            showMessage('This picture is already matched!', 'wrong');
+            selectedPicture = null;
+            render();
+            return;
+        }
+        if (item.startsWithF) {
+            item.matched = true;
+            matchedCount++;
+            document.getElementById('matchedCount').innerText = matchedCount;
+            showMessage(`✅ Correct! ${item.name} starts with F!`, 'correct');
+            speakText(`Correct! ${item.name} starts with F!`);
+            selectedPicture = null;
+            render();
+            if (matchedCount === totalF) {
+                showMessage('🎉 Congratulations! You matched all F words! 🎉', 'correct');
+                speakText('You matched all the F words! Well done!');
+            }
+        } else {
+            showMessage(`❌ ${item.name} does NOT start with F. Try again!`, 'wrong');
+            speakText(`Oops! ${item.name} does not start with F.`);
+            selectedPicture = null;
+            render();
+        }
+    }
+    function showMessage(msg, type) {
+        const msgDiv = document.getElementById('messageBox');
+        msgDiv.textContent = msg;
+        msgDiv.className = `message ${type}`;
+        setTimeout(() => { if (msgDiv.textContent === msg) msgDiv.innerHTML = ''; msgDiv.className = 'message'; }, 2000);
+    }
+    function speakText(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US'; u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+    }
+    document.getElementById('letterF').addEventListener('click', attemptMatch);
+    document.getElementById('resetBtn').addEventListener('click', initGame);
+    initGame();
+</script>
+</body>
+</html>

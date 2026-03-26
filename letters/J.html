@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter J | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+        .back i { margin-left: 5px; }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
+        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+
+        /* لعبة روليت + نرد */
+        .roulette-game {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .roulette-game h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        .wheel-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 0 auto;
+        }
+        canvas#wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+        .dice-area {
+            background: #2d3748;
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            min-width: 150px;
+        }
+        .dice {
+            font-size: 5rem;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .dice:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px #38bdf8;
+        }
+        .dice-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0.5rem;
+            background: #0a0f1e;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 2rem;
+        }
+        .game-status {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+        .game-score {
+            margin: 0.5rem;
+        }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .wheel-container { width: 200px; height: 200px; }
+            .dice { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><span class="letter-badge">J j</span><span>Let's learn the letter J</span></h1>
+
+    <div class="trace-row">
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-up"></i> Capital J (top → baseline)</h3>
+            <canvas id="capitalCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-down"></i> Small j (midline → bottom line)</h3>
+            <canvas id="smallCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-image"></i> Words starting with J</h2>
+    <div class="words-grid">
+        <div class="word-card" onclick="speakText('jellyfish')">
+            <img src="../images/jellyfish.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23945e3a\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🪼%3C/text%3E%3C/svg%3E'"
+                 alt="jellyfish">
+            <h4>Jellyfish</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="word-card" onclick="speakText('jacket')">
+            <img src="../images/jacket.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%233498db\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🧥%3C/text%3E%3C/svg%3E'"
+                 alt="jacket">
+            <h4>Jacket</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- لعبة الروليت والنرد -->
+    <div class="roulette-game">
+        <h2><i class="fas fa-dice"></i> Spin & Find! 🎲</h2>
+        <p>Roll the dice, listen to the letter, then click on the correct segment on the wheel!</p>
+        <div class="game-container">
+            <div class="wheel-container">
+                <canvas id="wheelCanvas" width="300" height="300"></canvas>
+            </div>
+            <div class="dice-area">
+                <div class="dice" id="diceBtn">
+                    🎲
+                </div>
+                <div id="diceNumber" class="dice-number">?</div>
+                <div class="game-status" id="gameStatus">Roll the dice!</div>
+                <div class="game-score" id="gameScore">Found: 0 / 6</div>
+                <button class="btn" id="resetGameBtn">New Game</button>
+            </div>
+        </div>
+        <div id="wheelMessage" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <footer>✏️ Trace the letters, tap words, and play the roulette dice game!</footer>
+</div>
+
+<script>
+    function speakText(text) {
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    // ---------- لعبة الروليت والنرد ----------
+    // Wheel segments: 6 letters (J, I, H, G, F, E)
+    const segments = [
+        { letter: "J", color: "#ff6b6b", collected: false },
+        { letter: "I", color: "#ffb347", collected: false },
+        { letter: "H", color: "#4ecdc4", collected: false },
+        { letter: "G", color: "#45b7d1", collected: false },
+        { letter: "F", color: "#96ceb4", collected: false },
+        { letter: "E", color: "#f9ca24", collected: false }
+    ];
+    const segmentCount = segments.length;
+    let currentTargetLetter = null;
+    let foundCount = 0;
+    let gameActive = true;
+
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    let wheelSize = 300;
+
+    function resizeWheel() {
+        const container = document.querySelector('.wheel-container');
+        const size = container.clientWidth;
+        canvas.width = size;
+        canvas.height = size;
+        wheelSize = size;
+        drawWheel();
+    }
+
+    function drawWheel() {
+        if (!ctx) return;
+        const centerX = wheelSize / 2;
+        const centerY = wheelSize / 2;
+        const radius = wheelSize / 2 - 5;
+        const angleStep = (Math.PI * 2) / segmentCount;
+
+        ctx.clearRect(0, 0, wheelSize, wheelSize);
+        for (let i = 0; i < segmentCount; i++) {
+            const startAngle = i * angleStep;
+            const endAngle = (i + 1) * angleStep;
+            const seg = segments[i];
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = seg.collected ? "#aaa" : seg.color;
+            ctx.fill();
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw text
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(startAngle + angleStep / 2);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = `bold ${Math.floor(radius * 0.25)}px "Arial", "Inter", sans-serif`;
+            ctx.fillStyle = "#fff";
+            ctx.shadowBlur = 2;
+            ctx.fillText(seg.letter, radius * 0.65, 0);
+            ctx.restore();
+        }
+        // Draw center circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius * 0.15, 0, 2 * Math.PI);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+    }
+
+    function getSegmentIndexFromClick(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        let clientX, clientY;
+        if (e.touches) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+        const centerX = wheelSize / 2;
+        const centerY = wheelSize / 2;
+        const dx = x - centerX;
+        const dy = y - centerY;
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        if (distance > wheelSize/2 - 5) return -1; // outside
+        let angle = Math.atan2(dy, dx);
+        if (angle < 0) angle += 2 * Math.PI;
+        const angleStep = (2 * Math.PI) / segmentCount;
+        const idx = Math.floor(angle / angleStep);
+        return idx;
+    }
+
+    function handleWheelClick(e) {
+        if (!gameActive) return;
+        const idx = getSegmentIndexFromClick(e);
+        if (idx === -1) return;
+        const seg = segments[idx];
+        if (seg.collected) {
+            speakText(`You already found ${seg.letter}!`);
+            return;
+        }
+        if (currentTargetLetter === null) {
+            speakText("Roll the dice first!");
+            return;
+        }
+        if (seg.letter === currentTargetLetter) {
+            // Correct
+            seg.collected = true;
+            foundCount++;
+            drawWheel();
+            document.getElementById('gameScore').innerText = `Found: ${foundCount} / ${segmentCount}`;
+            speakText(`Correct! ${seg.letter} is the letter!`);
+            document.getElementById('wheelMessage').innerHTML = `🎉 Correct! You found ${seg.letter}! 🎉`;
+            setTimeout(() => document.getElementById('wheelMessage').innerHTML = '', 1500);
+            if (foundCount === segmentCount) {
+                gameActive = false;
+                speakText("Congratulations! You found all the letters!");
+                document.getElementById('gameStatus').innerText = "You win! 🏆";
+                document.getElementById('wheelMessage').innerHTML = "🏆 Amazing! You completed the game! 🏆";
+            } else {
+                // Reset target for next roll
+                currentTargetLetter = null;
+                document.getElementById('gameStatus').innerHTML = "Great! Roll the dice again!";
+            }
+        } else {
+            // Wrong click
+            speakText(`Oops! That's ${seg.letter}, not ${currentTargetLetter}. Try again!`);
+            document.getElementById('wheelMessage').innerHTML = `❌ Wrong! You need ${currentTargetLetter}. ❌`;
+            setTimeout(() => document.getElementById('wheelMessage').innerHTML = '', 1500);
+        }
+    }
+
+    function rollDice() {
+        if (!gameActive) return;
+        // Get uncollected letters
+        const available = segments.filter(s => !s.collected);
+        if (available.length === 0) {
+            speakText("Game already complete! Press New Game to play again.");
+            return;
+        }
+        // Roll a dice number 1-6
+        const diceValue = Math.floor(Math.random() * 6) + 1;
+        document.getElementById('diceNumber').innerText = diceValue;
+        // Choose a random uncollected letter
+        const randomIndex = Math.floor(Math.random() * available.length);
+        const chosen = available[randomIndex];
+        currentTargetLetter = chosen.letter;
+        speakText(`Find the letter ${chosen.letter}!`);
+        document.getElementById('gameStatus').innerHTML = `🎲 Rolled ${diceValue}! Find: ${chosen.letter}`;
+        // Optional: add dice animation
+        const diceElem = document.getElementById('diceBtn');
+        diceElem.style.transform = 'scale(1.1)';
+        setTimeout(() => diceElem.style.transform = '', 200);
+    }
+
+    function resetGame() {
+        for (let i = 0; i < segments.length; i++) {
+            segments[i].collected = false;
+        }
+        foundCount = 0;
+        currentTargetLetter = null;
+        gameActive = true;
+        drawWheel();
+        document.getElementById('gameScore').innerText = `Found: 0 / ${segmentCount}`;
+        document.getElementById('gameStatus').innerHTML = "Roll the dice!";
+        document.getElementById('diceNumber').innerText = "?";
+        document.getElementById('wheelMessage').innerHTML = "";
+        speakText("New game! Roll the dice and find the letter.");
+    }
+
+    canvas.addEventListener('click', handleWheelClick);
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handleWheelClick(e);
+    });
+    document.getElementById('diceBtn').addEventListener('click', rollDice);
+    document.getElementById('resetGameBtn').addEventListener('click', resetGame);
+
+    window.addEventListener('resize', () => {
+        setTimeout(resizeWheel, 100);
+    });
+    setTimeout(resizeWheel, 200);
+    drawWheel();
+
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي Arial) ----------
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('J', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // Small j has a descender, so it sits between midline and bottom line
+            ctx.font = '90px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('j', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('J says /j/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('j says /j/'));
+</script>
+</body>
+</html>

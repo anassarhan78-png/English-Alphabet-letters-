@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Magnetic Letters on the Fridge | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1e2a3a, #0f172a);
+            font-family: 'Inter', 'Comic Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 1300px;
+            width: 100%;
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 179, 71, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .sub {
+            text-align: center;
+            color: #ffe0b5;
+            margin-bottom: 1.5rem;
+        }
+
+        .play-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        /* left side: letters board */
+        .letters-board {
+            flex: 2;
+            min-width: 250px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1rem;
+        }
+        .letters-board h2 {
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            color: #FFD966;
+        }
+        .letters-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        .letter-magnet {
+            background: #f39c12;
+            color: #2c3e50;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: monospace;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: 0.1s;
+            user-select: none;
+        }
+        .letter-magnet:hover {
+            transform: scale(1.02);
+            background: #e67e22;
+        }
+        .letter-magnet.selected {
+            background: #2ecc71;
+            box-shadow: 0 0 0 2px white;
+            transform: scale(1.02);
+        }
+
+        /* right side: fridge */
+        .fridge-area {
+            flex: 3;
+            min-width: 280px;
+            background: #bdc3c7;
+            background-image: radial-gradient(circle at 10px 10px, #a0a0a0 1px, transparent 1px);
+            background-size: 20px 20px;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2), 0 8px 12px rgba(0,0,0,0.1);
+        }
+        .fridge-area h2 {
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            color: #4a5b6e;
+            text-shadow: 1px 1px 0 white;
+        }
+        .fridge-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            min-height: 400px;
+            background: rgba(255,255,240,0.4);
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        .fridge-letter {
+            background: #f1c40f;
+            color: #2c3e50;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            cursor: default;
+        }
+
+        /* controls */
+        .control-bar {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .current-target {
+            background: #2c3e50;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .target-letter {
+            font-size: 2rem;
+            font-weight: bold;
+            background: #f39c12;
+            padding: 0 0.8rem;
+            border-radius: 2rem;
+            color: #2c3e50;
+        }
+        button {
+            background: #f39c12;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #e67e22;
+            transform: scale(1.02);
+        }
+        .message {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            background: #1e293b;
+            padding: 0.3rem;
+            border-radius: 2rem;
+        }
+        .message.correct { color: #2ecc71; }
+        .message.wrong { color: #e74c3c; }
+
+        @media (max-width: 800px) {
+            .letter-magnet { width: 45px; height: 45px; font-size: 1.5rem; }
+            .fridge-letter { width: 50px; height: 50px; font-size: 1.5rem; }
+            .target-letter { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1><i class="fas fa-magnet"></i> Magnetic Letters on the Fridge</h1>
+    <div class="sub">Listen to the teacher, pick the correct letter, and place it on the fridge!</div>
+
+    <div class="play-area">
+        <!-- Left side: all magnetic letters -->
+        <div class="letters-board">
+            <h2><i class="fas fa-letters"></i> Magnetic Letters</h2>
+            <div id="lettersContainer" class="letters-grid"></div>
+        </div>
+
+        <!-- Right side: fridge -->
+        <div class="fridge-area">
+            <h2><i class="fas fa-ice-cream"></i> Fridge</h2>
+            <div id="fridgeContainer" class="fridge-grid"></div>
+        </div>
+    </div>
+
+    <div class="control-bar">
+        <div class="current-target">
+            <span>🎯 Current letter:</span>
+            <span id="targetLetter" class="target-letter">—</span>
+            <button id="repeatSoundBtn"><i class="fas fa-volume-up"></i> Repeat</button>
+        </div>
+        <button id="skipLetterBtn">⏭️ Skip letter</button>
+        <button id="resetGameBtn"><i class="fas fa-undo-alt"></i> New Game</button>
+    </div>
+    <div id="messageBox" class="message"></div>
+</div>
+
+<script>
+    // All letters (uppercase and lowercase)
+    const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    const allLetters = [...uppercaseLetters, ...lowercaseLetters];
+
+    // Game state
+    let availableLetters = [...allLetters];   // letters still on the left
+    let placedLetters = [];                   // letters on the fridge (order not important)
+    let currentTarget = null;                 // { letter, isUpper? }
+    let selectedLetter = null;                // the letter currently selected from left (for placement)
+    let gameActive = true;
+
+    // DOM elements
+    const lettersContainer = document.getElementById('lettersContainer');
+    const fridgeContainer = document.getElementById('fridgeContainer');
+    const targetSpan = document.getElementById('targetLetter');
+    const messageBox = document.getElementById('messageBox');
+
+    // Helper: speak a letter (e.g., "A" or "small a")
+    function speakLetter(letter) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        let textToSpeak = letter;
+        if (letter === letter.toUpperCase() && letter !== letter.toLowerCase()) {
+            textToSpeak = `Capital ${letter}`;
+        } else {
+            textToSpeak = `Small ${letter}`;
+        }
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function speakMessage(msg) {
+        if (!window.speechSynthesis) return;
+        const utterance = new SpeechSynthesisUtterance(msg);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // Choose a new random target from available letters
+    function pickNewTarget() {
+        if (availableLetters.length === 0) {
+            // Game finished
+            messageBox.innerText = '🎉 Congratulations! You placed all letters on the fridge! 🎉';
+            messageBox.className = 'message correct';
+            gameActive = false;
+            targetSpan.innerText = '🏆';
+            return null;
+        }
+        const randomIndex = Math.floor(Math.random() * availableLetters.length);
+        const newTarget = availableLetters[randomIndex];
+        currentTarget = newTarget;
+        targetSpan.innerText = newTarget;
+        speakLetter(newTarget);
+        messageBox.innerText = `🔊 Find the letter "${newTarget}" and put it on the fridge.`;
+        messageBox.className = 'message';
+        return newTarget;
+    }
+
+    // Render the left side letters (only available letters)
+    function renderLeft() {
+        lettersContainer.innerHTML = '';
+        availableLetters.forEach(letter => {
+            const div = document.createElement('div');
+            div.className = 'letter-magnet';
+            div.textContent = letter;
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!gameActive) return;
+                // Select this letter
+                if (selectedLetter === letter) {
+                    // deselect if already selected
+                    selectedLetter = null;
+                } else {
+                    selectedLetter = letter;
+                }
+                // highlight selected
+                document.querySelectorAll('.letter-magnet').forEach(el => el.classList.remove('selected'));
+                if (selectedLetter) {
+                    div.classList.add('selected');
+                }
+            });
+            lettersContainer.appendChild(div);
+        });
+    }
+
+    // Render the fridge (placed letters)
+    function renderFridge() {
+        fridgeContainer.innerHTML = '';
+        placedLetters.forEach(letter => {
+            const div = document.createElement('div');
+            div.className = 'fridge-letter';
+            div.textContent = letter;
+            fridgeContainer.appendChild(div);
+        });
+    }
+
+    // Try to place the selected letter on the fridge
+    function attemptPlace() {
+        if (!gameActive) return;
+        if (!selectedLetter) {
+            messageBox.innerText = '⚠️ First select a magnetic letter from the left!';
+            messageBox.className = 'message wrong';
+            speakMessage('Please select a letter first.');
+            return;
+        }
+        if (selectedLetter !== currentTarget) {
+            // Wrong letter
+            messageBox.innerText = `❌ That's not the letter ${currentTarget}. Try again! ❌`;
+            messageBox.className = 'message wrong';
+            speakMessage(`That's not the letter ${currentTarget}. Try again.`);
+            // Deselect the wrong letter (remove highlight)
+            selectedLetter = null;
+            document.querySelectorAll('.letter-magnet').forEach(el => el.classList.remove('selected'));
+            return;
+        }
+
+        // Correct letter!
+        // Move letter from available to placed
+        const index = availableLetters.indexOf(selectedLetter);
+        if (index !== -1) {
+            availableLetters.splice(index, 1);
+            placedLetters.push(selectedLetter);
+        }
+        // Clear selection
+        selectedLetter = null;
+        // Re-render both sides
+        renderLeft();
+        renderFridge();
+
+        // Show success message
+        messageBox.innerText = `✅ Correct! ${selectedLetter} is on the fridge! ✅`;
+        messageBox.className = 'message correct';
+        speakMessage(`Correct! Great job!`);
+
+        // Check if game is finished
+        if (availableLetters.length === 0) {
+            messageBox.innerText = '🎉 Congratulations! You placed all letters on the fridge! 🎉';
+            messageBox.className = 'message correct';
+            gameActive = false;
+            targetSpan.innerText = '🏆';
+            return;
+        }
+
+        // Pick next target letter
+        pickNewTarget();
+    }
+
+    // Reset game: start over with all letters on left, fridge empty
+    function resetGame() {
+        availableLetters = [...allLetters];
+        placedLetters = [];
+        selectedLetter = null;
+        gameActive = true;
+        renderLeft();
+        renderFridge();
+        pickNewTarget();
+    }
+
+    // Skip current letter (teacher may use if student struggles)
+    function skipLetter() {
+        if (!gameActive) return;
+        // Remove current target from available letters? No, we just pick another target.
+        // But we must ensure we don't pick the same letter immediately.
+        // Simply pick a new target without removing current from available.
+        // However, to avoid infinite loop if only one letter left, we handle.
+        if (availableLetters.length === 0) return;
+        let newTarget = null;
+        let attempts = 0;
+        while (attempts < 50) {
+            const rand = Math.floor(Math.random() * availableLetters.length);
+            if (availableLetters[rand] !== currentTarget) {
+                newTarget = availableLetters[rand];
+                break;
+            }
+            attempts++;
+        }
+        if (!newTarget && availableLetters.length > 0) newTarget = availableLetters[0];
+        if (newTarget) {
+            currentTarget = newTarget;
+            targetSpan.innerText = currentTarget;
+            speakLetter(currentTarget);
+            messageBox.innerText = `🔊 New letter: "${currentTarget}". Find it!`;
+            messageBox.className = 'message';
+        }
+        // Clear any selected letter highlight
+        selectedLetter = null;
+        document.querySelectorAll('.letter-magnet').forEach(el => el.classList.remove('selected'));
+    }
+
+    // Repeat current target
+    function repeatTarget() {
+        if (!gameActive) return;
+        if (currentTarget) speakLetter(currentTarget);
+    }
+
+    // Event listeners for fridge click: place the selected letter when clicking on fridge area
+    document.querySelector('.fridge-area').addEventListener('click', (e) => {
+        // Allow clicking anywhere on the fridge area to place
+        attemptPlace();
+    });
+
+    // Buttons
+    document.getElementById('repeatSoundBtn').addEventListener('click', repeatTarget);
+    document.getElementById('skipLetterBtn').addEventListener('click', skipLetter);
+    document.getElementById('resetGameBtn').addEventListener('click', resetGame);
+
+    // Initialize
+    resetGame();
+</script>
+</body>
+</html>

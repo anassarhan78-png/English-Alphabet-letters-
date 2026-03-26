@@ -64,3 +64,9 @@ const gamesLibrary = {
     }
     // Add more games here as needed
 };
+magnetic_letters: {
+    name: "Magnetic Letters",
+    description: "Listen to the teacher, pick the correct magnetic letter, and place it on the fridge!",
+    icon: "fa-magnet",
+    difficulty: "easy"
+}

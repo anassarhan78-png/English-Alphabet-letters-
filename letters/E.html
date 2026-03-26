@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter E | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+        .back i { margin-left: 5px; }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
+        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+
+        /* لعبة التوصيل (Memory Match) */
+        .match-game {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .match-game h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .match-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            max-width: 600px;
+            margin: 1rem auto;
+        }
+        .match-card {
+            aspect-ratio: 1 / 1;
+            background: #2d3748;
+            border: 2px solid #38bdf8;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+        }
+        .match-card.flipped {
+            transform: rotateY(180deg);
+        }
+        .match-card .front, .match-card .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+        }
+        .match-card .front {
+            background: #38bdf8;
+            transform: rotateY(180deg);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0a0f1e;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .match-card .front img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .match-card .back {
+            background: #2d3748;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+        .match-card.matched {
+            opacity: 0.6;
+            cursor: default;
+            transform: rotateY(0);
+            filter: grayscale(0.2);
+        }
+        .match-card.matched .front, .match-card.matched .back {
+            opacity: 0.6;
+        }
+        .match-controls {
+            margin-top: 1rem;
+        }
+        .match-message {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #38bdf8;
+        }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .match-grid { gap: 0.5rem; }
+            .match-card .front img { width: 40px; height: 40px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><span class="letter-badge">E e</span><span>Let's learn the letter E</span></h1>
+
+    <div class="trace-row">
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-up"></i> Capital E (top → baseline)</h3>
+            <canvas id="capitalCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-down"></i> Small e (midline → baseline)</h3>
+            <canvas id="smallCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-image"></i> Words starting with E</h2>
+    <div class="words-grid">
+        <div class="word-card" onclick="speakText('egg')">
+            <img src="../images/egg.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cellipse cx=\'50\' cy=\'60\' rx=\'30\' ry=\'40\' fill=\'%23f5f5dc\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'30\' text-anchor=\'middle\' fill=\'%238b5a2b\'%3E🥚%3C/text%3E%3C/svg%3E'"
+                 alt="egg">
+            <h4>Egg</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="word-card" onclick="speakText('elephant')">
+            <img src="../images/elephant.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23945e3a\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🐘%3C/text%3E%3C/svg%3E'"
+                 alt="elephant">
+            <h4>Elephant</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- لعبة التوصيل (Memory Match) -->
+    <div class="match-game">
+        <h2><i class="fas fa-puzzle-piece"></i> Memory Match: Connect the Pairs</h2>
+        <p>Find and match each card with its pair!</p>
+        <div id="matchGrid" class="match-grid"></div>
+        <div class="match-controls">
+            <button class="btn" id="resetMatch">New Game</button>
+            <span id="matchMessage" class="match-message"></span>
+        </div>
+    </div>
+
+    <footer>✏️ Trace the letters, tap words, and play the matching game!</footer>
+</div>
+
+<script>
+    function speakText(text) {
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    // ----- Memory Match Game Data -----
+    // Each pair: { type, content, pairId }
+    // We'll create 4 pairs: (E, e), (Egg picture, word "EGG"), (Elephant picture, word "ELEPHANT"), (Eagle picture, word "EAGLE")
+    // For simplicity, we'll use images and text.
+    const pairsData = [
+        { id: 1, content: { type: 'letter', value: 'E' }, matchId: 1, display: { text: 'E', img: null } },
+        { id: 1, content: { type: 'letter', value: 'e' }, matchId: 1, display: { text: 'e', img: null } },
+        { id: 2, content: { type: 'image', value: 'egg' }, matchId: 2, display: { text: 'EGG', img: '../images/egg.jpg', fallback: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cellipse cx=\'50\' cy=\'60\' rx=\'30\' ry=\'40\' fill=\'%23f5f5dc\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'30\' text-anchor=\'middle\' fill=\'%238b5a2b\'%3E🥚%3C/text%3E%3C/svg%3E' } },
+        { id: 2, content: { type: 'word', value: 'EGG' }, matchId: 2, display: { text: 'EGG', img: null } },
+        { id: 3, content: { type: 'image', value: 'elephant' }, matchId: 3, display: { text: 'ELEPHANT', img: '../images/elephant.jpg', fallback: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23945e3a\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🐘%3C/text%3E%3C/svg%3E' } },
+        { id: 3, content: { type: 'word', value: 'ELEPHANT' }, matchId: 3, display: { text: 'ELEPHANT', img: null } },
+        { id: 4, content: { type: 'image', value: 'eagle' }, matchId: 4, display: { text: 'EAGLE', img: '../images/eagle.jpg', fallback: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%238b5a2b\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🦅%3C/text%3E%3C/svg%3E' } },
+        { id: 4, content: { type: 'word', value: 'EAGLE' }, matchId: 4, display: { text: 'EAGLE', img: null } }
+    ];
+
+    let cards = [];
+    let flippedCards = [];
+    let lockBoard = false;
+    let matchedPairs = 0;
+    let totalPairs = 4;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initGame() {
+        // Create cards from pairsData
+        cards = pairsData.map((item, index) => ({
+            id: index,
+            pairId: item.matchId,
+            display: item.display,
+            flipped: false,
+            matched: false
+        }));
+        cards = shuffleArray(cards);
+        flippedCards = [];
+        lockBoard = false;
+        matchedPairs = 0;
+        renderGame();
+        document.getElementById('matchMessage').innerHTML = '';
+    }
+
+    function renderGame() {
+        const grid = document.getElementById('matchGrid');
+        grid.innerHTML = '';
+        cards.forEach((card, idx) => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'match-card';
+            if (card.matched) cardDiv.classList.add('matched');
+            if (card.flipped) cardDiv.classList.add('flipped');
+
+            // Create front and back
+            const front = document.createElement('div');
+            front.className = 'front';
+            if (card.display.img) {
+                const img = document.createElement('img');
+                img.src = card.display.img;
+                img.onerror = function() { this.src = card.display.fallback; };
+                img.alt = card.display.text;
+                front.appendChild(img);
+                const span = document.createElement('span');
+                span.textContent = card.display.text;
+                front.appendChild(span);
+            } else {
+                front.textContent = card.display.text;
+            }
+            const back = document.createElement('div');
+            back.className = 'back';
+            back.innerHTML = '<i class="fas fa-question"></i>';
+
+            cardDiv.appendChild(front);
+            cardDiv.appendChild(back);
+            cardDiv.addEventListener('click', () => onCardClick(idx));
+            grid.appendChild(cardDiv);
+        });
+    }
+
+    function onCardClick(idx) {
+        if (lockBoard) return;
+        const card = cards[idx];
+        if (card.matched || card.flipped) return;
+
+        // Flip current card
+        card.flipped = true;
+        renderGame();
+
+        flippedCards.push(idx);
+
+        if (flippedCards.length === 2) {
+            lockBoard = true;
+            const card1 = cards[flippedCards[0]];
+            const card2 = cards[flippedCards[1]];
+            if (card1.pairId === card2.pairId) {
+                // Match
+                card1.matched = true;
+                card2.matched = true;
+                matchedPairs++;
+                speakText('Great match!');
+                document.getElementById('matchMessage').innerHTML = '🎉 Correct match! 🎉';
+                setTimeout(() => {
+                    document.getElementById('matchMessage').innerHTML = '';
+                }, 1000);
+                resetFlippedCards();
+                if (matchedPairs === totalPairs) {
+                    speakText('Congratulations! You matched all pairs!');
+                    document.getElementById('matchMessage').innerHTML = '🏆 You won! 🏆';
+                }
+            } else {
+                // No match, flip back after delay
+                setTimeout(() => {
+                    card1.flipped = false;
+                    card2.flipped = false;
+                    renderGame();
+                    resetFlippedCards();
+                    lockBoard = false;
+                }, 800);
+            }
+        } else {
+            lockBoard = false;
+        }
+    }
+
+    function resetFlippedCards() {
+        flippedCards = [];
+        lockBoard = false;
+    }
+
+    function resetGame() {
+        initGame();
+    }
+
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي Arial) ----------
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('E', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = '90px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('e', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('E says /ɛ/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('e says /ɛ/'));
+
+    // Start the memory match game
+    initGame();
+    document.getElementById('resetMatch').addEventListener('click', () => resetGame());
+</script>
+</body>
+</html>

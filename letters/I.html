@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter I | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+        .back i { margin-left: 5px; }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
+        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+
+        /* لعبة I Spy */
+        .ispy-game {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .ispy-game h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .ispy-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .ispy-card {
+            background: #2d3748;
+            border: 2px solid #38bdf8;
+            border-radius: 1rem;
+            width: 140px;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .ispy-card img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .ispy-card span {
+            display: block;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .ispy-card.correct {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            cursor: default;
+            opacity: 0.7;
+        }
+        .ispy-card.incorrect {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+        .ispy-score {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .ispy-card { width: 120px; }
+            .ispy-card img { width: 70px; height: 70px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><span class="letter-badge">I i</span><span>Let's learn the letter I</span></h1>
+
+    <div class="trace-row">
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-up"></i> Capital I (top → baseline)</h3>
+            <canvas id="capitalCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-down"></i> Small i (midline → baseline)</h3>
+            <canvas id="smallCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-image"></i> Words starting with I</h2>
+    <div class="words-grid">
+        <div class="word-card" onclick="speakText('ice cream')">
+            <img src="../images/icecream.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23f1c40f\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🍦%3C/text%3E%3C/svg%3E'"
+                 alt="ice cream">
+            <h4>Ice Cream</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="word-card" onclick="speakText('igloo')">
+            <img src="../images/igloo.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%2344aaff\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E🏠%3C/text%3E%3C/svg%3E'"
+                 alt="igloo">
+            <h4>Igloo</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- لعبة I Spy -->
+    <div class="ispy-game">
+        <h2><i class="fas fa-eye"></i> I Spy – Find the I Words</h2>
+        <p>Click on the cards that start with the letter <strong>I</strong>!</p>
+        <div id="ispyGrid" class="ispy-grid"></div>
+        <div class="ispy-score">
+            <span id="ispyScore">Found: 0 / 0</span>
+            <button class="btn" id="resetIspy">New Game</button>
+        </div>
+        <div id="ispyMessage" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <footer>✏️ Trace the letters, tap words, and play I Spy!</footer>
+</div>
+
+<script>
+    function speakText(text) {
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    // ----- لعبة I Spy -----
+    // Items: 3 I words (ice cream, igloo, iguana) and 3 non-I words (cat, dog, fish)
+    const ispyItems = [
+        { name: "Ice Cream", img: "../images/icecream.jpg", fallback: "🍦", startsWithI: true },
+        { name: "Igloo", img: "../images/igloo.jpg", fallback: "🏠", startsWithI: true },
+        { name: "Iguana", img: "../images/iguana.jpg", fallback: "🦎", startsWithI: true },
+        { name: "Cat", img: "../images/cat.jpg", fallback: "🐱", startsWithI: false },
+        { name: "Dog", img: "../images/dog.jpg", fallback: "🐕", startsWithI: false },
+        { name: "Fish", img: "../images/fish.jpg", fallback: "🐟", startsWithI: false }
+    ];
+
+    let currentIspyCards = [];
+    let foundCount = 0;
+    let totalI = 0;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initIspy() {
+        currentIspyCards = ispyItems.map(item => ({ ...item, clicked: false }));
+        currentIspyCards = shuffleArray(currentIspyCards);
+        totalI = currentIspyCards.filter(i => i.startsWithI).length;
+        foundCount = 0;
+        renderIspy();
+        document.getElementById('ispyScore').innerText = `Found: 0 / ${totalI}`;
+        document.getElementById('ispyMessage').innerHTML = '';
+    }
+
+    function renderIspy() {
+        const grid = document.getElementById('ispyGrid');
+        grid.innerHTML = '';
+        currentIspyCards.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'ispy-card';
+            if (item.clicked && item.startsWithI) card.classList.add('correct');
+            if (item.clicked && !item.startsWithI) card.classList.add('incorrect');
+            card.innerHTML = `
+                <img src="${item.img}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E${item.fallback}%3C/text%3E%3C/svg%3E'">
+                <span>${item.name}</span>
+            `;
+            card.onclick = () => handleIspyClick(item, idx);
+            grid.appendChild(card);
+        });
+    }
+
+    function handleIspyClick(item, idx) {
+        if (item.clicked) return;
+        if (item.startsWithI) {
+            item.clicked = true;
+            foundCount++;
+            document.getElementById('ispyScore').innerText = `Found: ${foundCount} / ${totalI}`;
+            speakText(`Correct! ${item.name} starts with I!`);
+            document.getElementById('ispyMessage').innerHTML = '🎉 Good job! 🎉';
+            setTimeout(() => { document.getElementById('ispyMessage').innerHTML = ''; }, 1000);
+            renderIspy();
+            if (foundCount === totalI) {
+                speakText('Excellent! You found all the I words!');
+                document.getElementById('ispyMessage').innerHTML = '🏆 You win! 🏆';
+            }
+        } else {
+            // Wrong click
+            speakText(`Oops! ${item.name} does not start with I.`);
+            document.getElementById('ispyMessage').innerHTML = '❌ That word doesn\'t start with I. Try again! ❌';
+            setTimeout(() => { document.getElementById('ispyMessage').innerHTML = ''; }, 1000);
+            // Flash red
+            const cards = document.querySelectorAll('.ispy-card');
+            if (cards[idx]) {
+                cards[idx].classList.add('incorrect');
+                setTimeout(() => { cards[idx].classList.remove('incorrect'); }, 300);
+            }
+        }
+    }
+
+    function resetIspy() {
+        initIspy();
+        speakText('New game! Find all the I words!');
+    }
+
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي Arial) ----------
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('I', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // Small i sits between midline and baseline (dot above midline)
+            ctx.font = '90px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('i', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('I says /ɪ/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('i says /ɪ/'));
+
+    // Initialize I Spy game
+    initIspy();
+    document.getElementById('resetIspy').addEventListener('click', resetIspy);
+</script>
+</body>
+</html>

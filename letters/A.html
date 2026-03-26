@@ -26,7 +26,6 @@
         .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
         .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
         .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
-        /* لعبة التلوين */
         .coloring-game {
             background: rgba(0,0,0,0.3);
             border-radius: 1.5rem;
@@ -34,10 +33,7 @@
             margin: 1.5rem 0;
             text-align: center;
         }
-        .coloring-game h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
+        .coloring-game h2 { font-size: 1.5rem; margin-bottom: 1rem; }
         .letters-grid {
             display: flex;
             flex-wrap: wrap;
@@ -71,13 +67,8 @@
             background: #e74c3c;
             border-color: #e74c3c;
         }
-        .game-controls {
-            margin-top: 1rem;
-        }
-        .score {
-            font-size: 1.2rem;
-            margin: 0.5rem;
-        }
+        .game-controls { margin-top: 1rem; }
+        .score { font-size: 1.2rem; margin: 0.5rem; }
         footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
         @media (max-width: 700px) {
             .container { padding: 1rem; }
@@ -95,12 +86,18 @@
         <div class="trace-card">
             <h3><i class="fas fa-arrow-up"></i> Capital A (top → baseline)</h3>
             <canvas id="capitalCanvas" width="300" height="250"></canvas>
-            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+            <div>
+                <button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button>
+                <button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button>
+            </div>
         </div>
         <div class="trace-card">
             <h3><i class="fas fa-arrow-down"></i> Small ɑ (midline → baseline)</h3>
             <canvas id="smallCanvas" width="300" height="250"></canvas>
-            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+            <div>
+                <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
+                <button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button>
+            </div>
         </div>
     </div>
 
@@ -122,7 +119,7 @@
         </div>
     </div>
 
-    <!-- لعبة التلوين: تعرف على الحرف A -->
+    <!-- لعبة التلوين -->
     <div class="coloring-game">
         <h2><i class="fas fa-paint-bucket"></i> Color the Letter A</h2>
         <p>Tap on all the letters that are <strong>A (capital) or a (small)</strong> to color them!</p>
@@ -151,65 +148,55 @@
     }
 
     // ---------- لعبة التلوين ----------
-    // توليد 5 أحرف كبيرة و 5 أحرف صغيرة عشوائية، بعضها A والبعض الآخر أحرف أخرى
     function generateColoringLetters() {
         const otherCapitals = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         const otherSmalls = ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-        // نريد 5 كبيرة: نضع 2 أو 3 منها A، والباقي من الأخرى
+        
         let caps = [];
         let smalls = [];
-        // عدد A كبير
-        let aCapCount = Math.floor(Math.random() * 3) + 2; // 2 أو 3
+
+        let aCapCount = Math.floor(Math.random() * 3) + 2;
         for (let i = 0; i < aCapCount; i++) caps.push('A');
         while (caps.length < 5) {
             let rand = otherCapitals[Math.floor(Math.random() * otherCapitals.length)];
             caps.push(rand);
         }
-        // خلط الكابيتال
-        for (let i = caps.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [caps[i], caps[j]] = [caps[j], caps[i]];
-        }
+        caps.sort(() => Math.random() - 0.5);
 
-        // عدد a صغير
-        let aSmallCount = Math.floor(Math.random() * 3) + 2; // 2 أو 3
+        let aSmallCount = Math.floor(Math.random() * 3) + 2;
         for (let i = 0; i < aSmallCount; i++) smalls.push('a');
         while (smalls.length < 5) {
             let rand = otherSmalls[Math.floor(Math.random() * otherSmalls.length)];
             smalls.push(rand);
         }
-        // خلط الصغيرة
-        for (let i = smalls.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [smalls[i], smalls[j]] = [smalls[j], smalls[i]];
-        }
+        smalls.sort(() => Math.random() - 0.5);
+
         return [...caps, ...smalls];
     }
 
     let currentLetters = [];
     let foundCount = 0;
-    let totalCorrect = 0; // سيتم حسابه بعد التوليد
+    let totalCorrect = 0;
 
     function renderColoringGame() {
         const container = document.getElementById('coloringLetters');
         container.innerHTML = '';
-        // نحسب كم حرف صحيح في القائمة
         totalCorrect = currentLetters.filter(l => l === 'A' || l === 'a').length;
         foundCount = 0;
         document.getElementById('coloringScore').innerText = `Found: 0 / ${totalCorrect}`;
+
         currentLetters.forEach((letter, index) => {
             const tile = document.createElement('div');
             tile.className = 'letter-tile';
             tile.textContent = letter;
             tile.dataset.index = index;
-            tile.dataset.letter = letter;
             tile.onclick = () => handleTileClick(tile, letter);
             container.appendChild(tile);
         });
     }
 
     function handleTileClick(tile, letter) {
-        if (tile.classList.contains('correct')) return; // already colored
+        if (tile.classList.contains('correct')) return;
         if (letter === 'A' || letter === 'a') {
             tile.classList.add('correct');
             foundCount++;
@@ -222,9 +209,7 @@
         } else {
             tile.classList.add('incorrect');
             speakText(`Oops! ${letter} is not A.`);
-            setTimeout(() => {
-                tile.classList.remove('incorrect');
-            }, 500);
+            setTimeout(() => tile.classList.remove('incorrect'), 500);
         }
     }
 
@@ -234,18 +219,18 @@
         speakText('Game reset. Find all the letter A\'s!');
     }
 
-    // تهيئة اللعبة
+    // تهيئة لعبة التلوين
     currentLetters = generateColoringLetters();
     renderColoringGame();
     document.getElementById('resetColoring').addEventListener('click', resetColoringGame);
 
-    // ---------- رسم الحروف في لوحتي التتبع (بالمسافات الصحيحة) ----------
+    // ---------- رسم الحروف مع تحسين الحرف الشبحي ----------
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
-        // تعريف الخطوط الأربعة (top, midline, baseline, bottom)
+
         const topLine = 40;
         const midLine = 100;
         const baseline = 160;
@@ -253,7 +238,8 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الأسطر
+
+            // رسم الأسطر الإرشادية
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -262,16 +248,28 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الكبير A بين topLine و baseline
-            ctx.font = 'bold 120px "Andika", "Comic Neue", cursive';
+            // رسم الحرف الشبحي A (محسّن)
+            ctx.save();
+            ctx.font = 'bold 138px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText('A', canvas.width/2, baseline - 5);
+            ctx.fillText('A', canvas.width / 2, baseline);
+            ctx.restore();
         }
+
         drawLinesAndLetter();
 
-        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        // وظائف الرسم
+        function startDraw(e) { 
+            drawing = true; 
+            const p = getPos(e); 
+            if (p) { 
+                ctx.beginPath(); 
+                ctx.moveTo(p.x, p.y); 
+            } 
+        }
+        
         function draw(e) {
             if (!drawing) return;
             e.preventDefault();
@@ -286,32 +284,30 @@
                 ctx.moveTo(p.x, p.y);
             }
         }
+        
         function stopDraw() { drawing = false; ctx.beginPath(); }
+        
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
-            let cx, cy;
-            if (e.touches) {
-                if (!e.touches.length) return null;
-                cx = e.touches[0].clientX;
-                cy = e.touches[0].clientY;
-            } else {
-                cx = e.clientX;
-                cy = e.clientY;
-            }
+            let cx = e.touches ? e.touches[0].clientX : e.clientX;
+            let cy = e.touches ? e.touches[0].clientY : e.clientY;
             let x = (cx - rect.left) * scaleX;
             let y = (cy - rect.top) * scaleY;
-            x = Math.min(Math.max(0, x), canvas.width);
-            y = Math.min(Math.max(0, y), canvas.height);
-            return { x, y };
+            return { 
+                x: Math.min(Math.max(0, x), canvas.width), 
+                y: Math.min(Math.max(0, y), canvas.height) 
+            };
         }
+
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDraw);
         canvas.addEventListener('touchstart', startDraw);
         canvas.addEventListener('touchmove', draw);
         canvas.addEventListener('touchend', stopDraw);
+
         return drawLinesAndLetter;
     }
 
@@ -320,6 +316,7 @@
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
+
         const topLine = 40;
         const midLine = 100;
         const baseline = 160;
@@ -327,6 +324,8 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // رسم الأسطر الإرشادية
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -335,16 +334,28 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الصغير ɑ بين midline و baseline
-            ctx.font = '90px "Andika", "Comic Neue", cursive';
+            // رسم الحرف الشبحي ɑ (محسّن)
+            ctx.save();
+            ctx.font = 'bold 115px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText('ɑ', canvas.width/2, baseline - 5);
+            ctx.fillText('ɑ', canvas.width / 2, baseline);
+            ctx.restore();
         }
+
         drawLinesAndLetter();
 
-        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        // نفس وظائف الرسم
+        function startDraw(e) { 
+            drawing = true; 
+            const p = getPos(e); 
+            if (p) { 
+                ctx.beginPath(); 
+                ctx.moveTo(p.x, p.y); 
+            } 
+        }
+        
         function draw(e) {
             if (!drawing) return;
             e.preventDefault();
@@ -359,37 +370,37 @@
                 ctx.moveTo(p.x, p.y);
             }
         }
+        
         function stopDraw() { drawing = false; ctx.beginPath(); }
+        
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
-            let cx, cy;
-            if (e.touches) {
-                if (!e.touches.length) return null;
-                cx = e.touches[0].clientX;
-                cy = e.touches[0].clientY;
-            } else {
-                cx = e.clientX;
-                cy = e.clientY;
-            }
+            let cx = e.touches ? e.touches[0].clientX : e.clientX;
+            let cy = e.touches ? e.touches[0].clientY : e.clientY;
             let x = (cx - rect.left) * scaleX;
             let y = (cy - rect.top) * scaleY;
-            x = Math.min(Math.max(0, x), canvas.width);
-            y = Math.min(Math.max(0, y), canvas.height);
-            return { x, y };
+            return { 
+                x: Math.min(Math.max(0, x), canvas.width), 
+                y: Math.min(Math.max(0, y), canvas.height) 
+            };
         }
+
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDraw);
         canvas.addEventListener('touchstart', startDraw);
         canvas.addEventListener('touchmove', draw);
         canvas.addEventListener('touchend', stopDraw);
+
         return drawLinesAndLetter;
     }
 
+    // تهيئة اللوحتين
     const redrawCapital = setupCapitalCanvas();
     const redrawSmall = setupSmallCanvas();
+
     document.getElementById('clearCapital').addEventListener('click', redrawCapital);
     document.getElementById('clearSmall').addEventListener('click', redrawSmall);
     document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));

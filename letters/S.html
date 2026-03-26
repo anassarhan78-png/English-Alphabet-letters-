@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Letter S | Phonics Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0f1e; font-family: 'Inter', sans-serif; color: #eef2ff; padding: 2rem; display: flex; justify-content: center; }
+        .container { max-width: 1200px; width: 100%; background: rgba(20,30,50,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+        .back { display: inline-block; color: #38bdf8; text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+        .back i { margin-left: 5px; }
+        h1 { font-size: 2.5rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .letter-badge { background: linear-gradient(135deg, #38bdf8, #818cf8); display: inline-block; padding: 0.2rem 1rem; border-radius: 3rem; font-size: 2rem; font-weight: 800; }
+        .trace-row { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center; }
+        .trace-card { flex: 1; min-width: 280px; background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem; text-align: center; }
+        .trace-card h3 { font-size: 1.3rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        canvas { background: white; border-radius: 1rem; width: 100%; max-width: 300px; height: auto; aspect-ratio: 300/250; cursor: crosshair; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: #38bdf8; border: none; padding: 0.4rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; margin: 0.5rem; transition: 0.2s; }
+        .btn:hover { background: #0ea5e9; transform: scale(1.02); }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; justify-content: center; }
+        .word-card { background: rgba(255,255,255,0.1); border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; width: 160px; }
+        .word-card:hover { transform: translateY(-5px); background: rgba(56,189,248,0.2); }
+        .word-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; margin-bottom: 0.5rem; background: #2d3748; }
+        .word-card h4 { font-size: 1.2rem; margin: 0.5rem 0; }
+
+        /* لعبة Silly Sandwich */
+        .sandwich-game {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .sandwich-game h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .sandwich-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .sandwich-stack {
+            width: 120px;
+            text-align: center;
+        }
+        .sandwich-stack div {
+            background: #f9ca24;
+            border-radius: 10px;
+            margin: 2px 0;
+            transition: all 0.2s;
+        }
+        .ingredient {
+            height: 30px;
+            width: 100%;
+            background: #d35400;
+            border-radius: 8px;
+        }
+        .ingredient.lettuce { background: #2ecc71; }
+        .ingredient.tomato { background: #e74c3c; }
+        .ingredient.cheese { background: #f1c40f; }
+        .ingredient.bread-top { background: #e67e22; border-radius: 15px 15px 5px 5px; height: 25px; }
+        .ingredient.bread-bottom { background: #e67e22; border-radius: 5px 5px 15px 15px; height: 25px; }
+        .ingredient.meat { background: #b85c1a; }
+        .ingredient.special { background: #9b59b6; }
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .ingredient-card {
+            background: #2d3748;
+            border: 2px solid #38bdf8;
+            border-radius: 1rem;
+            width: 130px;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .ingredient-card:hover {
+            transform: scale(1.02);
+            background: #3a4a6a;
+        }
+        .ingredient-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .ingredient-card span {
+            display: block;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .ingredient-card.collected {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            cursor: default;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .ingredient-card.incorrect {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+        .sandwich-message {
+            margin-top: 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .ingredient-card { width: 110px; }
+            .ingredient-card img { width: 70px; height: 70px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <h1><span class="letter-badge">S s</span><span>Let's learn the letter S</span></h1>
+
+    <div class="trace-row">
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-up"></i> Capital S (top → baseline)</h3>
+            <canvas id="capitalCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+        <div class="trace-card">
+            <h3><i class="fas fa-arrow-down"></i> Small s (midline → baseline)</h3>
+            <canvas id="smallCanvas" width="300" height="250"></canvas>
+            <div><button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button><button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button></div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-image"></i> Words starting with S</h2>
+    <div class="words-grid">
+        <div class="word-card" onclick="speakText('snake')">
+            <img src="../images/snake.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cpath d=\'M20,50 L80,50\' stroke=\'%2333aaff\' stroke-width=\'10\' fill=\'none\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'30\' text-anchor=\'middle\' fill=\'white\'%3E🐍%3C/text%3E%3C/svg%3E'"
+                 alt="snake">
+            <h4>Snake</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="word-card" onclick="speakText('sun')">
+            <img src="../images/sun.jpg" 
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'40\' fill=\'%23f39c12\'/%3E%3Ctext x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E☀️%3C/text%3E%3C/svg%3E'"
+                 alt="sun">
+            <h4>Sun</h4>
+            <i class="fas fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- لعبة Silly Sandwich -->
+    <div class="sandwich-game">
+        <h2><i class="fas fa-bread-slice"></i> Silly Sandwich – S Ingredients</h2>
+        <p>Click on the ingredients that start with <strong>S</strong> to build your sandwich!</p>
+        <div class="sandwich-area">
+            <div class="sandwich-stack" id="sandwichStack">
+                <div class="ingredient bread-top"></div>
+                <!-- layers will be added dynamically -->
+                <div class="ingredient bread-bottom"></div>
+            </div>
+            <div class="sandwich-score">
+                <span id="sandwichCount">0 / 4</span> ingredients added
+            </div>
+        </div>
+        <div id="ingredientsList" class="ingredients-list"></div>
+        <div id="sandwichMessage" class="sandwich-message"></div>
+        <button class="btn" id="resetSandwich">New Sandwich</button>
+    </div>
+
+    <footer>✏️ Trace the letters, tap words, and build your silly sandwich!</footer>
+</div>
+
+<script>
+    function speakText(text) {
+        try {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    // ----- لعبة Silly Sandwich -----
+    // S ingredients: strawberry, sandwich (image), star, snail (or salmon, but use snail)
+    const ingredientItems = [
+        { name: "Strawberry", img: "../images/strawberry.jpg", fallback: "🍓", startsWithS: true, layerClass: "special" },
+        { name: "Sandwich", img: "../images/sandwich.jpg", fallback: "🥪", startsWithS: true, layerClass: "meat" },
+        { name: "Star", img: "../images/star.jpg", fallback: "⭐", startsWithS: true, layerClass: "cheese" },
+        { name: "Snail", img: "../images/snail.jpg", fallback: "🐌", startsWithS: true, layerClass: "lettuce" },
+        { name: "Apple", img: "../images/apple.jpg", fallback: "🍎", startsWithS: false },
+        { name: "Carrot", img: "../images/carrot.jpg", fallback: "🥕", startsWithS: false },
+        { name: "Fish", img: "../images/fish.jpg", fallback: "🐟", startsWithS: false },
+        { name: "Egg", img: "../images/egg.jpg", fallback: "🥚", startsWithS: false }
+    ];
+
+    let currentIngredients = [];
+    let collectedCount = 0;
+    let totalS = 4;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initSandwichGame() {
+        currentIngredients = ingredientItems.map(item => ({ ...item, collected: false }));
+        currentIngredients = shuffleArray(currentIngredients);
+        collectedCount = 0;
+        updateSandwichDisplay();
+        renderIngredients();
+        document.getElementById('sandwichMessage').innerHTML = '';
+    }
+
+    function updateSandwichDisplay() {
+        // Clear existing layers except top and bottom
+        const stack = document.getElementById('sandwichStack');
+        const children = Array.from(stack.children);
+        // Keep only the first (top) and last (bottom)
+        const top = children[0];
+        const bottom = children[children.length-1];
+        stack.innerHTML = '';
+        stack.appendChild(top.cloneNode(true));
+        // Add collected ingredients as layers
+        const collected = currentIngredients.filter(i => i.collected && i.startsWithS);
+        for (let i = 0; i < collected.length; i++) {
+            const layer = document.createElement('div');
+            layer.className = `ingredient ${collected[i].layerClass || 'meat'}`;
+            stack.appendChild(layer);
+        }
+        stack.appendChild(bottom.cloneNode(true));
+        document.getElementById('sandwichCount').innerText = `${collectedCount} / ${totalS}`;
+    }
+
+    function renderIngredients() {
+        const container = document.getElementById('ingredientsList');
+        container.innerHTML = '';
+        currentIngredients.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'ingredient-card';
+            if (item.collected) card.classList.add('collected');
+            card.innerHTML = `
+                <img src="${item.img}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3E${item.fallback}%3C/text%3E%3C/svg%3E'">
+                <span>${item.name}</span>
+            `;
+            card.onclick = () => handleIngredientClick(item, idx);
+            container.appendChild(card);
+        });
+    }
+
+    function handleIngredientClick(item, idx) {
+        if (item.collected) return;
+        if (item.startsWithS) {
+            // Correct
+            item.collected = true;
+            collectedCount++;
+            updateSandwichDisplay();
+            speakText(`Yummy! ${item.name} starts with S!`);
+            document.getElementById('sandwichMessage').innerHTML = '🥪 +1 ingredient! Sandwich growing! 🥪';
+            setTimeout(() => document.getElementById('sandwichMessage').innerHTML = '', 1200);
+            renderIngredients();
+            if (collectedCount === totalS) {
+                speakText('Amazing! Your silly sandwich is complete!');
+                document.getElementById('sandwichMessage').innerHTML = '🏆 🥪 SANDWICH COMPLETE! Congratulations! 🥪 🏆';
+            }
+        } else {
+            // Wrong
+            speakText(`Oops! ${item.name} does not start with S.`);
+            document.getElementById('sandwichMessage').innerHTML = '❌ That ingredient doesn\'t start with S. Try again! ❌';
+            setTimeout(() => document.getElementById('sandwichMessage').innerHTML = '', 1000);
+            const cards = document.querySelectorAll('.ingredient-card');
+            if (cards[idx]) {
+                cards[idx].classList.add('incorrect');
+                setTimeout(() => cards[idx].classList.remove('incorrect'), 300);
+            }
+        }
+    }
+
+    function resetSandwichGame() {
+        initSandwichGame();
+        speakText('New sandwich! Collect the S ingredients!');
+    }
+
+    // ---------- رسم الحروف في لوحتي التتبع (بخط عادي Arial) ----------
+    function setupCapitalCanvas() {
+        const canvas = document.getElementById('capitalCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            ctx.font = 'bold 120px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('S', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 16;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    function setupSmallCanvas() {
+        const canvas = document.getElementById('smallCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const topLine = 40;
+        const midLine = 100;
+        const baseline = 160;
+        const bottomLine = 210;
+
+        function drawLinesAndLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#aaa';
+            ctx.moveTo(0, topLine); ctx.lineTo(canvas.width, topLine); ctx.stroke();
+            ctx.moveTo(0, midLine); ctx.lineTo(canvas.width, midLine); ctx.stroke();
+            ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
+            ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
+
+            // Small s sits between midline and baseline
+            ctx.font = '90px "Arial", "Inter", sans-serif';
+            ctx.fillStyle = '#e9dbc9';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText('s', canvas.width/2, baseline - 5);
+        }
+        drawLinesAndLetter();
+
+        function startDraw(e) { drawing = true; const p = getPos(e); if (p) { ctx.beginPath(); ctx.moveTo(p.x, p.y); } }
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            if (p) {
+                ctx.strokeStyle = '#ff8c42';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            }
+        }
+        function stopDraw() { drawing = false; ctx.beginPath(); }
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx, cy;
+            if (e.touches) {
+                if (!e.touches.length) return null;
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else {
+                cx = e.clientX;
+                cy = e.clientY;
+            }
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            x = Math.min(Math.max(0, x), canvas.width);
+            y = Math.min(Math.max(0, y), canvas.height);
+            return { x, y };
+        }
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+        return drawLinesAndLetter;
+    }
+
+    const redrawCapital = setupCapitalCanvas();
+    const redrawSmall = setupSmallCanvas();
+    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
+    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
+    document.getElementById('speakCapital').addEventListener('click', () => speakText('S says /s/'));
+    document.getElementById('speakSmall').addEventListener('click', () => speakText('s says /s/'));
+
+    // Initialize sandwich game
+    initSandwichGame();
+    document.getElementById('resetSandwich').addEventListener('click', resetSandwichGame);
+</script>
+</body>
+</html>

@@ -66,23 +66,10 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .letter-btn:hover {
-            background: #2980b9;
-            transform: scale(1.05);
-        }
-        .score {
-            font-size: 1.2rem;
-            margin: 1rem 0;
-        }
-        .feedback {
-            margin-top: 1rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        .reset-btn {
-            background: #e67e22;
-            margin-top: 1rem;
-        }
+        .letter-btn:hover { background: #2980b9; transform: scale(1.05); }
+        .score { font-size: 1.2rem; margin: 1rem 0; }
+        .feedback { margin-top: 1rem; font-size: 1.1rem; font-weight: bold; }
+        .reset-btn { background: #e67e22; margin-top: 1rem; }
         .back-link {
             display: inline-block;
             margin-top: 1.5rem;
@@ -92,33 +79,25 @@
             border-radius: 40px;
             text-decoration: none;
         }
+        button { border: none; padding: 12px 24px; border-radius: 40px; font-size: 1rem; font-weight: bold; cursor: pointer; margin: 10px; transition: 0.2s; }
     </style>
 </head>
 <body>
 <div class="game-container">
     <h1><i class="fas fa-ear-listen"></i> Listen & Click</h1>
     <div class="instructions">استمع جيداً ثم اضغط على الحرف الذي سمعته</div>
-
     <div id="gameContent">
         <div class="current-letter" id="currentLetterDisplay">?</div>
-        <div class="options" id="optionsContainer"></div>
+        <div id="optionsContainer" class="options"></div>
         <div class="score">النقاط: <span id="score">0</span> / <span id="totalQuestions">0</span></div>
         <div id="feedback" class="feedback"></div>
         <button id="nextBtn" class="reset-btn">➡️ التالي</button>
     </div>
-
-    <a href="../index.html" class="back-link"><i class="fas fa-home"></i> العودة للبوابة الرئيسية</a>
+    <a href="../index.html" class="back-link"><i class="fas fa-home"></i> العودة للرئيسية</a>
 </div>
-
 <script>
-    // قائمة الحروف التي ستظهر في اللعبة
     const letters = ['A', 'B', 'C', 'D', 'E'];
-    let currentLetter = null;
-    let score = 0;
-    let totalQuestions = 0;
-    let waitingForAnswer = true;
-
-    // عناصر DOM
+    let currentLetter = null, score = 0, totalQuestions = 0, waitingForAnswer = true;
     const optionsContainer = document.getElementById('optionsContainer');
     const currentLetterDisplay = document.getElementById('currentLetterDisplay');
     const scoreSpan = document.getElementById('score');
@@ -126,33 +105,23 @@
     const feedbackDiv = document.getElementById('feedback');
     const nextBtn = document.getElementById('nextBtn');
 
-    // وظيفة النطق
     function speakText(text) {
-        if (window.speechSynthesis) {
+        if(window.speechSynthesis){
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.85;
-            window.speechSynthesis.speak(utterance);
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US'; u.rate = 0.85;
+            window.speechSynthesis.speak(u);
         }
     }
-
-    // توليد خيارات عشوائية (بما فيها الحرف الصحيح)
     function generateOptions(correct) {
         let options = [correct];
-        while (options.length < 4) {
-            let randomLetter = letters[Math.floor(Math.random() * letters.length)];
-            if (!options.includes(randomLetter)) options.push(randomLetter);
+        while(options.length < 4){
+            let r = letters[Math.floor(Math.random()*letters.length)];
+            if(!options.includes(r)) options.push(r);
         }
-        // خلط الخيارات
-        for (let i = options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [options[i], options[j]] = [options[j], options[i]];
-        }
+        for(let i=options.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); [options[i],options[j]]=[options[j],options[i]]; }
         return options;
     }
-
-    // عرض الخيارات على الشاشة
     function renderOptions(options) {
         optionsContainer.innerHTML = '';
         options.forEach(letter => {
@@ -163,31 +132,22 @@
             optionsContainer.appendChild(btn);
         });
     }
-
-    // بدء جولة جديدة
     function newRound() {
-        if (!waitingForAnswer) return;
-        // اختيار حرف عشوائي من القائمة
-        const randomIndex = Math.floor(Math.random() * letters.length);
+        if(!waitingForAnswer) return;
+        const randomIndex = Math.floor(Math.random()*letters.length);
         currentLetter = letters[randomIndex];
         currentLetterDisplay.textContent = currentLetter;
-        // إنشاء الخيارات
         const options = generateOptions(currentLetter);
         renderOptions(options);
-        // نطق الحرف بعد نصف ثانية
-        setTimeout(() => {
-            speakText(currentLetter);
-        }, 300);
+        setTimeout(() => speakText(currentLetter), 300);
         waitingForAnswer = true;
         feedbackDiv.innerHTML = '';
     }
-
-    // التحقق من الإجابة
     function checkAnswer(selected) {
-        if (!waitingForAnswer) return;
+        if(!waitingForAnswer) return;
         waitingForAnswer = false;
         totalQuestions++;
-        if (selected === currentLetter) {
+        if(selected === currentLetter){
             score++;
             feedbackDiv.innerHTML = '✅ صحيح! أحسنت! ✅';
             feedbackDiv.style.color = '#2ecc71';
@@ -199,13 +159,9 @@
         }
         scoreSpan.textContent = score;
         totalSpan.textContent = totalQuestions;
-        // تعطيل الأزرار مؤقتاً
         document.querySelectorAll('.letter-btn').forEach(btn => btn.disabled = true);
-        // زر "التالي" يظهر ويمكن الضغط عليه
         nextBtn.disabled = false;
     }
-
-    // التالي: جولة جديدة
     function nextRound() {
         nextBtn.disabled = true;
         waitingForAnswer = true;
@@ -213,19 +169,13 @@
         document.querySelectorAll('.letter-btn').forEach(btn => btn.disabled = false);
         newRound();
     }
-
-    // تهيئة اللعبة
-    function initGame() {
-        score = 0;
-        totalQuestions = 0;
-        scoreSpan.textContent = '0';
-        totalSpan.textContent = '0';
+    function initGame(){
+        score = 0; totalQuestions = 0;
+        scoreSpan.textContent = '0'; totalSpan.textContent = '0';
         waitingForAnswer = true;
         nextBtn.disabled = true;
         newRound();
     }
-
-    // ربط الأزرار
     nextBtn.addEventListener('click', nextRound);
     initGame();
 </script>

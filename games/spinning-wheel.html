@@ -41,7 +41,12 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions {
             margin-bottom: 1rem;
+            color: #cbd5e1;
         }
 
         .wheel-wrapper {
@@ -77,47 +82,77 @@
             box-shadow: 0 2px 0 #b45f1b;
         }
 
-        .result-area {
-            background: #1e293b;
-            border-radius: 1.5rem;
-            padding: 1rem;
-            margin-top: 1rem;
+        .current-word {
+            background: #2c3e50;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .current-word span {
+            color: #f39c12;
+            font-size: 1.4rem;
+        }
+
+        .options-area {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
             gap: 1rem;
-            flex-wrap: wrap;
+            margin: 1.5rem 0;
         }
-        .result-image {
-            width: 100px;
-            height: 100px;
-            background: #0f172a;
+        .option-card {
+            background: #1e293b;
+            border: 2px solid #38bdf8;
             border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .result-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .result-word {
-            font-size: 1.5rem;
-            font-weight: bold;
-            background: #38bdf8;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            color: #0f172a;
-        }
-        .sound-btn {
-            background: #475569;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 2rem;
+            width: 100px;
+            padding: 0.8rem;
+            text-align: center;
             cursor: pointer;
-            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .option-card:hover {
+            transform: scale(1.02);
+            background: #334155;
+        }
+        .option-card img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .option-card span {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .option-card.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .score-area {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        .feedback {
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+        .feedback.correct { color: #2ecc71; }
+        .feedback.wrong { color: #e74c3c; }
+
+        .next-btn {
+            background: #38bdf8;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 0.5rem;
         }
 
         .back-link {
@@ -130,15 +165,15 @@
         @media (max-width: 600px) {
             .game-container { padding: 1rem; }
             .wheel-wrapper { width: 220px; height: 220px; }
-            .result-image { width: 80px; height: 80px; }
-            .result-word { font-size: 1.2rem; }
+            .option-card { width: 80px; }
+            .option-card img { width: 60px; height: 60px; }
         }
     </style>
 </head>
 <body>
 <div class="game-container">
-    <h1><i class="fas fa-cog"></i> Spinning Wheel <i class="fas fa-chalkboard"></i></h1>
-    <p style="margin-bottom: 1rem;">Spin the wheel and discover new words! Click on the word to hear it again.</p>
+    <h1><i class="fas fa-cog"></i> Spinning Wheel Challenge <i class="fas fa-chalkboard"></i></h1>
+    <div class="instructions">Spin the wheel, then click on the correct picture that matches the word!</div>
 
     <div class="wheel-wrapper">
         <canvas id="wheelCanvas" width="600" height="600"></canvas>
@@ -148,19 +183,22 @@
         <button id="spinBtn" class="spin-btn"><i class="fas fa-sync-alt"></i> SPIN!</button>
     </div>
 
-    <div class="result-area" id="resultArea">
-        <div class="result-image" id="resultImage">
-            <i class="fas fa-spinner fa-pulse"></i>
-        </div>
-        <div class="result-word" id="resultWord">—</div>
-        <button id="speakResultBtn" class="sound-btn"><i class="fas fa-volume-up"></i> Listen</button>
+    <div class="current-word" id="currentWordDisplay">Current word: <span id="currentWord">—</span></div>
+
+    <div id="optionsArea" class="options-area"></div>
+
+    <div class="score-area">
+        Score: <span id="score">0</span> / <span id="totalQuestions">0</span>
     </div>
+    <div id="feedback" class="feedback"></div>
+
+    <button id="nextBtn" class="next-btn" style="display: none;">Next Word</button>
 
     <a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Main</a>
 </div>
 
 <script>
-    // Data for wheel segments: word, image path (relative to this file's location inside 'games' folder)
+    // Data for wheel segments (same as before)
     const segments = [
         { word: "Apple", img: "../images/apple.jpg", fallback: "🍎" },
         { word: "Ant", img: "../images/ant.jpg", fallback: "🐜" },
@@ -172,13 +210,16 @@
         { word: "Duck", img: "../images/duck.jpg", fallback: "🦆" }
     ];
 
-    const segmentCount = segments.length;
+    let currentWordObj = null;
+    let score = 0;
+    let totalQuestions = 0;
+    let gameLocked = false; // after spin and before answer
+    let currentOptions = [];
+
+    // Wheel variables
     let currentAngle = 0;
     let isSpinning = false;
-    let animationId = null;
-    let spinStartTime = 0;
-    const spinDuration = 2000; // ms
-
+    const spinDuration = 2000;
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -198,9 +239,9 @@
         const centerX = width / 2;
         const centerY = height / 2;
         const radius = width / 2 - 5;
-        const angleStep = (Math.PI * 2) / segmentCount;
+        const angleStep = (Math.PI * 2) / segments.length;
 
-        for (let i = 0; i < segmentCount; i++) {
+        for (let i = 0; i < segments.length; i++) {
             const startAngle = i * angleStep + currentAngle;
             const endAngle = (i + 1) * angleStep + currentAngle;
             const seg = segments[i];
@@ -239,13 +280,13 @@
     }
 
     function getRandomFinalAngle() {
-        const extraSpins = 5 * 2 * Math.PI; // 5 full rotations
+        const extraSpins = 5 * 2 * Math.PI;
         const randomOffset = Math.random() * 2 * Math.PI;
         return currentAngle + extraSpins + randomOffset;
     }
 
     function spinWheel() {
-        if (isSpinning) return;
+        if (isSpinning || gameLocked) return;
         isSpinning = true;
         const startAngle = currentAngle;
         const targetAngle = getRandomFinalAngle();
@@ -272,34 +313,99 @@
     function determineSegment() {
         let angle = currentAngle % (2 * Math.PI);
         if (angle < 0) angle += 2 * Math.PI;
-        const angleStep = (2 * Math.PI) / segmentCount;
-        const pointerAngle = (3 * Math.PI) / 2; // pointing upward
+        const angleStep = (2 * Math.PI) / segments.length;
+        const pointerAngle = (3 * Math.PI) / 2;
         let relativeAngle = (pointerAngle - currentAngle) % (2 * Math.PI);
         if (relativeAngle < 0) relativeAngle += 2 * Math.PI;
         let idx = Math.floor(relativeAngle / angleStep);
-        idx = Math.min(idx, segmentCount - 1);
+        idx = Math.min(idx, segments.length - 1);
         const selected = segments[idx];
-        displayResult(selected);
+        startNewQuestion(selected);
     }
 
-    function displayResult(segment) {
-        const imgElement = document.getElementById('resultImage');
-        const wordElement = document.getElementById('resultWord');
-        const speakBtn = document.getElementById('speakResultBtn');
+    function startNewQuestion(selected) {
+        currentWordObj = selected;
+        document.getElementById('currentWord').innerText = selected.word;
+        document.getElementById('currentWordDisplay').style.display = 'block';
 
-        const img = new Image();
-        img.onload = () => {
-            imgElement.innerHTML = '';
-            imgElement.appendChild(img);
-        };
-        img.onerror = () => {
-            imgElement.innerHTML = `<span style="font-size: 2rem;">${segment.fallback}</span>`;
-        };
-        img.src = segment.img;
-        wordElement.textContent = segment.word;
+        // Generate 3 random other words (distinct) for options
+        let otherWords = segments.filter(s => s.word !== selected.word);
+        // Shuffle otherWords
+        for (let i = otherWords.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [otherWords[i], otherWords[j]] = [otherWords[j], otherWords[i]];
+        }
+        const options = [selected, ...otherWords.slice(0, 3)];
+        // Shuffle options
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        currentOptions = options;
 
-        speakBtn.onclick = () => speakText(segment.word);
-        speakText(segment.word);
+        // Render options area
+        const optionsDiv = document.getElementById('optionsArea');
+        optionsDiv.innerHTML = '';
+        currentOptions.forEach((opt, idx) => {
+            const card = document.createElement('div');
+            card.className = 'option-card';
+            const img = document.createElement('img');
+            img.src = opt.img;
+            img.onerror = () => { img.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' font-size='40' text-anchor='middle' fill='white'%3E${opt.fallback}%3C/text%3E%3C/svg%3E`; };
+            card.appendChild(img);
+            const span = document.createElement('span');
+            span.innerText = opt.word;
+            card.appendChild(span);
+            card.onclick = () => handleAnswer(opt);
+            optionsDiv.appendChild(card);
+        });
+
+        gameLocked = true;
+        document.getElementById('feedback').innerHTML = '';
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('spinBtn').disabled = true;
+    }
+
+    function handleAnswer(selected) {
+        if (!gameLocked) return;
+        const isCorrect = (selected.word === currentWordObj.word);
+        const feedbackDiv = document.getElementById('feedback');
+        if (isCorrect) {
+            score++;
+            feedbackDiv.innerHTML = '✅ Correct! Great job! ✅';
+            feedbackDiv.className = 'feedback correct';
+            speakText(`Correct! ${currentWordObj.word}`);
+        } else {
+            feedbackDiv.innerHTML = `❌ Wrong! The correct word was ${currentWordObj.word}. Try next! ❌`;
+            feedbackDiv.className = 'feedback wrong';
+            speakText(`The correct word is ${currentWordObj.word}`);
+        }
+        totalQuestions++;
+        updateScoreDisplay();
+
+        // Disable all options
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.style.pointerEvents = 'none';
+        });
+        // Show next button
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        gameLocked = false;
+        document.getElementById('spinBtn').disabled = false;
+    }
+
+    function updateScoreDisplay() {
+        document.getElementById('score').innerText = score;
+        document.getElementById('totalQuestions').innerText = totalQuestions;
+    }
+
+    function nextQuestion() {
+        // Reset for next spin
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('feedback').innerHTML = '';
+        document.getElementById('currentWord').innerText = '—';
+        document.getElementById('optionsArea').innerHTML = '<div style="padding:1rem;">Spin the wheel to begin!</div>';
+        gameLocked = false;
+        // Spin is allowed again
     }
 
     function speakText(text) {
@@ -311,18 +417,17 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-    });
-
+    window.addEventListener('resize', () => { resizeCanvas(); });
     resizeCanvas();
     drawWheel();
 
     document.getElementById('spinBtn').addEventListener('click', spinWheel);
-    setTimeout(() => {
-        const randomSegment = segments[Math.floor(Math.random() * segments.length)];
-        displayResult(randomSegment);
-    }, 100);
+    document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+
+    // Initial state: show placeholder
+    document.getElementById('optionsArea').innerHTML = '<div style="padding:1rem;">Spin the wheel to begin!</div>';
+    document.getElementById('currentWordDisplay').style.display = 'block';
+    document.getElementById('currentWord').innerText = '—';
 </script>
 </body>
 </html>

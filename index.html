@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Phonics Nexus | Next-Gen Learning Platform</title>
+    <title>Phonics Nexus | منصة التعلم من الجيل القادم</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -31,6 +31,63 @@
         @keyframes gentleMove {
             0% { opacity: 0.4; transform: scale(1); }
             100% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Header Navigation */
+        .main-header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 179, 71, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo p {
+            font-size: 0.8rem;
+            color: #FFE0B5;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #e2e8f0;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            color: white;
+            transform: translateY(-2px);
         }
 
         .container {
@@ -72,6 +129,25 @@
             font-size: 1.3rem;
             color: #ffe0b5;
             margin-top: 0.5rem;
+        }
+
+        /* Featured Games Section */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 2rem 0 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, #FFD966, #FFB347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 3rem;
         }
 
         .cards-grid {
@@ -140,6 +216,40 @@
             transform: translateX(5px);
         }
 
+        /* Featured Game Card (Smaller) */
+        .game-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 200, 100, 0.3);
+            padding: 1.2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFB347;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .game-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #FFD966;
+        }
+
+        .game-card p {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+
         .stats-row {
             display: flex;
             justify-content: center;
@@ -147,6 +257,7 @@
             flex-wrap: wrap;
             padding-top: 1.5rem;
             border-top: 2px solid rgba(255, 179, 71, 0.3);
+            margin: 2rem 0;
         }
 
         .stat-number {
@@ -163,11 +274,49 @@
             color: #FFE0B5;
         }
 
+        /* Learning Path Section */
+        .learning-path {
+            background: linear-gradient(135deg, rgba(255, 179, 71, 0.1), rgba(255, 107, 107, 0.05));
+            border-radius: 2rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .path-steps {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.8rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
         footer {
             text-align: center;
             margin-top: 3rem;
+            padding: 2rem;
             font-size: 0.9rem;
             color: #cbd5e1;
+            border-top: 1px solid rgba(255, 179, 71, 0.2);
         }
 
         @media (max-width: 700px) {
@@ -176,61 +325,178 @@
             .hero p { font-size: 1rem; }
             .card h2 { font-size: 1.5rem; }
             .stat-number { font-size: 1.8rem; }
+            .nav-container { flex-direction: column; text-align: center; }
+            .nav-links { justify-content: center; }
+            .path-steps { flex-direction: column; align-items: center; }
+        }
+
+        /* RTL specific adjustments */
+        [dir="rtl"] .card-footer i {
+            transform: rotate(180deg);
+        }
+        
+        [dir="rtl"] .card:hover .card-footer i {
+            transform: translateX(-5px) rotate(180deg);
         }
     </style>
 </head>
-<body>
+<body dir="rtl">
 <div class="bg-glow"></div>
+
+<header class="main-header">
+    <nav class="nav-container">
+        <div class="logo">
+            <h1>🔤 Phonics Nexus</h1>
+            <p>تعلم القراءة من خلال اللعب</p>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link active">🏠 الرئيسية</a>
+            <a href="letters-grid.html" class="nav-link">🔤 الحروف</a>
+            <a href="letter-games.html" class="nav-link">🎮 الألعاب</a>
+            <a href="my-first-coding.html" class="nav-link">💻 البرمجة</a>
+            <a href="simple-words.html" class="nav-link">📖 كلمات</a>
+            <a href="simple-sentences.html" class="nav-link">📝 جمل</a>
+        </div>
+    </nav>
+</header>
+
 <div class="container">
     <div class="hero">
         <h1>Phonics Nexus</h1>
-        <p>Learn to read through play • cumulative blending • fun games</p>
+        <p>تعلم القراءة من خلال اللعب • دمج الحروف • ألعاب ممتعة</p>
     </div>
 
     <div class="cards-grid">
         <div class="card" onclick="window.location.href='letters-grid.html'">
             <div class="card-icon"><i class="fas fa-letters"></i></div>
-            <h2>Alphabet</h2>
-            <p>26 interactive letter worlds with tracing, words gallery, and custom games.</p>
-            <div class="card-footer"><span>26 letters →</span><i class="fas fa-arrow-right"></i></div>
+            <h2>الحروف الهجائية</h2>
+            <p>26 حرفاً تفاعلياً مع تتبع الحروف، كلمات مصورة، وألعاب مخصصة.</p>
+            <div class="card-footer"><span>26 حرفاً →</span><i class="fas fa-arrow-left"></i></div>
         </div>
 
         <div class="card" onclick="window.location.href='my-first-coding.html'">
             <div class="card-icon"><i class="fas fa-code"></i></div>
-            <h2>My First Coding</h2>
-            <p>Cumulative blending · unlock letters by mastering sounds.</p>
-            <div class="card-footer"><span>Start coding →</span><i class="fas fa-arrow-right"></i></div>
+            <h2>برمج بنفسك</h2>
+            <p>تعلم دمج الحروف • افتح الحروف الجديدة بإتقان الأصوات.</p>
+            <div class="card-footer"><span>ابدأ البرمجة →</span><i class="fas fa-arrow-left"></i></div>
         </div>
 
         <div class="card" onclick="window.location.href='letter-games.html'">
             <div class="card-icon"><i class="fas fa-gamepad"></i></div>
-            <h2>Letter Games</h2>
-            <p>All our phonics games in one place. 44+ interactive mini‑games to reinforce skills.</p>
-            <div class="card-footer"><span>Explore games →</span><i class="fas fa-arrow-right"></i></div>
+            <h2>ألعاب الحروف</h2>
+            <p>جميع ألعاب الفونكس في مكان واحد. أكثر من 44 لعبة تفاعلية صغيرة.</p>
+            <div class="card-footer"><span>استكشف الألعاب →</span><i class="fas fa-arrow-left"></i></div>
         </div>
 
         <div class="card" onclick="window.location.href='simple-sentences.html'">
             <div class="card-icon"><i class="fas fa-book-open"></i></div>
-            <h2>Simple Sentences</h2>
-            <p>Build and read sentences using the words you know. Expand daily.</p>
-            <div class="card-footer"><span>Start reading →</span><i class="fas fa-arrow-right"></i></div>
+            <h2>جمل بسيطة</h2>
+            <p>كون واقرأ الجمل باستخدام الكلمات التي تعلمتها.</p>
+            <div class="card-footer"><span>ابدأ القراءة →</span><i class="fas fa-arrow-left"></i></div>
         </div>
 
         <div class="card" onclick="window.location.href='simple-words.html'">
             <div class="card-icon"><i class="fas fa-words"></i></div>
-            <h2>Simple Words</h2>
-            <p>Learn common words with pictures and audio. New words added regularly.</p>
-            <div class="card-footer"><span>Explore words →</span><i class="fas fa-arrow-right"></i></div>
+            <h2>كلمات بسيطة</h2>
+            <p>تعلم كلمات شائعة مع صور وأصوات. كلمات جديدة تضاف باستمرار.</p>
+            <div class="card-footer"><span>استكشف الكلمات →</span><i class="fas fa-arrow-left"></i></div>
+        </div>
+    </div>
+
+    <!-- Featured Games Section -->
+    <h2 class="section-title">🎮 ألعاب مميزة</h2>
+    <div class="games-grid">
+        <div class="game-card" onclick="window.location.href='games/match-picture-letter.html'">
+            <div class="game-icon">🎯</div>
+            <h3>مطابقة الحروف والصور</h3>
+            <p>طابق الحرف مع الصورة المناسبة</p>
+        </div>
+        <div class="game-card" onclick="window.location.href='games/spinning-wheel.html'">
+            <div class="game-icon">🎡</div>
+            <h3>عجلة الحروف</h3>
+            <p>دور العجلة وتعلم الحروف</p>
+        </div>
+        <div class="game-card" onclick="window.location.href='games/tracing-game.html'">
+            <div class="game-icon">✍️</div>
+            <h3>تتبع الحروف</h3>
+            <p>تعلم كتابة الحروف بشكل صحيح</p>
+        </div>
+        <div class="game-card" onclick="window.location.href='games/magnetic-letters.html'">
+            <div class="game-icon">🧲</div>
+            <h3>الحروف المغناطيسية</h3>
+            <p>رتب الحروف لتكوين كلمات</p>
+        </div>
+    </div>
+
+    <!-- Learning Path -->
+    <div class="learning-path">
+        <h2 style="margin-bottom: 0.5rem;">📚 رحلة التعلم</h2>
+        <p style="color: #FFE0B5;">اتبع الخطوات لتتقن اللغة الإنجليزية</p>
+        <div class="path-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>تعلم الحروف</h3>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">26 حرفاً مع النطق والصور</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>كلمات بسيطة</h3>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">150+ كلمة مصورة</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>جمل بسيطة</h3>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">اقرأ تكون جملك الخاصة</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>ألعاب تفاعلية</h3>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">44+ لعبة تعليمية</p>
+            </div>
         </div>
     </div>
 
     <div class="stats-row">
-        <div class="stat-item"><div class="stat-number">26</div><div class="stat-label">Letters</div></div>
-        <div class="stat-item"><div class="stat-number">44+</div><div class="stat-label">Games</div></div>
-        <div class="stat-item"><div class="stat-number">150+</div><div class="stat-label">Words & Images</div></div>
+        <div class="stat-item"><div class="stat-number">26</div><div class="stat-label">حرفاً</div></div>
+        <div class="stat-item"><div class="stat-number">44+</div><div class="stat-label">لعبة</div></div>
+        <div class="stat-item"><div class="stat-number">150+</div><div class="stat-label">كلمة وصورة</div></div>
     </div>
 
-    <footer>✨ Built for young learners — expandable daily | Anas Abdulrahman</footer>
+    <footer>
+        ✨ صمم خصيصاً للمتعلمين الصغار — يتم تحديثه يومياً | Anas Abdulrahman
+    </footer>
 </div>
+
+<script>
+    // Add smooth hover effects and animation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate cards on scroll
+        const cards = document.querySelectorAll('.card, .game-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+        
+        // Trigger animation for visible cards
+        setTimeout(() => {
+            cards.forEach(card => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            });
+        }, 100);
+    });
+</script>
 </body>
 </html>

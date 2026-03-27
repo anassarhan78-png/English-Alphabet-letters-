@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -179,7 +179,7 @@
             backdrop-filter: blur(10px);
             border-radius: 1.5rem;
             padding: 1.5rem;
-            border-right: 4px solid #38bdf8;
+            border-left: 4px solid #38bdf8;
             cursor: pointer;
             transition: all 0.3s ease;
             animation: fadeInUp 0.5s ease;
@@ -187,8 +187,8 @@
 
         .sentence-card:hover {
             background: rgba(56, 189, 248, 0.15);
-            transform: translateX(-5px);
-            border-right-color: #fbbf24;
+            transform: translateX(5px);
+            border-left-color: #fbbf24;
         }
 
         .sentence-text {
@@ -217,7 +217,7 @@
 
         .listen-icon {
             color: #38bdf8;
-            margin-left: 0.5rem;
+            margin-right: 0.5rem;
         }
 
         /* Add Section */
@@ -328,55 +328,55 @@
         }
     </style>
 </head>
-<body dir="rtl">
+<body>
 <div class="bg-glow"></div>
 
 <header class="main-header">
     <nav class="nav-container">
         <div class="logo">
             <h1>🔤 Phonics Nexus</h1>
-            <p>تعلم القراءة من خلال اللعب</p>
+            <p>Learn to read through play</p>
         </div>
         <div class="nav-links">
-            <a href="index.html" class="nav-link">🏠 الرئيسية</a>
-            <a href="letters-grid.html" class="nav-link">🔤 الحروف</a>
-            <a href="letter-games.html" class="nav-link">🎮 الألعاب</a>
-            <a href="my-first-coding.html" class="nav-link">💻 برمج بنفسك</a>
-            <a href="simple-words.html" class="nav-link">📖 كلمات</a>
-            <a href="simple-sentences.html" class="nav-link active">📝 جمل</a>
+            <a href="index.html" class="nav-link">🏠 Home</a>
+            <a href="letters-grid.html" class="nav-link">🔤 Letters</a>
+            <a href="letter-games.html" class="nav-link">🎮 Games</a>
+            <a href="my-first-coding.html" class="nav-link">💻 Coding</a>
+            <a href="simple-words.html" class="nav-link">📖 Words</a>
+            <a href="simple-sentences.html" class="nav-link active">📝 Sentences</a>
         </div>
     </nav>
 </header>
 
 <div class="container">
     <div class="hero">
-        <h1><i class="fas fa-book-open"></i> جمل بسيطة</h1>
-        <p>تدرب على قراءة الجمل القابلة للفك. يتم إضافة جمل جديدة يومياً</p>
+        <h1><i class="fas fa-book-open"></i> Simple Sentences</h1>
+        <p>Practice reading with decodable sentences. New sentences added daily.</p>
     </div>
 
     <div class="stats-bar">
         <div class="stat-card">
             <div class="stat-number" id="sentenceCount">0</div>
-            <div class="stat-label">جملة</div>
+            <div class="stat-label">Sentences</div>
         </div>
         <div class="stat-card">
             <div class="stat-number" id="wordCount">0</div>
-            <div class="stat-label">كلمة</div>
+            <div class="stat-label">Words</div>
         </div>
     </div>
 
     <div id="sentencesList" class="sentences-grid"></div>
 
     <div class="add-section">
-        <p><i class="fas fa-plus-circle"></i> أضف جملة جديدة للمكتبة</p>
+        <p><i class="fas fa-plus-circle"></i> Add a new sentence to the library</p>
         <div class="input-group">
-            <input type="text" id="newSentence" placeholder="مثال: A cat sat on the mat.">
-            <button id="addBtn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة جملة</button>
+            <input type="text" id="newSentence" placeholder="e.g., A cat sat on the mat.">
+            <button id="addBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Add Sentence</button>
         </div>
-        <p class="note"><i class="fas fa-info-circle"></i> يتم حفظ الجمل في المتصفح حالياً</p>
+        <p class="note"><i class="fas fa-info-circle"></i> Sentences are saved in your browser for now</p>
     </div>
 
-    <footer>⭐ يتم إضافة جمل جديدة يومياً. اضغط على أي جملة لسماع نطقها!</footer>
+    <footer>⭐ New sentences added daily. Tap any sentence to hear it read aloud!</footer>
 </div>
 
 <script>
@@ -408,8 +408,8 @@
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-book"></i>
-                    <p>لا توجد جمل بعد</p>
-                    <p style="font-size: 0.8rem;">أضف جملة جديدة باستخدام الحقل أعلاه</p>
+                    <p>No sentences yet</p>
+                    <p style="font-size: 0.8rem;">Add a new sentence using the field above</p>
                 </div>
             `;
             updateStats();

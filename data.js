@@ -1,4 +1,4 @@
-// بيانات الحروف الـ 26 مع الكلمات والصور من الإنترنت
+// Complete data for 26 letters with words and images from the internet
 const lettersData = {
     A: {
         name: "A",
@@ -265,61 +265,28 @@ const lettersData = {
     }
 };
 
-// الحصول على عدد الألعاب لكل حرف
+// Get number of games for each letter
 function getGamesCount(letter) {
     return lettersData[letter]?.games.length || 2;
 }
 
-// بيانات إضافية للكلمات والجمل
+// Additional data for words and sentences
 const wordsData = [];
 const sentencesData = [];
 
-// تجميع كل الكلمات من جميع الحروف
+// Collect all words from all letters
 for (const [letter, data] of Object.entries(lettersData)) {
     data.words.forEach(wordObj => {
         wordsData.push({
             letter: letter,
             word: wordObj.word,
-            meaning: getArabicTranslation(wordObj.word),
             img: wordObj.img,
             example: getExampleSentence(wordObj.word)
         });
     });
 }
 
-// وظائف مساعدة للترجمة (يمكن توسيعها)
-function getArabicTranslation(word) {
-    const translations = {
-        "Apple": "تفاحة", "Ant": "نملة", "Alligator": "تمساح", "Airplane": "طائرة",
-        "Ball": "كرة", "Banana": "موز", "Bear": "دب", "Butterfly": "فراشة",
-        "Cat": "قطة", "Car": "سيارة", "Cow": "بقرة", "Cake": "كعكة",
-        "Dog": "كلب", "Duck": "بطة", "Dolphin": "دولفين",
-        "Egg": "بيضة", "Elephant": "فيل", "Eagle": "نسر",
-        "Fish": "سمكة", "Frog": "ضفدع", "Flower": "زهرة",
-        "Goat": "ماعز", "Giraffe": "زرافة", "Grapes": "عنب",
-        "House": "منزل", "Horse": "حصان", "Hat": "قبعة",
-        "Igloo": "بيت ثلجي", "Insect": "حشرة", "Ice Cream": "آيس كريم",
-        "Jellyfish": "قنديل بحر", "Jacket": "سترة", "Juice": "عصير",
-        "Kite": "طائرة ورقية", "Kangaroo": "كنغر", "Key": "مفتاح",
-        "Lion": "أسد", "Leaf": "ورقة شجر", "Ladybug": "دعسوقة",
-        "Monkey": "قرد", "Moon": "قمر", "Milk": "حليب",
-        "Nest": "عش", "Nose": "أنف", "Night": "ليل",
-        "Octopus": "أخطبوط", "Orange": "برتقال", "Owl": "بومة",
-        "Penguin": "بطريق", "Panda": "باندا", "Pizza": "بيتزا",
-        "Queen": "ملكة", "Quail": "سمان", "Question": "سؤال",
-        "Rabbit": "أرنب", "Rainbow": "قوس قزح", "Robot": "روبوت",
-        "Sun": "شمس", "Snake": "ثعبان", "Star": "نجم",
-        "Tiger": "نمر", "Turtle": "سلحفاة", "Tree": "شجرة",
-        "Umbrella": "مظلة", "Unicorn": "يونيكورن", "Up": "فوق",
-        "Violin": "كمان", "Volcano": "بركان", "Van": "شاحنة صغيرة",
-        "Whale": "حوت", "Wolf": "ذئب", "Watermelon": "بطيخ",
-        "Xylophone": "إكسيليفون", "X-ray": "أشعة سينية", "Fox": "ثعلب",
-        "Yak": "ياك", "Yarn": "خيط", "Yellow": "أصفر",
-        "Zebra": "حمار وحشي", "Zoo": "حديقة حيوانات", "Zipper": "سحاب"
-    };
-    return translations[word] || word;
-}
-
+// Helper functions for example sentences
 function getExampleSentence(word) {
     const examples = {
         "Apple": "I eat an apple every day.",
@@ -331,7 +298,7 @@ function getExampleSentence(word) {
     return examples[word] || `This is a ${word}.`;
 }
 
-// تصدير البيانات للاستخدام في الصفحات الأخرى
+// Export data for use in other pages
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { lettersData, wordsData, sentencesData, getGamesCount };
 }

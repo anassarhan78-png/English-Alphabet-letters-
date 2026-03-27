@@ -4,31 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Match Picture to Letter | Phonics Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #1e2a3a, #0f172a);
+            font-family: 'Inter', 'Comic Neue', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
         }
+        
+        /* Animated background glow */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 179, 71, 0.15), transparent 70%);
+            animation: gentleMove 8s infinite alternate;
+            z-index: 0;
+        }
+        
+        @keyframes gentleMove {
+            0% { opacity: 0.4; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
         .game-container {
-            max-width: 1000px;
+            max-width: 1100px;
             width: 100%;
             background: rgba(20, 30, 50, 0.7);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border-radius: 2rem;
             padding: 2rem;
             text-align: center;
-            border: 1px solid rgba(255,179,71,0.3);
+            border: 1px solid rgba(255, 179, 71, 0.4);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.6s ease;
         }
-        h1 { font-size: 2rem; background: linear-gradient(135deg, #FFB347, #FF6B6B); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 1rem; }
-        .sub { color: #FFE0B5; margin-bottom: 2rem; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sub {
+            color: #FFE0B5;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
         .game-board {
             display: flex;
             flex-wrap: wrap;
@@ -36,152 +89,381 @@
             gap: 2rem;
             margin: 1.5rem 0;
         }
+        
         .pictures, .letters {
             flex: 1;
-            min-width: 200px;
+            min-width: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1.5rem;
+            padding: 1rem;
         }
-        .section-title { font-size: 1.2rem; margin-bottom: 1rem; color: #FFB347; }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #FFB347;
+            font-weight: bold;
+        }
+        
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 1rem;
             justify-items: center;
         }
+        
         .picture-card, .letter-card {
-            background: #1e293b;
-            border: 2px solid #38bdf8;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid #FFB347;
             border-radius: 1rem;
             padding: 0.8rem;
             text-align: center;
             cursor: pointer;
-            width: 120px;
-            transition: 0.2s;
+            width: 130px;
+            transition: all 0.2s ease;
         }
+        
+        .picture-card:hover:not(.disabled), .letter-card:hover:not(.disabled) {
+            transform: translateY(-5px);
+            background: rgba(255, 179, 71, 0.2);
+            border-color: #FFD966;
+        }
+        
         .picture-card.selected, .letter-card.selected {
-            background: #f39c12;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
             border-color: #f39c12;
             transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.5);
         }
+        
         .picture-card.disabled, .letter-card.disabled {
-            opacity: 0.4;
+            opacity: 0.5;
             pointer-events: none;
-            filter: grayscale(0.3);
+            filter: grayscale(0.5);
+            background: linear-gradient(135deg, #2c3e50, #1e293b);
         }
-        .picture-card img { width: 80px; height: 80px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 0.5rem; }
-        .letter-card { font-size: 3rem; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 120px; }
-        .score-area { margin-top: 1.5rem; font-size: 1.2rem; }
-        .message { margin: 1rem 0; padding: 0.5rem; border-radius: 2rem; font-weight: bold; }
-        .message.correct { background: #2ecc71; color: white; }
-        .message.wrong { background: #e74c3c; color: white; }
-        .reset-btn { background: #f39c12; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; margin-top: 1rem; }
-        .back-link { display: inline-block; margin-top: 1rem; color: #38bdf8; text-decoration: none; }
+        
+        .picture-card img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .picture-card span {
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            display: block;
+        }
+        
+        .letter-card {
+            font-size: 3rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 140px;
+            color: #FFB347;
+        }
+        
+        .score-area {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+        }
+        
+        .score-area span {
+            color: #FFB347;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .message {
+            margin: 1rem auto;
+            padding: 0.7rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            max-width: 400px;
+            animation: bounce 0.3s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .message.correct {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .message.wrong {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #FFB347, #FF6B6B);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #FFB347;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #FFD966;
+        }
+        
         @media (max-width: 700px) {
+            .game-container { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
             .picture-card, .letter-card { width: 100px; }
             .picture-card img { width: 70px; height: 70px; }
-            .letter-card { height: 100px; font-size: 2.5rem; }
+            .letter-card { height: 110px; font-size: 2.5rem; }
+            .cards-grid { gap: 0.8rem; }
         }
     </style>
 </head>
 <body>
+<div class="bg-glow"></div>
+
 <div class="game-container">
     <h1><i class="fas fa-puzzle-piece"></i> Match Picture to Letter</h1>
     <div class="sub">Click a picture, then click its matching letter!</div>
+    
     <div class="game-board">
         <div class="pictures">
-            <div class="section-title">🖼️ Pictures</div>
+            <div class="section-title"><i class="fas fa-image"></i> Pictures</div>
             <div id="picturesGrid" class="cards-grid"></div>
         </div>
         <div class="letters">
-            <div class="section-title">🔠 Letters</div>
+            <div class="section-title"><i class="fas fa-font"></i> Letters</div>
             <div id="lettersGrid" class="cards-grid"></div>
         </div>
     </div>
-    <div class="score-area">Matched: <span id="matchedCount">0</span> / <span id="totalPairs">4</span></div>
+    
+    <div class="score-area">
+        <i class="fas fa-star"></i> Matched: <span id="matchedCount">0</span> / <span id="totalPairs">4</span>
+    </div>
+    
     <div id="messageBox" class="message"></div>
+    
     <button id="resetBtn" class="reset-btn"><i class="fas fa-undo-alt"></i> New Game</button>
-    <div><a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Main</a></div>
+    <div><a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Hub</a></div>
 </div>
+
 <script>
+    // Game data with real images from Pixabay
     const gameData = [
-        { letter: "A", picture: { name: "Apple", img: "../images/apple.jpg", fallback: "🍎" } },
-        { letter: "B", picture: { name: "Ball", img: "../images/ball.jpg", fallback: "⚽" } },
-        { letter: "C", picture: { name: "Cat", img: "../images/cat.jpg", fallback: "🐱" } },
-        { letter: "D", picture: { name: "Dog", img: "../images/dog.jpg", fallback: "🐕" } }
+        { 
+            letter: "A", 
+            picture: { 
+                name: "Apple", 
+                img: "https://cdn.pixabay.com/photo/2020/05/23/16/22/apple-5210665_640.jpg",
+                fallback: "🍎" 
+            } 
+        },
+        { 
+            letter: "B", 
+            picture: { 
+                name: "Ball", 
+                img: "https://cdn.pixabay.com/photo/2012/04/26/21/27/ball-43370_640.png",
+                fallback: "⚽" 
+            } 
+        },
+        { 
+            letter: "C", 
+            picture: { 
+                name: "Cat", 
+                img: "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_640.jpg",
+                fallback: "🐱" 
+            } 
+        },
+        { 
+            letter: "D", 
+            picture: { 
+                name: "Dog", 
+                img: "https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_640.jpg",
+                fallback: "🐕" 
+            } 
+        }
     ];
+    
     let pictures = [], letters = [];
     let selectedType = null, selectedId = null, matchedCount = 0;
+    
     function shuffle(arr) {
-        for (let i=arr.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+        for (let i = arr.length - 1; i > 0; i--) { 
+            const j = Math.floor(Math.random() * (i + 1)); 
+            [arr[i], arr[j]] = [arr[j], arr[i]]; 
+        }
         return arr;
     }
+    
     function initGame() {
-        pictures = gameData.map((item,idx)=>({id:idx, letter:item.letter, name:item.picture.name, img:item.picture.img, fallback:item.picture.fallback, matched:false}));
-        letters = gameData.map((item,idx)=>({id:idx, letter:item.letter, matched:false}));
+        pictures = gameData.map((item, idx) => ({
+            id: idx,
+            letter: item.letter,
+            name: item.picture.name,
+            img: item.picture.img,
+            fallback: item.picture.fallback,
+            matched: false
+        }));
+        
+        letters = gameData.map((item, idx) => ({
+            id: idx,
+            letter: item.letter,
+            matched: false
+        }));
+        
         pictures = shuffle(pictures);
         letters = shuffle(letters);
-        selectedType = null; selectedId = null; matchedCount = 0;
+        selectedType = null;
+        selectedId = null;
+        matchedCount = 0;
+        
         document.getElementById('matchedCount').innerText = matchedCount;
         document.getElementById('totalPairs').innerText = gameData.length;
         render();
     }
+    
     function render() {
         const picsDiv = document.getElementById('picturesGrid');
         picsDiv.innerHTML = '';
+        
         pictures.forEach(pic => {
             const card = document.createElement('div');
             card.className = 'picture-card';
             if (pic.matched) card.classList.add('disabled');
-            if (selectedType==='picture' && selectedId===pic.id) card.classList.add('selected');
+            if (selectedType === 'picture' && selectedId === pic.id) card.classList.add('selected');
+            
             const img = document.createElement('img');
-            img.src = pic.img; img.onerror = () => { img.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' font-size='40' text-anchor='middle' fill='white'%3E${pic.fallback}%3C/text%3E%3C/svg%3E`; };
+            img.src = pic.img;
+            img.onerror = () => {
+                img.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' font-size='40' text-anchor='middle' fill='%23FFB347'%3E${pic.fallback}%3C/text%3E%3C/svg%3E`;
+            };
             card.appendChild(img);
-            const nameSpan = document.createElement('span'); nameSpan.textContent = pic.name; card.appendChild(nameSpan);
-            card.onclick = () => { if(pic.matched) return; if(selectedType==='picture' && selectedId===pic.id) { selectedType=null; selectedId=null; } else { selectedType='picture'; selectedId=pic.id; } render(); };
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = pic.name;
+            card.appendChild(nameSpan);
+            
+            card.onclick = () => {
+                if (pic.matched) return;
+                if (selectedType === 'picture' && selectedId === pic.id) {
+                    selectedType = null;
+                    selectedId = null;
+                } else {
+                    selectedType = 'picture';
+                    selectedId = pic.id;
+                }
+                render();
+            };
             picsDiv.appendChild(card);
         });
+        
         const lettersDiv = document.getElementById('lettersGrid');
         lettersDiv.innerHTML = '';
+        
         letters.forEach(letter => {
             const card = document.createElement('div');
             card.className = 'letter-card';
             if (letter.matched) card.classList.add('disabled');
-            if (selectedType==='letter' && selectedId===letter.id) card.classList.add('selected');
+            if (selectedType === 'letter' && selectedId === letter.id) card.classList.add('selected');
             card.textContent = letter.letter;
+            
             card.onclick = () => {
-                if(letter.matched) return;
-                if(selectedType==='letter' && selectedId===letter.id) { selectedType=null; selectedId=null; }
-                else if(selectedType==='picture') {
-                    const picture = pictures.find(p=>p.id===selectedId);
-                    if(picture && !picture.matched) attemptMatch(picture, letter);
-                    selectedType=null; selectedId=null;
-                } else { selectedType='letter'; selectedId=letter.id; }
+                if (letter.matched) return;
+                if (selectedType === 'letter' && selectedId === letter.id) {
+                    selectedType = null;
+                    selectedId = null;
+                } else if (selectedType === 'picture') {
+                    const picture = pictures.find(p => p.id === selectedId);
+                    if (picture && !picture.matched) attemptMatch(picture, letter);
+                    selectedType = null;
+                    selectedId = null;
+                } else {
+                    selectedType = 'letter';
+                    selectedId = letter.id;
+                }
                 render();
             };
             lettersDiv.appendChild(card);
         });
     }
+    
     function attemptMatch(picture, letter) {
-        if(picture.matched || letter.matched) return;
-        if(picture.letter === letter.letter) {
-            picture.matched = true; letter.matched = true;
+        if (picture.matched || letter.matched) return;
+        
+        if (picture.letter === letter.letter) {
+            picture.matched = true;
+            letter.matched = true;
             matchedCount++;
             document.getElementById('matchedCount').innerText = matchedCount;
             showMessage(`✅ Correct! ${picture.name} starts with ${letter.letter}.`, 'correct');
             speakText(`Correct! ${picture.name} starts with ${letter.letter}.`);
-            if(matchedCount === gameData.length) showMessage('🎉 Congratulations! You matched all pairs!', 'correct');
+            
+            if (matchedCount === gameData.length) {
+                showMessage('🎉 Congratulations! You matched all pairs! 🎉', 'correct');
+                speakText('Congratulations! You completed the game!');
+            }
         } else {
             showMessage(`❌ ${picture.name} does not start with ${letter.letter}. Try again!`, 'wrong');
-            speakText(`Oops! ${picture.name} does not start with ${letter.letter}.`);
+            speakText(`Oops! ${picture.name} does not start with ${letter.letter}. Try again.`);
         }
         render();
     }
+    
     function showMessage(msg, type) {
         const msgDiv = document.getElementById('messageBox');
-        msgDiv.textContent = msg; msgDiv.className = `message ${type}`;
-        setTimeout(() => { if(msgDiv.textContent === msg) msgDiv.innerHTML = ''; msgDiv.className = 'message'; }, 2000);
+        msgDiv.textContent = msg;
+        msgDiv.className = `message ${type}`;
+        setTimeout(() => {
+            if (msgDiv.textContent === msg) {
+                msgDiv.innerHTML = '';
+                msgDiv.className = 'message';
+            }
+        }, 2000);
     }
-    function speakText(text) { if(window.speechSynthesis){ window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.9; window.speechSynthesis.speak(u); } }
+    
+    function speakText(text) {
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.9;
+            u.pitch = 1.1;
+            window.speechSynthesis.speak(u);
+        }
+    }
+    
+    // Initialize game
     initGame();
+    
+    // Reset button
     document.getElementById('resetBtn').addEventListener('click', initGame);
 </script>
 </body>

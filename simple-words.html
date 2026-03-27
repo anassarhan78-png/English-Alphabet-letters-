@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -335,56 +335,56 @@
         }
     </style>
 </head>
-<body dir="rtl">
+<body>
 <div class="bg-glow"></div>
 
 <header class="main-header">
     <nav class="nav-container">
         <div class="logo">
             <h1>🔤 Phonics Nexus</h1>
-            <p>تعلم القراءة من خلال اللعب</p>
+            <p>Learn to read through play</p>
         </div>
         <div class="nav-links">
-            <a href="index.html" class="nav-link">🏠 الرئيسية</a>
-            <a href="letters-grid.html" class="nav-link">🔤 الحروف</a>
-            <a href="letter-games.html" class="nav-link">🎮 الألعاب</a>
-            <a href="my-first-coding.html" class="nav-link">💻 برمج بنفسك</a>
-            <a href="simple-words.html" class="nav-link active">📖 كلمات</a>
-            <a href="simple-sentences.html" class="nav-link">📝 جمل</a>
+            <a href="index.html" class="nav-link">🏠 Home</a>
+            <a href="letters-grid.html" class="nav-link">🔤 Letters</a>
+            <a href="letter-games.html" class="nav-link">🎮 Games</a>
+            <a href="my-first-coding.html" class="nav-link">💻 Coding</a>
+            <a href="simple-words.html" class="nav-link active">📖 Words</a>
+            <a href="simple-sentences.html" class="nav-link">📝 Sentences</a>
         </div>
     </nav>
 </header>
 
 <div class="container">
     <div class="hero">
-        <h1><i class="fas fa-words"></i> كلمات بسيطة</h1>
-        <p>تعلم كلمات شائعة مع صور ونطق. اضغط على أي كلمة لسماع نطقها</p>
+        <h1><i class="fas fa-words"></i> Simple Words</h1>
+        <p>Learn common words with pictures and audio. Tap any word to hear pronunciation.</p>
     </div>
 
     <div class="stats-bar">
         <div class="stat-card">
             <div class="stat-number" id="wordCount">0</div>
-            <div class="stat-label">كلمة</div>
+            <div class="stat-label">Words</div>
         </div>
         <div class="stat-card">
             <div class="stat-number" id="letterCount">0</div>
-            <div class="stat-label">حرف مختلف</div>
+            <div class="stat-label">Unique Letters</div>
         </div>
     </div>
 
     <div id="wordsGrid" class="words-grid"></div>
 
     <div class="add-section">
-        <p><i class="fas fa-plus-circle"></i> أضف كلمة جديدة (مع رابط صورة)</p>
+        <p><i class="fas fa-plus-circle"></i> Add a new word (with image URL)</p>
         <div class="input-group">
-            <input type="text" id="newWord" placeholder="الكلمة (مثال: Apple)">
-            <input type="text" id="newImage" placeholder="رابط الصورة من الإنترنت">
-            <button id="addWordBtn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة كلمة</button>
+            <input type="text" id="newWord" placeholder="Word (e.g., Apple)">
+            <input type="text" id="newImage" placeholder="Image URL from the internet">
+            <button id="addWordBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Add Word</button>
         </div>
-        <p class="note"><i class="fas fa-info-circle"></i> يتم حفظ الكلمات في المتصفح. يمكنك إضافة أي عدد تريده</p>
+        <p class="note"><i class="fas fa-info-circle"></i> Words are saved in your browser. You can add as many as you like.</p>
     </div>
 
-    <footer>⭐ يتم إضافة كلمات جديدة يومياً. اضغط على أي كلمة لسماع نطقها!</footer>
+    <footer>⭐ New words added daily. Tap any word to hear it read aloud!</footer>
 </div>
 
 <script>
@@ -424,8 +424,8 @@
             grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-book"></i>
-                    <p>لا توجد كلمات بعد</p>
-                    <p style="font-size: 0.8rem;">أضف كلمة جديدة باستخدام الحقل أعلاه</p>
+                    <p>No words yet</p>
+                    <p style="font-size: 0.8rem;">Add a new word using the field above</p>
                 </div>
             `;
             updateStats();

@@ -4,29 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Computer Teacher – Letter Tic‑Tac‑Toe | Phonics Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: linear-gradient(135deg, #0f172a, #1e293b);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Comic Neue', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
         }
+        
+        /* Animated background glow */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 30% 50%, rgba(56, 189, 248, 0.15), transparent 70%);
+            animation: gentleMove 8s infinite alternate;
+            z-index: 0;
+        }
+        
+        @keyframes gentleMove {
+            0% { opacity: 0.4; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
         .game-container {
             max-width: 700px;
             width: 100%;
-            background: rgba(20,30,50,0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(12px);
             border-radius: 2rem;
             padding: 2rem;
             text-align: center;
-            border: 1px solid rgba(255,179,71,0.3);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.6s ease;
         }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         h1 {
             font-size: 2rem;
             background: linear-gradient(135deg, #a5f3fc, #38bdf8);
@@ -34,32 +70,60 @@
             background-clip: text;
             color: transparent;
             margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+        
         .level-selector {
             display: flex;
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
+        
         .level-btn {
             background: #1e293b;
-            border: 1px solid #38bdf8;
-            padding: 0.3rem 0.8rem;
+            border: 2px solid #38bdf8;
+            padding: 0.5rem 1.2rem;
             border-radius: 2rem;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #e2e8f0;
         }
-        .level-btn.active { background: #f39c12; border-color: #f39c12; color: #0f172a; }
+        
+        .level-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(56, 189, 248, 0.2);
+        }
+        
+        .level-btn.active { 
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            border-color: #38bdf8;
+            color: white;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+        
         .board {
             display: grid;
-            grid-template-columns: repeat(3,1fr);
-            gap: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 1rem;
-            padding: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1.5rem;
+            padding: 15px;
             margin: 1rem 0;
         }
+        
         .cell {
-            background: #1e293b;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             border: 2px solid #38bdf8;
             border-radius: 1rem;
             aspect-ratio: 1/1;
@@ -70,54 +134,128 @@
             font-size: 2rem;
             font-weight: bold;
             color: #e2e8f0;
+            transition: all 0.2s ease;
         }
-        .cell.marked { background: #2ecc71; border-color: #2ecc71; cursor: default; opacity: 0.7; }
-        .instruction { font-size: 1.2rem; margin: 1rem 0; }
+        
+        .cell:hover:not(.marked) {
+            transform: scale(1.02);
+            background: rgba(56, 189, 248, 0.2);
+            border-color: #fbbf24;
+        }
+        
+        .cell.marked { 
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #10b981;
+            cursor: default;
+            transform: scale(0.98);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .instruction {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            color: #a5f3fc;
+        }
+        
         .current-word {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #2c3e50, #1e293b);
             display: inline-block;
-            padding: 0.3rem 1rem;
+            padding: 0.5rem 1.5rem;
             border-radius: 2rem;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
             margin-bottom: 1rem;
+            border: 1px solid #38bdf8;
+            color: #fbbf24;
         }
-        .message { font-size: 1.1rem; margin: 0.5rem 0; font-weight: bold; }
+        
+        .message {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            font-weight: bold;
+            padding: 0.5rem;
+            border-radius: 1rem;
+        }
+        
+        .message.win {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+        
+        .message.lose {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.2);
+        }
+        
         .reset-btn {
-            background: #38bdf8;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
             border: none;
-            padding: 0.5rem 1.5rem;
+            padding: 0.7rem 1.8rem;
             border-radius: 2rem;
             font-weight: bold;
             cursor: pointer;
             margin-top: 1rem;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 1rem;
         }
+        
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+        }
+        
         .back-link {
             display: inline-block;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             color: #38bdf8;
             text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-        @media (max-width: 600px) { .cell { font-size: 1.5rem; } }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #fbbf24;
+        }
+        
+        @media (max-width: 600px) {
+            .game-container { padding: 1.5rem; }
+            .cell { font-size: 1.5rem; }
+            h1 { font-size: 1.5rem; }
+            .current-word { font-size: 1.1rem; }
+        }
     </style>
 </head>
 <body>
+<div class="bg-glow"></div>
+
 <div class="game-container">
     <h1><i class="fas fa-chalkboard-teacher"></i> Computer Teacher</h1>
+    <div class="subtitle">Listen to the letter • Click the correct cell • Complete a line to win!</div>
+    
     <div class="level-selector">
         <button data-level="1" class="level-btn active">Level 1 (A‑I)</button>
         <button data-level="2" class="level-btn">Level 2 (A‑M)</button>
         <button data-level="3" class="level-btn">Level 3 (A‑P)</button>
     </div>
+    
     <div class="board" id="board"></div>
+    
     <div class="current-word" id="currentLetter"></div>
-    <div class="instruction" id="instruction">Click on the letter you hear 👂</div>
+    <div class="instruction" id="instruction">👂 Click on the letter you hear</div>
     <div id="message" class="message"></div>
-    <button id="resetBtn" class="reset-btn">New Game</button>
-    <div><a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Main</a></div>
+    
+    <button id="resetBtn" class="reset-btn"><i class="fas fa-redo-alt"></i> New Game</button>
+    <div><a href="../index.html" class="back-link"><i class="fas fa-home"></i> Back to Hub</a></div>
 </div>
+
 <script>
-    const letterSets = { 1:['A','B','C','D','E','F','G','H','I'], 2:['A','B','C','D','E','F','G','H','I','J','K','L','M'], 3:['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'] };
+    const letterSets = { 
+        1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], 
+        2: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'], 
+        3: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'] 
+    };
     let currentLevel = 1;
     let board = [], gameActive = true, waitingForClick = false, currentTargetLetter = null;
     let cells = [];
@@ -125,112 +263,155 @@
     function generateBoard() {
         const letters = letterSets[currentLevel];
         const newBoard = [];
-        for (let i=0; i<9; i++) {
-            newBoard.push({ letter: letters[Math.floor(Math.random()*letters.length)], marked: false });
+        for (let i = 0; i < 9; i++) {
+            newBoard.push({ letter: letters[Math.floor(Math.random() * letters.length)], marked: false });
         }
         return newBoard;
     }
+    
     function renderBoard() {
-        for (let i=0; i<9; i++) {
+        for (let i = 0; i < 9; i++) {
             const cell = cells[i];
             cell.textContent = board[i].letter;
             if (board[i].marked) cell.classList.add('marked');
             else cell.classList.remove('marked');
         }
     }
+    
     function speakLetter(letter) {
-        if(!window.speechSynthesis) return;
+        if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(letter);
-        u.lang='en-US'; u.rate=0.8;
+        u.lang = 'en-US';
+        u.rate = 0.8;
+        u.pitch = 1.1;
         window.speechSynthesis.speak(u);
     }
+    
     function speakMessage(msg) {
-        if(!window.speechSynthesis) return;
+        if (!window.speechSynthesis) return;
         const u = new SpeechSynthesisUtterance(msg);
-        u.lang='en-US'; u.rate=0.9;
+        u.lang = 'en-US';
+        u.rate = 0.9;
         window.speechSynthesis.speak(u);
     }
+    
     function checkWin() {
-        const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        const lines = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
         return lines.some(line => line.every(idx => board[idx].marked === true));
     }
-    function isBoardFull() { return board.every(cell => cell.marked); }
+    
+    function isBoardFull() { 
+        return board.every(cell => cell.marked); 
+    }
+    
     function pickRandomUnmarked() {
         const unmarked = board.filter(c => !c.marked);
-        if(!unmarked.length) return null;
-        return unmarked[Math.floor(Math.random()*unmarked.length)].letter;
+        if (!unmarked.length) return null;
+        return unmarked[Math.floor(Math.random() * unmarked.length)].letter;
     }
+    
     function startNewRound() {
-        if(!gameActive) return;
+        if (!gameActive) return;
         const nextLetter = pickRandomUnmarked();
-        if(!nextLetter) {
-            if(!checkWin()) { document.getElementById('message').innerHTML = '🎉 Draw!'; gameActive=false; waitingForClick=false; document.getElementById('currentLetter').innerHTML=''; }
+        if (!nextLetter) {
+            if (!checkWin()) { 
+                const msgDiv = document.getElementById('message');
+                msgDiv.innerHTML = '🎉 Game Over! It\'s a Draw! 🎉';
+                msgDiv.className = 'message';
+                gameActive = false;
+                waitingForClick = false;
+                document.getElementById('currentLetter').innerHTML = '';
+                speakMessage('Game over! It\'s a draw!');
+            }
             return;
         }
         currentTargetLetter = nextLetter;
         document.getElementById('currentLetter').innerHTML = `🔊 Listen: ${currentTargetLetter}`;
-        document.getElementById('instruction').innerHTML = 'Click on the cell with this letter';
+        document.getElementById('instruction').innerHTML = '🎯 Click on the cell with this letter';
         waitingForClick = true;
         speakLetter(currentTargetLetter);
     }
+    
     function handleCellClick(idx) {
-        if(!gameActive || !waitingForClick) return;
-        if(board[idx].marked) return;
-        if(board[idx].letter === currentTargetLetter) {
+        if (!gameActive || !waitingForClick) return;
+        if (board[idx].marked) return;
+        
+        if (board[idx].letter === currentTargetLetter) {
             board[idx].marked = true;
             renderBoard();
             waitingForClick = false;
-            document.getElementById('instruction').innerHTML = '✅ Good! Next letter...';
-            if(checkWin()) {
-                gameActive=false;
-                document.getElementById('message').innerHTML = '🏆 You win! 🏆';
+            document.getElementById('instruction').innerHTML = '✅ Good job! Next letter...';
+            
+            if (checkWin()) {
+                gameActive = false;
+                const msgDiv = document.getElementById('message');
+                msgDiv.innerHTML = '🏆 YOU WIN! 🏆 Congratulations! 🎉';
+                msgDiv.className = 'message win';
                 speakMessage('Congratulations! You won!');
                 return;
             }
-            if(isBoardFull()) {
-                gameActive=false;
-                document.getElementById('message').innerHTML = '🎉 Draw!';
-                speakMessage('Draw!');
+            
+            if (isBoardFull()) {
+                gameActive = false;
+                const msgDiv = document.getElementById('message');
+                msgDiv.innerHTML = '🎉 Great Game! It\'s a Draw! 🎉';
+                msgDiv.className = 'message';
+                speakMessage('Great game! It\'s a draw!');
                 return;
             }
+            
             setTimeout(() => startNewRound(), 800);
         } else {
             document.getElementById('instruction').innerHTML = '❌ Wrong! Try again.';
-            document.getElementById('message').innerHTML = `The letter was ${currentTargetLetter}. Click the correct cell.`;
+            const msgDiv = document.getElementById('message');
+            msgDiv.innerHTML = `The letter was ${currentTargetLetter}. Click the correct cell.`;
+            msgDiv.className = 'message';
             speakLetter(currentTargetLetter);
-            setTimeout(() => { document.getElementById('instruction').innerHTML = 'Click on the cell with this letter'; document.getElementById('message').innerHTML=''; }, 1500);
+            setTimeout(() => { 
+                document.getElementById('instruction').innerHTML = '🎯 Click on the cell with this letter'; 
+                msgDiv.innerHTML = '';
+            }, 1500);
         }
     }
+    
     function resetGame() {
         board = generateBoard();
         gameActive = true;
         waitingForClick = false;
         currentTargetLetter = null;
-        document.getElementById('message').innerHTML = '';
-        document.getElementById('instruction').innerHTML = 'Click on the letter you hear 👂';
+        const msgDiv = document.getElementById('message');
+        msgDiv.innerHTML = '';
+        msgDiv.className = 'message';
+        document.getElementById('instruction').innerHTML = '👂 Click on the letter you hear';
         document.getElementById('currentLetter').innerHTML = '';
         renderBoard();
         setTimeout(() => startNewRound(), 300);
     }
+    
     function changeLevel(level) {
         currentLevel = level;
         resetGame();
     }
+    
     function createBoardUI() {
         const boardDiv = document.getElementById('board');
         boardDiv.innerHTML = '';
         cells = [];
-        for(let i=0; i<9; i++) {
+        for (let i = 0; i < 9; i++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
-            cell.addEventListener('click', (function(idx){ return function(){ handleCellClick(idx); }; })(i));
+            cell.addEventListener('click', (function(idx) { 
+                return function() { handleCellClick(idx); }; 
+            })(i));
             boardDiv.appendChild(cell);
             cells.push(cell);
         }
     }
+    
     createBoardUI();
     resetGame();
+    
     document.querySelectorAll('.level-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const lvl = parseInt(btn.getAttribute('data-level'));
@@ -239,6 +420,7 @@
             btn.classList.add('active');
         });
     });
+    
     document.getElementById('resetBtn').addEventListener('click', resetGame);
 </script>
 </body>

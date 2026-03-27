@@ -1,48 +1,390 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Simple Words | Phonics Nexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0a0f1e;font-family:'Inter',sans-serif;color:#eef2ff;padding:2rem}
-        .container{max-width:1200px;margin:0 auto}
-        .back{display:inline-block;margin-bottom:2rem;color:#38bdf8;text-decoration:none}
-        h1{font-size:2rem;margin-bottom:0.5rem}
-        .sub{color:#9ca3af;margin-bottom:2rem}
-        .words-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem}
-        .word-card{background:rgba(20,30,50,0.6);border-radius:1.5rem;padding:1rem;text-align:center;cursor:pointer;transition:0.2s;border:1px solid rgba(56,189,248,0.2)}
-        .word-card:hover{transform:translateY(-5px);border-color:#38bdf8;background:rgba(56,189,248,0.1)}
-        .word-card img{width:120px;height:120px;object-fit:cover;border-radius:1rem;margin-bottom:0.5rem}
-        .word-card h3{font-size:1.3rem;margin:0.5rem 0}
-        .word-card i{color:#38bdf8;font-size:1.2rem}
-        .add-section{margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,0.05);border-radius:1rem;text-align:center}
-        .add-section input, .add-section select{background:#1e2a3a;border:1px solid #38bdf8;padding:0.5rem 1rem;border-radius:2rem;color:white;margin:0.3rem}
-        button{background:#38bdf8;border:none;padding:0.5rem 1.5rem;border-radius:2rem;font-weight:bold;cursor:pointer}
-        footer{margin-top:2rem;text-align:center;color:#475569}
-        @media (max-width: 600px) { .words-grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); } .word-card img { width: 100px; height: 100px; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2a3a, #0f172a);
+            font-family: 'Inter', 'Comic Neue', sans-serif;
+            color: #eef2ff;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 70% 30%, rgba(56, 189, 248, 0.15), transparent 70%);
+            animation: gentleMove 8s infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes gentleMove {
+            0% { opacity: 0.4; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Header Navigation */
+        .main-header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #38bdf8, #a5f3fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #e2e8f0;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #a5f3fc, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .hero p {
+            color: #94a3b8;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 1rem;
+            padding: 0.8rem 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* Words Grid */
+        .words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .word-card {
+            background: rgba(20, 30, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .word-card:hover {
+            transform: translateY(-8px);
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.3);
+        }
+
+        .word-card img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 1rem;
+            margin-bottom: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .word-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .word-card h3 {
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+            color: #f1f5f9;
+        }
+
+        .word-card i {
+            color: #38bdf8;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .word-card:hover i {
+            transform: scale(1.1);
+            color: #fbbf24;
+        }
+
+        /* Add Section */
+        .add-section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(56,189,248,0.05));
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(56,189,248,0.3);
+            margin-top: 1rem;
+        }
+
+        .add-section p {
+            margin-bottom: 1rem;
+            color: #a5f3fc;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .add-section input {
+            background: rgba(30, 42, 58, 0.8);
+            border: 2px solid #38bdf8;
+            padding: 0.7rem 1.2rem;
+            border-radius: 2rem;
+            color: white;
+            min-width: 200px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .add-section input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+        }
+
+        .add-section input::placeholder {
+            color: #64748b;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .note {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.8rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 1.5rem;
+            color: #64748b;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #38bdf8;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid rgba(56,189,248,0.2);
+        }
+
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .words-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+            .word-card img { width: 100px; height: 100px; }
+            .word-card h3 { font-size: 1.1rem; }
+            .stat-number { font-size: 1.4rem; }
+            .nav-container { flex-direction: column; text-align: center; }
+            .nav-links { justify-content: center; }
+            .input-group { flex-direction: column; }
+            .add-section input { width: 100%; }
+        }
     </style>
 </head>
-<body>
+<body dir="rtl">
+<div class="bg-glow"></div>
+
+<header class="main-header">
+    <nav class="nav-container">
+        <div class="logo">
+            <h1>🔤 Phonics Nexus</h1>
+            <p>تعلم القراءة من خلال اللعب</p>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">🏠 الرئيسية</a>
+            <a href="letters-grid.html" class="nav-link">🔤 الحروف</a>
+            <a href="letter-games.html" class="nav-link">🎮 الألعاب</a>
+            <a href="my-first-coding.html" class="nav-link">💻 برمج بنفسك</a>
+            <a href="simple-words.html" class="nav-link active">📖 كلمات</a>
+            <a href="simple-sentences.html" class="nav-link">📝 جمل</a>
+        </div>
+    </nav>
+</header>
+
 <div class="container">
-    <a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Back to Hub</a>
-    <h1><i class="fas fa-words"></i> Simple Words</h1>
-    <p class="sub">Learn common words with pictures and audio. Tap any word to hear pronunciation.</p>
+    <div class="hero">
+        <h1><i class="fas fa-words"></i> كلمات بسيطة</h1>
+        <p>تعلم كلمات شائعة مع صور ونطق. اضغط على أي كلمة لسماع نطقها</p>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-number" id="wordCount">0</div>
+            <div class="stat-label">كلمة</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="letterCount">0</div>
+            <div class="stat-label">حرف مختلف</div>
+        </div>
+    </div>
 
     <div id="wordsGrid" class="words-grid"></div>
 
     <div class="add-section">
-        <p><i class="fas fa-plus-circle"></i> Add a new word (with image URL)</p>
-        <input type="text" id="newWord" placeholder="Word (e.g., Apple)">
-        <input type="text" id="newImage" placeholder="Image URL (from the internet)">
-        <button id="addWordBtn">Add Word</button>
-        <p style="font-size:0.7rem;margin-top:0.5rem;">Words are saved in your browser. You can add as many as you like.</p>
+        <p><i class="fas fa-plus-circle"></i> أضف كلمة جديدة (مع رابط صورة)</p>
+        <div class="input-group">
+            <input type="text" id="newWord" placeholder="الكلمة (مثال: Apple)">
+            <input type="text" id="newImage" placeholder="رابط الصورة من الإنترنت">
+            <button id="addWordBtn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة كلمة</button>
+        </div>
+        <p class="note"><i class="fas fa-info-circle"></i> يتم حفظ الكلمات في المتصفح. يمكنك إضافة أي عدد تريده</p>
     </div>
 
-    <footer>⭐ New words appear here. You can also edit the file to add permanent words.</footer>
+    <footer>⭐ يتم إضافة كلمات جديدة يومياً. اضغط على أي كلمة لسماع نطقها!</footer>
 </div>
 
 <script>
@@ -64,9 +406,32 @@
     const savedWords = localStorage.getItem("phonics_words");
     if (savedWords) words = JSON.parse(savedWords);
 
+    function updateStats() {
+        const wordCount = words.length;
+        const uniqueLetters = new Set();
+        words.forEach(w => {
+            w.word.toLowerCase().split('').forEach(l => uniqueLetters.add(l));
+        });
+        document.getElementById('wordCount').textContent = wordCount;
+        document.getElementById('letterCount').textContent = uniqueLetters.size;
+    }
+
     function renderWords() {
         const grid = document.getElementById('wordsGrid');
         grid.innerHTML = '';
+        
+        if (words.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-book"></i>
+                    <p>لا توجد كلمات بعد</p>
+                    <p style="font-size: 0.8rem;">أضف كلمة جديدة باستخدام الحقل أعلاه</p>
+                </div>
+            `;
+            updateStats();
+            return;
+        }
+        
         words.forEach((item, index) => {
             const card = document.createElement('div');
             card.className = 'word-card';
@@ -78,6 +443,8 @@
             `;
             grid.appendChild(card);
         });
+        
+        updateStats();
     }
 
     function speakText(text) {
@@ -86,6 +453,7 @@
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
             utterance.rate = 0.85;
+            utterance.pitch = 1;
             window.speechSynthesis.speak(utterance);
         }
     }
@@ -95,14 +463,37 @@
         const imgInput = document.getElementById('newImage');
         const word = wordInput.value.trim();
         const img = imgInput.value.trim();
-        if (!word) return;
+        
+        if (!word) {
+            speakText("Please write a word first");
+            return;
+        }
+        
         words.push({ word, img: img || 'https://picsum.photos/120/120?grayscale' });
         localStorage.setItem("phonics_words", JSON.stringify(words));
         renderWords();
         wordInput.value = '';
         imgInput.value = '';
         speakText(`Added new word: ${word}`);
+        
+        // Add celebration effect
+        const btn = document.getElementById('addWordBtn');
+        btn.style.transform = 'scale(0.95)';
+        setTimeout(() => btn.style.transform = '', 200);
     }
+
+    // Add enter key support
+    document.getElementById('newWord').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addWord();
+        }
+    });
+    
+    document.getElementById('newImage').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addWord();
+        }
+    });
 
     document.getElementById('addWordBtn').addEventListener('click', addWord);
     renderWords();

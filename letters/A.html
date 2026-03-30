@@ -70,6 +70,21 @@
         .game-controls { margin-top: 1rem; }
         .score { font-size: 1.2rem; margin: 0.5rem; }
         footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(400px) rotate(360deg); opacity: 0; }
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: #f39c12;
+            pointer-events: none;
+            z-index: 1000;
+            animation: fall 2s linear forwards;
+        }
         @media (max-width: 700px) {
             .container { padding: 1rem; }
             .word-card img { width: 100px; height: 100px; }
@@ -88,7 +103,7 @@
             <canvas id="capitalCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearCapital"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakCapital"><i class="fas fa-volume-up"></i> Sound</button>
+                <button class="btn" id="animateCapital"><i class="fas fa-play"></i> Show Me</button>
             </div>
         </div>
         <div class="trace-card">
@@ -96,7 +111,7 @@
             <canvas id="smallCanvas" width="300" height="250"></canvas>
             <div>
                 <button class="btn" id="clearSmall"><i class="fas fa-eraser"></i> Clear</button>
-                <button class="btn" id="speakSmall"><i class="fas fa-volume-up"></i> Sound</button>
+                <button class="btn" id="animateSmall"><i class="fas fa-play"></i> Show Me</button>
             </div>
         </div>
     </div>
@@ -119,7 +134,7 @@
         </div>
     </div>
 
-    <!-- لعبة التلوين -->
+    <!-- Coloring Game -->
     <div class="coloring-game">
         <h2><i class="fas fa-paint-bucket"></i> Color the Letter A</h2>
         <p>Tap on all the letters that are <strong>A (capital) or a (small)</strong> to color them!</p>
@@ -134,7 +149,7 @@
 </div>
 
 <script>
-    // ---------- النطق ----------
+    // ----- Speech (only for word cards, not for letters) -----
     function speakText(text) {
         try {
             if (window.speechSynthesis) {
@@ -147,7 +162,7 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ---------- لعبة التلوين ----------
+    // ----- Coloring Game -----
     function generateColoringLetters() {
         const otherCapitals = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         const otherSmalls = ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
@@ -195,6 +210,20 @@
         });
     }
 
+    function celebrate() {
+        for (let i = 0; i < 40; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 60%)`;
+            confetti.style.width = Math.random() * 8 + 4 + 'px';
+            confetti.style.height = Math.random() * 8 + 4 + 'px';
+            confetti.style.animationDuration = Math.random() * 1.5 + 1 + 's';
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 2000);
+        }
+    }
+
     function handleTileClick(tile, letter) {
         if (tile.classList.contains('correct')) return;
         if (letter === 'A' || letter === 'a') {
@@ -205,6 +234,7 @@
             if (foundCount === totalCorrect) {
                 speakText('Excellent! You found all the letter A\'s!');
                 setTimeout(() => alert('🎉 Great job! You found all the A letters! 🎉'), 100);
+                celebrate();
             }
         } else {
             tile.classList.add('incorrect');
@@ -219,17 +249,19 @@
         speakText('Game reset. Find all the letter A\'s!');
     }
 
-    // تهيئة لعبة التلوين
     currentLetters = generateColoringLetters();
     renderColoringGame();
     document.getElementById('resetColoring').addEventListener('click', resetColoringGame);
 
-    // ---------- رسم الحروف مع تحسين الحرف الشبحي ----------
+    // ----- Tracing with Animation (capital A) -----
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
+        let animationFrame = null;
+        let animationPoints = [];
+        let currentPointIndex = 0;
 
         const topLine = 40;
         const midLine = 100;
@@ -238,8 +270,7 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // رسم الأسطر الإرشادية
+            // guidelines
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -248,7 +279,7 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الشبحي A (محسّن)
+            // ghost letter
             ctx.save();
             ctx.font = 'bold 138px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
@@ -258,9 +289,17 @@
             ctx.restore();
         }
 
-        drawLinesAndLetter();
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx = e.touches ? e.touches[0].clientX : e.clientX;
+            let cy = e.touches ? e.touches[0].clientY : e.clientY;
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            return { x: Math.min(Math.max(0, x), canvas.width), y: Math.min(Math.max(0, y), canvas.height) };
+        }
 
-        // وظائف الرسم
         function startDraw(e) { 
             drawing = true; 
             const p = getPos(e); 
@@ -269,7 +308,6 @@
                 ctx.moveTo(p.x, p.y); 
             } 
         }
-        
         function draw(e) {
             if (!drawing) return;
             e.preventDefault();
@@ -284,21 +322,55 @@
                 ctx.moveTo(p.x, p.y);
             }
         }
-        
         function stopDraw() { drawing = false; ctx.beginPath(); }
-        
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let cx = e.touches ? e.touches[0].clientX : e.clientX;
-            let cy = e.touches ? e.touches[0].clientY : e.clientY;
-            let x = (cx - rect.left) * scaleX;
-            let y = (cy - rect.top) * scaleY;
-            return { 
-                x: Math.min(Math.max(0, x), canvas.width), 
-                y: Math.min(Math.max(0, y), canvas.height) 
-            };
+
+        // Animation for capital A: stroke order (left diagonal, right diagonal, crossbar)
+        function animateCapital() {
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            drawLinesAndLetter();
+            const centerX = canvas.width / 2;
+            const startY = topLine + 15;
+            const leftDiagX = centerX - 50;
+            const leftDiagY = baseline - 15;
+            const rightDiagX = centerX + 50;
+            const rightDiagY = baseline - 15;
+            const crossbarY = midLine + 15;
+            const crossbarStartX = centerX - 40;
+            const crossbarEndX = centerX + 40;
+
+            animationPoints = [
+                { x: leftDiagX, y: startY },   // start top left
+                { x: centerX, y: leftDiagY },  // to bottom middle
+                { x: rightDiagX, y: startY },  // top right
+                { x: centerX, y: leftDiagY },  // back to bottom middle (second stroke)
+                { x: crossbarStartX, y: crossbarY }, // crossbar start
+                { x: crossbarEndX, y: crossbarY }    // crossbar end
+            ];
+            currentPointIndex = 0;
+            function step() {
+                if (currentPointIndex >= animationPoints.length) {
+                    animationFrame = null;
+                    return;
+                }
+                const target = animationPoints[currentPointIndex];
+                // draw a small circle at the target (as a guide)
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = '#f39c12';
+                ctx.fill();
+                if (currentPointIndex > 0) {
+                    const prev = animationPoints[currentPointIndex - 1];
+                    ctx.beginPath();
+                    ctx.moveTo(prev.x, prev.y);
+                    ctx.lineTo(target.x, target.y);
+                    ctx.strokeStyle = '#ff8c42';
+                    ctx.lineWidth = 12;
+                    ctx.stroke();
+                }
+                currentPointIndex++;
+                animationFrame = requestAnimationFrame(step);
+            }
+            step();
         }
 
         canvas.addEventListener('mousedown', startDraw);
@@ -308,14 +380,28 @@
         canvas.addEventListener('touchmove', draw);
         canvas.addEventListener('touchend', stopDraw);
 
+        document.getElementById('clearCapital').addEventListener('click', () => {
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            drawLinesAndLetter();
+        });
+        document.getElementById('animateCapital').addEventListener('click', () => {
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            drawLinesAndLetter();
+            animateCapital();
+        });
+
+        drawLinesAndLetter();
         return drawLinesAndLetter;
     }
 
+    // ----- Tracing with Animation (small a) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let drawing = false;
+        let animationFrame = null;
+        let animationPoints = [];
 
         const topLine = 40;
         const midLine = 100;
@@ -324,8 +410,6 @@
 
         function drawLinesAndLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // رسم الأسطر الإرشادية
             ctx.beginPath();
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#aaa';
@@ -334,7 +418,6 @@
             ctx.moveTo(0, baseline); ctx.lineTo(canvas.width, baseline); ctx.stroke();
             ctx.moveTo(0, bottomLine); ctx.lineTo(canvas.width, bottomLine); ctx.stroke();
 
-            // رسم الحرف الشبحي ɑ (محسّن)
             ctx.save();
             ctx.font = 'bold 115px "Andika", "Comic Neue", cursive';
             ctx.fillStyle = '#e9dbc9';
@@ -344,9 +427,17 @@
             ctx.restore();
         }
 
-        drawLinesAndLetter();
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let cx = e.touches ? e.touches[0].clientX : e.clientX;
+            let cy = e.touches ? e.touches[0].clientY : e.clientY;
+            let x = (cx - rect.left) * scaleX;
+            let y = (cy - rect.top) * scaleY;
+            return { x: Math.min(Math.max(0, x), canvas.width), y: Math.min(Math.max(0, y), canvas.height) };
+        }
 
-        // نفس وظائف الرسم
         function startDraw(e) { 
             drawing = true; 
             const p = getPos(e); 
@@ -355,7 +446,6 @@
                 ctx.moveTo(p.x, p.y); 
             } 
         }
-        
         function draw(e) {
             if (!drawing) return;
             e.preventDefault();
@@ -370,21 +460,54 @@
                 ctx.moveTo(p.x, p.y);
             }
         }
-        
         function stopDraw() { drawing = false; ctx.beginPath(); }
-        
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let cx = e.touches ? e.touches[0].clientX : e.clientX;
-            let cy = e.touches ? e.touches[0].clientY : e.clientY;
-            let x = (cx - rect.left) * scaleX;
-            let y = (cy - rect.top) * scaleY;
-            return { 
-                x: Math.min(Math.max(0, x), canvas.width), 
-                y: Math.min(Math.max(0, y), canvas.height) 
-            };
+
+        // Animation for small a: circle then downstroke
+        function animateSmall() {
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            drawLinesAndLetter();
+            const centerX = canvas.width / 2;
+            const centerY = baseline - 45;
+            const radius = 28;
+            const downStartX = centerX + 2;
+            const downStartY = centerY + 12;
+            const downEndY = baseline - 8;
+
+            animationPoints = [];
+            // approximate circle points (simplified)
+            for (let ang = 0; ang <= 2 * Math.PI; ang += Math.PI / 6) {
+                let x = centerX + radius * Math.cos(ang);
+                let y = centerY + radius * Math.sin(ang);
+                animationPoints.push({ x, y });
+            }
+            // add the downstroke
+            animationPoints.push({ x: downStartX, y: downStartY });
+            animationPoints.push({ x: downStartX, y: downEndY });
+
+            let idx = 0;
+            function step() {
+                if (idx >= animationPoints.length) {
+                    animationFrame = null;
+                    return;
+                }
+                const target = animationPoints[idx];
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = '#f39c12';
+                ctx.fill();
+                if (idx > 0) {
+                    const prev = animationPoints[idx - 1];
+                    ctx.beginPath();
+                    ctx.moveTo(prev.x, prev.y);
+                    ctx.lineTo(target.x, target.y);
+                    ctx.strokeStyle = '#ff8c42';
+                    ctx.lineWidth = 10;
+                    ctx.stroke();
+                }
+                idx++;
+                animationFrame = requestAnimationFrame(step);
+            }
+            step();
         }
 
         canvas.addEventListener('mousedown', startDraw);
@@ -394,17 +517,23 @@
         canvas.addEventListener('touchmove', draw);
         canvas.addEventListener('touchend', stopDraw);
 
+        document.getElementById('clearSmall').addEventListener('click', () => {
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            drawLinesAndLetter();
+        });
+        document.getElementById('animateSmall').addEventListener('click', () => {
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            drawLinesAndLetter();
+            animateSmall();
+        });
+
+        drawLinesAndLetter();
         return drawLinesAndLetter;
     }
 
-    // تهيئة اللوحتين
-    const redrawCapital = setupCapitalCanvas();
-    const redrawSmall = setupSmallCanvas();
-
-    document.getElementById('clearCapital').addEventListener('click', redrawCapital);
-    document.getElementById('clearSmall').addEventListener('click', redrawSmall);
-    document.getElementById('speakCapital').addEventListener('click', () => speakText('A says /æ/'));
-    document.getElementById('speakSmall').addEventListener('click', () => speakText('a says /æ/'));
+    // Initialize both tracing canvases
+    setupCapitalCanvas();
+    setupSmallCanvas();
 </script>
 </body>
 </html>

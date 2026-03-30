@@ -162,7 +162,7 @@
         } catch(e) { console.warn(e); }
     }
 
-    // ----- Coloring Game -----
+    // ----- Coloring Game (unchanged) -----
     function generateColoringLetters() {
         const otherCapitals = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         const otherSmalls = ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
@@ -253,7 +253,7 @@
     renderColoringGame();
     document.getElementById('resetColoring').addEventListener('click', resetColoringGame);
 
-    // ----- Tracing with Animation (capital A) -----
+    // ----- Tracing with fixed animations -----
     function setupCapitalCanvas() {
         const canvas = document.getElementById('capitalCanvas');
         if (!canvas) return;
@@ -324,25 +324,27 @@
         }
         function stopDraw() { drawing = false; ctx.beginPath(); }
 
-        // Animation for capital A: stroke order (left diagonal, right diagonal, crossbar)
+        // CORRECT animation for capital A: left diagonal, right diagonal, crossbar
         function animateCapital() {
             if (animationFrame) cancelAnimationFrame(animationFrame);
             drawLinesAndLetter();
             const centerX = canvas.width / 2;
-            const startY = topLine + 15;
-            const leftDiagX = centerX - 50;
-            const leftDiagY = baseline - 15;
-            const rightDiagX = centerX + 50;
-            const rightDiagY = baseline - 15;
-            const crossbarY = midLine + 15;
-            const crossbarStartX = centerX - 40;
-            const crossbarEndX = centerX + 40;
+            // Define key points
+            const topY = topLine + 8;            // near top line
+            const leftFootX = centerX - 48;
+            const leftFootY = baseline - 12;
+            const rightFootX = centerX + 48;
+            const rightFootY = baseline - 12;
+            const crossbarY = midLine + 12;
+            const crossbarStartX = centerX - 35;
+            const crossbarEndX = centerX + 35;
 
+            // Stroke order: left diagonal, right diagonal, crossbar
             animationPoints = [
-                { x: leftDiagX, y: startY },   // start top left
-                { x: centerX, y: leftDiagY },  // to bottom middle
-                { x: rightDiagX, y: startY },  // top right
-                { x: centerX, y: leftDiagY },  // back to bottom middle (second stroke)
+                { x: centerX, y: topY },            // start at top point
+                { x: leftFootX, y: leftFootY },     // left leg
+                { x: centerX, y: topY },            // back to top
+                { x: rightFootX, y: rightFootY },   // right leg
                 { x: crossbarStartX, y: crossbarY }, // crossbar start
                 { x: crossbarEndX, y: crossbarY }    // crossbar end
             ];
@@ -353,7 +355,7 @@
                     return;
                 }
                 const target = animationPoints[currentPointIndex];
-                // draw a small circle at the target (as a guide)
+                // draw a small circle at the target
                 ctx.beginPath();
                 ctx.arc(target.x, target.y, 8, 0, 2 * Math.PI);
                 ctx.fillStyle = '#f39c12';
@@ -394,7 +396,7 @@
         return drawLinesAndLetter;
     }
 
-    // ----- Tracing with Animation (small a) -----
+    // ----- Tracing for small a (fixed: starts at midline, circle, then downstroke) -----
     function setupSmallCanvas() {
         const canvas = document.getElementById('smallCanvas');
         if (!canvas) return;
@@ -462,20 +464,21 @@
         }
         function stopDraw() { drawing = false; ctx.beginPath(); }
 
-        // Animation for small a: circle then downstroke
+        // Correct small a animation: circle starting from the right side (or left) – typical lowercase 'a' is a circle and a straight line
+        // We'll animate a simplified circle (12 points) and then a downstroke from the circle to the baseline.
         function animateSmall() {
             if (animationFrame) cancelAnimationFrame(animationFrame);
             drawLinesAndLetter();
             const centerX = canvas.width / 2;
-            const centerY = baseline - 45;
+            const centerY = midLine + 28;   // roughly center of the small a body (midline area)
             const radius = 28;
             const downStartX = centerX + 2;
             const downStartY = centerY + 12;
             const downEndY = baseline - 8;
 
             animationPoints = [];
-            // approximate circle points (simplified)
-            for (let ang = 0; ang <= 2 * Math.PI; ang += Math.PI / 6) {
+            // generate circle points (starting at angle 0 for a natural start)
+            for (let ang = 0; ang <= 2 * Math.PI; ang += Math.PI / 8) {
                 let x = centerX + radius * Math.cos(ang);
                 let y = centerY + radius * Math.sin(ang);
                 animationPoints.push({ x, y });

@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* same as before – no changes */
         * {
             margin: 0;
             padding: 0;
@@ -21,7 +22,6 @@
             min-height: 100vh;
         }
 
-        /* Animated background */
         .bg-glow {
             position: fixed;
             top: 0;
@@ -39,7 +39,6 @@
             100% { opacity: 0.8; transform: scale(1.05); }
         }
 
-        /* Header Navigation */
         .main-header {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
@@ -201,7 +200,6 @@
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
 
-        /* letters row */
         .unlocked-letters {
             display: flex;
             flex-wrap: wrap;
@@ -373,7 +371,6 @@
             border-top: 1px solid rgba(56,189,248,0.2);
         }
 
-        /* Scrollbar */
         .blends-grid::-webkit-scrollbar {
             width: 8px;
         }
@@ -422,7 +419,7 @@
 <div class="container">
     <div class="hero">
         <h1><i class="fas fa-code"></i> My First Coding YAY! <i class="fas fa-chalkboard-teacher"></i></h1>
-        <div class="badge">👩‍🏫 Teacher mode: Click any letter to unlock/lock it. Only unlocked letters appear in blends.</div>
+        <div class="badge">👩‍🏫 Teacher mode: Click any letter to unlock/lock it. Only unlocked letters appear in words.</div>
     </div>
 
     <div class="teacher-mode">
@@ -442,17 +439,65 @@
     <!-- optional quiz for practice -->
     <div class="quiz-area">
         <h2><i class="fas fa-headphones"></i> Listening Practice (optional)</h2>
-        <div class="quiz-question" id="quizQuestion">🎧 Click "Listen" and choose the right blend</div>
+        <div class="quiz-question" id="quizQuestion">🎧 Click "Listen" and choose the right word</div>
         <div class="quiz-options" id="quizOptions"></div>
         <div id="quizFeedback" class="feedback"></div>
         <div class="progress" id="progressMessage"></div>
     </div>
 
-    <footer>✨ Teacher: click letters to unlock. Blends are generated from unlocked letters only.</footer>
+    <footer>✨ Teacher: click letters to unlock. Words are real, decodable words using only unlocked sounds.</footer>
 </div>
 
 <script>
-    // all letters A-Z
+    // ---------- PHONICS WORD DATABASE ----------
+    // Words organized by pattern: CV, VC, CVC, CVCV
+    // Each word is stored with its phoneme breakdown (array of letters, each representing a single sound)
+    const wordDatabase = [
+        // CV words (consonant-vowel)
+        { word: "me", pattern: "CV", phonemes: ["m","e"] },
+        { word: "be", pattern: "CV", phonemes: ["b","e"] },
+        { word: "he", pattern: "CV", phonemes: ["h","e"] },
+        { word: "we", pattern: "CV", phonemes: ["w","e"] },
+        { word: "go", pattern: "CV", phonemes: ["g","o"] },
+        { word: "no", pattern: "CV", phonemes: ["n","o"] },
+        { word: "so", pattern: "CV", phonemes: ["s","o"] },
+        { word: "my", pattern: "CV", phonemes: ["m","y"] },
+        { word: "by", pattern: "CV", phonemes: ["b","y"] },
+        { word: "hi", pattern: "CV", phonemes: ["h","i"] },
+        // VC words (vowel-consonant)
+        { word: "at", pattern: "VC", phonemes: ["a","t"] },
+        { word: "in", pattern: "VC", phonemes: ["i","n"] },
+        { word: "on", pattern: "VC", phonemes: ["o","n"] },
+        { word: "up", pattern: "VC", phonemes: ["u","p"] },
+        { word: "it", pattern: "VC", phonemes: ["i","t"] },
+        { word: "am", pattern: "VC", phonemes: ["a","m"] },
+        { word: "an", pattern: "VC", phonemes: ["a","n"] },
+        // CVC words (consonant-vowel-consonant)
+        { word: "cat", pattern: "CVC", phonemes: ["c","a","t"] },
+        { word: "dog", pattern: "CVC", phonemes: ["d","o","g"] },
+        { word: "sun", pattern: "CVC", phonemes: ["s","u","n"] },
+        { word: "hat", pattern: "CVC", phonemes: ["h","a","t"] },
+        { word: "bat", pattern: "CVC", phonemes: ["b","a","t"] },
+        { word: "rat", pattern: "CVC", phonemes: ["r","a","t"] },
+        { word: "red", pattern: "CVC", phonemes: ["r","e","d"] },
+        { word: "bed", pattern: "CVC", phonemes: ["b","e","d"] },
+        { word: "leg", pattern: "CVC", phonemes: ["l","e","g"] },
+        { word: "big", pattern: "CVC", phonemes: ["b","i","g"] },
+        { word: "pig", pattern: "CVC", phonemes: ["p","i","g"] },
+        { word: "hop", pattern: "CVC", phonemes: ["h","o","p"] },
+        { word: "cup", pattern: "CVC", phonemes: ["c","u","p"] },
+        { word: "bug", pattern: "CVC", phonemes: ["b","u","g"] },
+        { word: "fun", pattern: "CVC", phonemes: ["f","u","n"] },
+        { word: "run", pattern: "CVC", phonemes: ["r","u","n"] },
+        // CVCV words (two syllables, simple)
+        { word: "baby", pattern: "CVCV", phonemes: ["b","a","b","y"] },
+        { word: "lady", pattern: "CVCV", phonemes: ["l","a","d","y"] },
+        { word: "tiger", pattern: "CVCV", phonemes: ["t","i","g","e","r"] }, // slightly longer but decodable
+        { word: "robot", pattern: "CVCV", phonemes: ["r","o","b","o","t"] },
+        { word: "sunset", pattern: "CVCV", phonemes: ["s","u","n","s","e","t"] }
+    ];
+
+    // all letters A-Z (uppercase for display, but phonemes are lowercase)
     const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
     let unlockedLetters = [];
 
@@ -474,11 +519,9 @@
     // toggle letter unlock (teacher clicks)
     function toggleLetter(letter) {
         if (unlockedLetters.includes(letter)) {
-            // remove if it's not A (A must stay unlocked to have any blends)
             if (letter !== "A") {
                 unlockedLetters = unlockedLetters.filter(l => l !== letter);
             } else {
-                // cannot lock A
                 alert("Letter A must remain unlocked to start blending.");
                 return;
             }
@@ -487,8 +530,8 @@
         }
         saveProgress();
         renderLettersRow();
-        renderBlends();
-        generateQuiz(); // refresh quiz
+        renderWords();      // refresh words list
+        generateQuiz();     // refresh quiz
         updateProgressMessage();
     }
 
@@ -497,7 +540,7 @@
         unlockedLetters = ["A"];
         saveProgress();
         renderLettersRow();
-        renderBlends();
+        renderWords();
         generateQuiz();
         updateProgressMessage();
         speakText("Progress reset. Only letter A is unlocked.");
@@ -508,36 +551,102 @@
         unlockedLetters = [...allLetters];
         saveProgress();
         renderLettersRow();
-        renderBlends();
+        renderWords();
         generateQuiz();
         updateProgressMessage();
         speakText("All letters unlocked!");
     }
 
-    // generate blends (1-3 letter combos) using unlocked letters
-    function getAllowedBlends() {
-        const letters = unlockedLetters.map(l => l.toLowerCase());
-        if (letters.length === 0) return [];
-        let blends = new Set();
-        // single letters
-        letters.forEach(l => blends.add(l));
-        // two-letter combos
-        for (let a of letters) {
-            for (let b of letters) {
-                blends.add(a + b);
-            }
+    // Filter words that can be formed using only unlocked letters (case-insensitive)
+    function getDecodableWords() {
+        const unlockedSet = new Set(unlockedLetters.map(l => l.toLowerCase()));
+        return wordDatabase.filter(entry => {
+            // every phoneme in the word must be in unlockedSet
+            return entry.phonemes.every(phoneme => unlockedSet.has(phoneme));
+        });
+    }
+
+    function renderWords() {
+        const container = document.getElementById('blendsGrid');
+        const words = getDecodableWords();
+        container.innerHTML = '';
+        if (words.length === 0) {
+            container.innerHTML = '<p style="text-align:center">✨ Unlock more letters to see real words! ✨</p>';
+            return;
         }
-        // three-letter combos
-        for (let a of letters) {
-            for (let b of letters) {
-                for (let c of letters) {
-                    blends.add(a + b + c);
-                }
-            }
+        words.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'blend-card';
+            card.textContent = item.word;
+            card.addEventListener('click', () => speakText(item.word));
+            container.appendChild(card);
+        });
+    }
+
+    // Quiz uses only decodable words
+    let currentQuizWord = "";
+    let currentOptions = [];
+
+    function generateQuiz() {
+        const words = getDecodableWords();
+        if (words.length === 0) {
+            document.getElementById('quizQuestion').innerHTML = "🎉 Unlock more letters to start the quiz!";
+            document.getElementById('quizOptions').innerHTML = "";
+            return;
         }
-        let result = Array.from(blends);
-        result.sort((a,b) => a.length - b.length || a.localeCompare(b));
-        return result;
+        const correctObj = words[Math.floor(Math.random() * words.length)];
+        const correct = correctObj.word;
+        currentQuizWord = correct;
+        // pick 3 other distinct words
+        let others = words.filter(w => w.word !== correct).map(w => w.word);
+        others.sort(() => 0.5 - Math.random());
+        let options = [correct, ...others.slice(0, 3)];
+        // if not enough unique words, fill with dummy
+        while (options.length < 4 && words.length > 1) {
+            const fallback = words.find(w => !options.includes(w.word));
+            if (fallback) options.push(fallback.word);
+            else break;
+        }
+        // shuffle options
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        currentOptions = options;
+
+        const container = document.getElementById('quizOptions');
+        container.innerHTML = '';
+        currentOptions.forEach(opt => {
+            const btn = document.createElement('div');
+            btn.className = 'quiz-opt';
+            btn.textContent = opt;
+            btn.addEventListener('click', () => handleQuizAnswer(opt, correct));
+            container.appendChild(btn);
+        });
+        const listenBtn = document.createElement('div');
+        listenBtn.className = 'quiz-opt';
+        listenBtn.innerHTML = '<i class="fas fa-volume-up"></i> Listen again';
+        listenBtn.addEventListener('click', () => speakText(currentQuizWord));
+        container.appendChild(listenBtn);
+        document.getElementById('quizQuestion').innerHTML = `🎧 Which word do you hear?`;
+        speakText(currentQuizWord);
+    }
+
+    function handleQuizAnswer(selected, correct) {
+        const feedbackDiv = document.getElementById('quizFeedback');
+        if (selected === correct) {
+            feedbackDiv.innerHTML = '✅ Correct! Great listening! ✅';
+            feedbackDiv.className = 'feedback correct';
+            speakText('Correct!');
+        } else {
+            feedbackDiv.innerHTML = `❌ Not quite. The correct word was ${correct}. Try again! ❌`;
+            feedbackDiv.className = 'feedback wrong';
+            speakText(`The correct word is ${correct}`);
+        }
+        setTimeout(() => {
+            generateQuiz();
+            feedbackDiv.innerHTML = '';
+        }, 1500);
     }
 
     function renderLettersRow() {
@@ -557,97 +666,10 @@
         });
     }
 
-    function renderBlends() {
-        const container = document.getElementById('blendsGrid');
-        const blends = getAllowedBlends();
-        container.innerHTML = '';
-        // show first 100 blends for performance
-        const displayBlends = blends.slice(0, 100);
-        displayBlends.forEach(blend => {
-            const card = document.createElement('div');
-            card.className = 'blend-card';
-            card.textContent = blend;
-            card.addEventListener('click', () => speakText(blend));
-            container.appendChild(card);
-        });
-        if (blends.length > 100) {
-            const more = document.createElement('div');
-            more.className = 'blend-card';
-            more.textContent = `+${blends.length - 100} more`;
-            more.style.opacity = '0.6';
-            more.style.cursor = 'default';
-            more.addEventListener('click', () => speakText('Many more blends available!'));
-            container.appendChild(more);
-        }
-        if (blends.length === 0) container.innerHTML = '<p style="text-align:center">✨ Unlock at least one letter to see blends ✨</p>';
-    }
-
-    // quiz logic (practice only, doesn't unlock anything)
-    let currentQuizBlend = "";
-    let currentOptions = [];
-
-    function generateQuiz() {
-        const blends = getAllowedBlends();
-        if (blends.length === 0) {
-            document.getElementById('quizQuestion').innerHTML = "🎉 Unlock letters to start the quiz!";
-            document.getElementById('quizOptions').innerHTML = "";
-            return;
-        }
-        const correct = blends[Math.floor(Math.random() * blends.length)];
-        currentQuizBlend = correct;
-        let others = blends.filter(b => b !== correct);
-        others.sort(() => 0.5 - Math.random());
-        let options = [correct, ...others.slice(0, 3)];
-        while (options.length < 4 && blends.length > 1) {
-            const fallback = blends.find(b => !options.includes(b));
-            if (fallback) options.push(fallback);
-            else break;
-        }
-        for (let i = options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [options[i], options[j]] = [options[j], options[i]];
-        }
-        currentOptions = options;
-
-        const container = document.getElementById('quizOptions');
-        container.innerHTML = '';
-        currentOptions.forEach(opt => {
-            const btn = document.createElement('div');
-            btn.className = 'quiz-opt';
-            btn.textContent = opt;
-            btn.addEventListener('click', () => handleQuizAnswer(opt, correct));
-            container.appendChild(btn);
-        });
-        const listenBtn = document.createElement('div');
-        listenBtn.className = 'quiz-opt';
-        listenBtn.innerHTML = '<i class="fas fa-volume-up"></i> Listen again';
-        listenBtn.addEventListener('click', () => speakText(currentQuizBlend));
-        container.appendChild(listenBtn);
-        document.getElementById('quizQuestion').innerHTML = `🎧 Which blend do you hear?`;
-        speakText(currentQuizBlend);
-    }
-
-    function handleQuizAnswer(selected, correct) {
-        const feedbackDiv = document.getElementById('quizFeedback');
-        if (selected === correct) {
-            feedbackDiv.innerHTML = '✅ Correct! Great listening! ✅';
-            feedbackDiv.className = 'feedback correct';
-            speakText('Correct!');
-        } else {
-            feedbackDiv.innerHTML = `❌ Not quite. The correct blend was ${correct}. Try again! ❌`;
-            feedbackDiv.className = 'feedback wrong';
-            speakText(`The correct blend is ${correct}`);
-        }
-        // automatically generate new quiz after a short delay
-        setTimeout(() => {
-            generateQuiz();
-            feedbackDiv.innerHTML = '';
-        }, 1500);
-    }
-
     function updateProgressMessage() {
         const count = unlockedLetters.length;
-        document.getElementById('progressMessage').innerHTML = `🔓 Unlocked letters: ${count} / 26. Click any letter to add or remove.`;
+        const wordsCount = getDecodableWords().length;
+        document.getElementById('progressMessage').innerHTML = `🔓 Unlocked letters: ${count} / 26 | 📖 Words you can read: ${wordsCount}`;
     }
 
     function speakText(text) {
@@ -662,7 +684,7 @@
     // initialise
     loadProgress();
     renderLettersRow();
-    renderBlends();
+    renderWords();
     generateQuiz();
     updateProgressMessage();
 

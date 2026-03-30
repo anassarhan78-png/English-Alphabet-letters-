@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* same as before – no changes */
+        /* (same as before, no changes) */
         * {
             margin: 0;
             padding: 0;
@@ -449,53 +449,65 @@
 </div>
 
 <script>
-    // ---------- PHONICS WORD DATABASE ----------
-    // Words organized by pattern: CV, VC, CVC, CVCV
-    // Each word is stored with its phoneme breakdown (array of letters, each representing a single sound)
-    const wordDatabase = [
-        // CV words (consonant-vowel)
-        { word: "me", pattern: "CV", phonemes: ["m","e"] },
-        { word: "be", pattern: "CV", phonemes: ["b","e"] },
-        { word: "he", pattern: "CV", phonemes: ["h","e"] },
-        { word: "we", pattern: "CV", phonemes: ["w","e"] },
-        { word: "go", pattern: "CV", phonemes: ["g","o"] },
-        { word: "no", pattern: "CV", phonemes: ["n","o"] },
-        { word: "so", pattern: "CV", phonemes: ["s","o"] },
-        { word: "my", pattern: "CV", phonemes: ["m","y"] },
-        { word: "by", pattern: "CV", phonemes: ["b","y"] },
-        { word: "hi", pattern: "CV", phonemes: ["h","i"] },
-        // VC words (vowel-consonant)
-        { word: "at", pattern: "VC", phonemes: ["a","t"] },
-        { word: "in", pattern: "VC", phonemes: ["i","n"] },
-        { word: "on", pattern: "VC", phonemes: ["o","n"] },
-        { word: "up", pattern: "VC", phonemes: ["u","p"] },
-        { word: "it", pattern: "VC", phonemes: ["i","t"] },
-        { word: "am", pattern: "VC", phonemes: ["a","m"] },
-        { word: "an", pattern: "VC", phonemes: ["a","n"] },
-        // CVC words (consonant-vowel-consonant)
-        { word: "cat", pattern: "CVC", phonemes: ["c","a","t"] },
-        { word: "dog", pattern: "CVC", phonemes: ["d","o","g"] },
-        { word: "sun", pattern: "CVC", phonemes: ["s","u","n"] },
-        { word: "hat", pattern: "CVC", phonemes: ["h","a","t"] },
-        { word: "bat", pattern: "CVC", phonemes: ["b","a","t"] },
-        { word: "rat", pattern: "CVC", phonemes: ["r","a","t"] },
-        { word: "red", pattern: "CVC", phonemes: ["r","e","d"] },
-        { word: "bed", pattern: "CVC", phonemes: ["b","e","d"] },
-        { word: "leg", pattern: "CVC", phonemes: ["l","e","g"] },
-        { word: "big", pattern: "CVC", phonemes: ["b","i","g"] },
-        { word: "pig", pattern: "CVC", phonemes: ["p","i","g"] },
-        { word: "hop", pattern: "CVC", phonemes: ["h","o","p"] },
-        { word: "cup", pattern: "CVC", phonemes: ["c","u","p"] },
-        { word: "bug", pattern: "CVC", phonemes: ["b","u","g"] },
-        { word: "fun", pattern: "CVC", phonemes: ["f","u","n"] },
-        { word: "run", pattern: "CVC", phonemes: ["r","u","n"] },
-        // CVCV words (two syllables, simple)
-        { word: "baby", pattern: "CVCV", phonemes: ["b","a","b","y"] },
-        { word: "lady", pattern: "CVCV", phonemes: ["l","a","d","y"] },
-        { word: "tiger", pattern: "CVCV", phonemes: ["t","i","g","e","r"] }, // slightly longer but decodable
-        { word: "robot", pattern: "CVCV", phonemes: ["r","o","b","o","t"] },
-        { word: "sunset", pattern: "CVCV", phonemes: ["s","u","n","s","e","t"] }
-    ];
+    // Helper: identify vowels (a, e, i, o, u)
+    const VOWELS = new Set(['a', 'e', 'i', 'o', 'u']);
+    
+    // Generate all possible blends from unlocked letters using patterns: CV, VC, CVC, CVCV
+    // Returns an array of unique words (strings)
+    function generateBlends(unlockedLetters) {
+        // Convert unlocked letters to lowercase for phonemes
+        const letters = unlockedLetters.map(l => l.toLowerCase());
+        if (letters.length === 0) return [];
+        
+        // Split into consonants and vowels based on current unlocked set
+        const consonants = letters.filter(l => !VOWELS.has(l));
+        const vowels = letters.filter(l => VOWELS.has(l));
+        
+        if (consonants.length === 0 || vowels.length === 0) return [];
+        
+        const words = new Set();
+        
+        // CV: consonant + vowel
+        for (let c of consonants) {
+            for (let v of vowels) {
+                words.add(c + v);
+            }
+        }
+        
+        // VC: vowel + consonant
+        for (let v of vowels) {
+            for (let c of consonants) {
+                words.add(v + c);
+            }
+        }
+        
+        // CVC: consonant + vowel + consonant
+        for (let c1 of consonants) {
+            for (let v of vowels) {
+                for (let c2 of consonants) {
+                    words.add(c1 + v + c2);
+                }
+            }
+        }
+        
+        // CVCV: consonant + vowel + consonant + vowel
+        for (let c1 of consonants) {
+            for (let v1 of vowels) {
+                for (let c2 of consonants) {
+                    for (let v2 of vowels) {
+                        words.add(c1 + v1 + c2 + v2);
+                    }
+                }
+            }
+        }
+        
+        // Convert to array, sort, and limit to reasonable number (e.g., first 150)
+        let result = Array.from(words);
+        result.sort();
+        // Keep only first 150 to avoid overwhelming UI
+        if (result.length > 150) result = result.slice(0, 150);
+        return result;
+    }
 
     // all letters A-Z (uppercase for display, but phonemes are lowercase)
     const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
@@ -557,13 +569,9 @@
         speakText("All letters unlocked!");
     }
 
-    // Filter words that can be formed using only unlocked letters (case-insensitive)
+    // Get words based on currently unlocked letters
     function getDecodableWords() {
-        const unlockedSet = new Set(unlockedLetters.map(l => l.toLowerCase()));
-        return wordDatabase.filter(entry => {
-            // every phoneme in the word must be in unlockedSet
-            return entry.phonemes.every(phoneme => unlockedSet.has(phoneme));
-        });
+        return generateBlends(unlockedLetters);
     }
 
     function renderWords() {
@@ -574,11 +582,11 @@
             container.innerHTML = '<p style="text-align:center">✨ Unlock more letters to see real words! ✨</p>';
             return;
         }
-        words.forEach(item => {
+        words.forEach(word => {
             const card = document.createElement('div');
             card.className = 'blend-card';
-            card.textContent = item.word;
-            card.addEventListener('click', () => speakText(item.word));
+            card.textContent = word;
+            card.addEventListener('click', () => speakText(word));
             container.appendChild(card);
         });
     }
@@ -594,17 +602,16 @@
             document.getElementById('quizOptions').innerHTML = "";
             return;
         }
-        const correctObj = words[Math.floor(Math.random() * words.length)];
-        const correct = correctObj.word;
+        const correct = words[Math.floor(Math.random() * words.length)];
         currentQuizWord = correct;
         // pick 3 other distinct words
-        let others = words.filter(w => w.word !== correct).map(w => w.word);
+        let others = words.filter(w => w !== correct);
         others.sort(() => 0.5 - Math.random());
         let options = [correct, ...others.slice(0, 3)];
         // if not enough unique words, fill with dummy
         while (options.length < 4 && words.length > 1) {
-            const fallback = words.find(w => !options.includes(w.word));
-            if (fallback) options.push(fallback.word);
+            const fallback = words.find(w => !options.includes(w));
+            if (fallback) options.push(fallback);
             else break;
         }
         // shuffle options

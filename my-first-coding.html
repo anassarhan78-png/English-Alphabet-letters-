@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* (same as before, no changes) */
         * {
             margin: 0;
             padding: 0;
@@ -452,8 +451,7 @@
     // Helper: identify vowels (a, e, i, o, u)
     const VOWELS = new Set(['a', 'e', 'i', 'o', 'u']);
     
-    // Generate all possible blends from unlocked letters using patterns: CV, VC, CVC, CVCV
-    // Returns an array of unique words (strings)
+    // Generate blends using ONLY CV, VC, CVC patterns (no CVCV)
     function generateBlends(unlockedLetters) {
         // Convert unlocked letters to lowercase for phonemes
         const letters = unlockedLetters.map(l => l.toLowerCase());
@@ -490,21 +488,11 @@
             }
         }
         
-        // CVCV: consonant + vowel + consonant + vowel
-        for (let c1 of consonants) {
-            for (let v1 of vowels) {
-                for (let c2 of consonants) {
-                    for (let v2 of vowels) {
-                        words.add(c1 + v1 + c2 + v2);
-                    }
-                }
-            }
-        }
+        // (CVCV block removed as requested)
         
         // Convert to array, sort, and limit to reasonable number (e.g., first 150)
         let result = Array.from(words);
         result.sort();
-        // Keep only first 150 to avoid overwhelming UI
         if (result.length > 150) result = result.slice(0, 150);
         return result;
     }
